@@ -54,7 +54,7 @@ final class AssetTrackerCustomizer implements ServiceTrackerCustomizer<Asset, As
      */
     AssetTrackerCustomizer(final BundleContext context, final AssetService assetService) {
         requireNonNull(context, "Bundle context cannot be null");
-        requireNonNull(context, "Asset service instance cannot be null");
+        requireNonNull(assetService, "Asset service instance cannot be null");
 
         this.assets = CollectionUtil.newConcurrentHashMap();
         this.context = context;
