@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -33,7 +33,7 @@ import org.osgi.framework.InvalidSyntaxException;
 public class MultipleValueStoreTest extends DbComponentsTestBase {
 
     @Test
-    public void shoudSupportStoringMultipleValuesOfSameType()
+    public void shouldSupportStoringMultipleValuesOfSameType()
             throws KuraException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
         givenAnEnvelopeReceivedByStore("foo", insertedValue);
         givenAnEnvelopeReceivedByStore("foo", insertedValue);
