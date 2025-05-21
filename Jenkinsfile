@@ -20,7 +20,7 @@ spec:
                 checkout scm
             }
         }
-        stage('Build Kura-apps') {
+        stage('Build kura-wires') {
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura-wires') {
                     withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
