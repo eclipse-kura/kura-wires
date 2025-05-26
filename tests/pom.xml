@@ -395,6 +395,11 @@
                                 </requirement>
                                 <requirement>
                                     <type>eclipse-plugin</type>
+                                    <id>org.eclipse.kura.db.sqlite.provider</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>eclipse-plugin</type>
                                     <id>org.eclipse.kura.cloudconnection.kapua.mqtt.provider</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
@@ -406,6 +411,16 @@
                                 <requirement>
                                     <type>p2-installable-unit</type>
                                     <id>com.h2database</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>eclipse-plugin</type>
+                                    <id>org.eclipse.kura.test</id>
+                                    <versionRange>0.0.0</versionRange>
+                                </requirement>
+                                <requirement>
+                                    <type>eclipse-plugin</type>
+                                    <id>org.eclipse.kura.http.server.manager</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
                             </extraRequirements>

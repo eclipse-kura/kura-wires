@@ -1028,6 +1028,31 @@
                     <artifactId>moquette-broker</artifactId>
                     <version>1.0.0-SNAPSHOT</version>
                 </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.test</artifactId>
+                    <version>6.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.http.server.manager</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.broker.artemis.core</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.broker.artemis.simple.mqtt</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.util.test.driver</artifactId>
+                    <version>6.0.0-SNAPSHOT</version>
+                </dependency>
 
                 <!-- Kura core -->
 
@@ -1039,6 +1064,11 @@
                 <dependency>
                     <groupId>org.eclipse.kura</groupId>
                     <artifactId>org.eclipse.kura.core</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.core.crypto</artifactId>
                     <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
@@ -1083,6 +1113,21 @@
                 </dependency>
                 <dependency>
                     <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.core.testutil</artifactId>
+                    <version>6.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.json.marshaller.unmarshaller.provider</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.xml.marshaller.unmarshaller.provider</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
                     <artifactId>org.eclipse.kura.net.configuration</artifactId>
                     <version>2.0.0-SNAPSHOT</version>
                 </dependency>
@@ -1118,7 +1163,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.eclipse.kura</groupId>
-                    <artifactId>org.eclipse.kura.rest.provider</artifactId>
+                    <artifactId>org.eclipse.kura.emulator.gpio</artifactId>
                     <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
@@ -1128,8 +1173,38 @@
                 </dependency>
                 <dependency>
                     <groupId>org.eclipse.kura</groupId>
-                    <artifactId>org.eclipse.kura.json.marshaller.unmarshaller.provider</artifactId>
+                    <artifactId>org.eclipse.kura.rest.provider</artifactId>
                     <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.useradmin.store</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.db.h2db.provider</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.cloudconnection.kapua.mqtt.provider</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.core.identity</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.db.sqlite.provider</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.xerial</groupId>
+                    <artifactId>sqlite-jdbc</artifactId>
+                    <version>3.39.3.0</version>
                 </dependency>
 
                 <!-- Kura utils -->
@@ -1138,6 +1213,11 @@
                     <groupId>org.eclipse.kura</groupId>
                     <artifactId>org.eclipse.kura.asset.provider</artifactId>
                     <version>3.0.0-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.eclipse.kura</groupId>
+                    <artifactId>org.eclipse.kura.deployment.agent</artifactId>
+                    <version>2.0.0-SNAPSHOT</version>
                 </dependency>
                 <dependency>
                     <groupId>org.eclipse.kura</groupId>
@@ -1168,26 +1248,6 @@
                     <groupId>org.eclipse.kura</groupId>
                     <artifactId>org.eclipse.kura.util.wire.test</artifactId>
                     <version>6.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.kura</groupId>
-                    <artifactId>org.eclipse.kura.test</artifactId>
-                    <version>6.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.kura</groupId>
-                    <artifactId>org.eclipse.kura.core.testutil</artifactId>
-                    <version>6.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.kura</groupId>
-                    <artifactId>org.eclipse.kura.db.sqlite.provider</artifactId>
-                    <version>2.0.0-SNAPSHOT</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.xerial</groupId>
-                    <artifactId>sqlite-jdbc</artifactId>
-                    <version>3.39.3.0</version>
                 </dependency>
             </dependencies>
         </location>
