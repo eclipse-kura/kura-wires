@@ -21,10 +21,6 @@
     <artifactId>org.eclipse.equinox.wireadmin</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <equinox.wireadmin.version>1.0.800</equinox.wireadmin.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>

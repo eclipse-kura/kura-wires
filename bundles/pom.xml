@@ -40,6 +40,7 @@
         <maven.jarsigner.plugin.version>1.4</maven.jarsigner.plugin.version>
         <skip.artifact.signing>true</skip.artifact.signing>
         <keystore.type>JKS</keystore.type>
+        <equinox.wireadmin.version>1.0.800</equinox.wireadmin.version>
     </properties>
 
     <build>
@@ -354,6 +355,6 @@
         <module>org.eclipse.kura.asset.helper.provider</module>
         <module>org.eclipse.kura.asset.provider</module>
         <module>org.eclipse.kura.rest.asset.provider</module>
-        <!-- <module>org.eclipse.equinox.wireadmin</module> -->
+        <module>org.eclipse.equinox.wireadmin</module>
     </modules>
 </project>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2022, 2025 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +45,6 @@ import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireRecord;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DbWireRecordStoreTest {
@@ -100,14 +100,23 @@ public class DbWireRecordStoreTest {
         assertNotNull(dbstore);
     }
 
-    @Ignore
     @Test
-    public void testReceive() throws SQLException {
-        Connection connection = dbsvc.getConnection();
+    public void testReceive() throws SQLException, InterruptedException {
+    	Optional<Connection> optionalConnection = getConnection(2);
+    	if (!optionalConnection.isPresent()) {
+			throw new SQLException("Failed to get a connection to the database");
+		}
+    	Connection connection = optionalConnection.get();
 
-        ResultSet resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
-        resultSet.next();
-        int startCount = resultSet.getInt(1);
+    	ResultSet resultSet;
+    	int startCount = 0;
+    	try {
+	        resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
+	        resultSet.next();
+	        startCount = resultSet.getInt(1);
+		} catch (SQLException e) {
+			// The table does not exist, so we start with startCount 0
+		}
 
         String emitterPid = "emitter";
         List<WireRecord> wireRecords = new ArrayList<WireRecord>();
@@ -174,11 +183,19 @@ public class DbWireRecordStoreTest {
     }
 
     @Test
-    public void testCleanupSequence() throws SQLException {
+    public void testCleanupSequence() throws SQLException, InterruptedException {
         // create DB, insert a few wire records, check they are actually in there and clean the DB
-        Connection connection = dbsvc.getConnection();
+    	Optional<Connection> optionalConnection = getConnection(2);
+    	if (!optionalConnection.isPresent()) {
+			throw new SQLException("Failed to get a connection to the database");
+		}
+    	Connection connection = optionalConnection.get();
 
-        connection.prepareStatement("TRUNCATE TABLE " + tableName).execute();
+    	try {
+    		connection.prepareStatement("TRUNCATE TABLE " + tableName).execute();
+		} catch (SQLException e) {
+			// The table does not exist, so we can ignore this
+		}
 
         String emitterPid = "emitter";
         List<WireRecord> wireRecords = new ArrayList<WireRecord>();
@@ -264,4 +281,21 @@ public class DbWireRecordStoreTest {
         DbWireRecordStoreTest.cfgsvc = null;
     }
 
+    private Optional<Connection> getConnection(int retries) throws InterruptedException {
+    	Optional<Connection> connection = Optional.empty();
+    	if (dbsvc == null) {
+    		return connection;
+    	}
+    	
+		for (int i = 0; i < retries; i++) {
+			try {
+				connection = Optional.of(dbsvc.getConnection());
+				break;
+			} catch (SQLException e) {
+				Thread.sleep(1000);
+			}
+		}
+
+		return connection;
+	}
 }
