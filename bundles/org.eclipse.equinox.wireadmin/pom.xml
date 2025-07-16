@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2019, 2025 Eurotech and/or its affiliates. All rights reserved.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.eclipse.kura</groupId>
+        <artifactId>kura-wires.parent</artifactId>
+        <version>3.0.0-SNAPSHOT</version>
+    </parent>
+
+    <!-- 
+    This project allows to fetch a set of bundles from the Maven repositiories
+    configured in the parent pom and sign them with jarsigner.
+    The signed bundles will be placed in the target/signed subfolder.
+    -->
+    <artifactId>org.eclipse.equinox.wireadmin</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+        <equinox.wireadmin.version>1.0.800</equinox.wireadmin.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>fetch-external-bundles</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.platform</groupId>
+                                    <artifactId>org.eclipse.equinox.wireadmin</artifactId>
+                                    <version>${equinox.wireadmin.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <stripVersion>false</stripVersion>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
