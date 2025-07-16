@@ -357,7 +357,7 @@
                                         <group>kurad</group>
                                         <filemode>600</filemode>
                                     </mapper>
-                                </data>me>
+                                </data>
                                 <data>
                                     <src>${project.build.directory}/plugins/${jar.wire.component.join.provider.name}</src>
                                     <type>file</type>
