@@ -356,5 +356,6 @@
         <module>org.eclipse.kura.asset.provider</module>
         <module>org.eclipse.kura.rest.asset.provider</module>
         <module>org.eclipse.equinox.wireadmin</module>
+        <module>org.eclipse.kura.util.wire.test</module>
     </modules>
 </project>
