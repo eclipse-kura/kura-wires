@@ -23,11 +23,16 @@ spec:
         stage('Build kura-wires') {
             timeout(time: 2, unit: 'HOURS') {
                 dir('kura-wires') {
-                    withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6') {
+                    withMaven(jdk: 'temurin-jdk17-latest', maven: 'apache-maven-3.9.6', options: [artifactsPublisher(disabled: true)]) {
                         sh 'mvn clean install'
                     }
                 }
             }
         }
+        stage('Archive .deb artifacts') {
+	        dir("kura-wires") {
+	            archiveArtifacts artifacts: '**/*.deb', onlyIfSuccessful: true
+	        }
+    	}
     }
 }
