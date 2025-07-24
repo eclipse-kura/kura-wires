@@ -13,7 +13,7 @@ spec:
     node(POD_LABEL) {
         properties([
             disableConcurrentBuilds(abortPrevious: true),
-            buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '2', daysToKeepStr: '', numToKeepStr: '5')),
+            buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '1', daysToKeepStr: '', numToKeepStr: '3')),
             gitLabConnection('gitlab.eclipse.org'),
             [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false],
             [$class: 'JobLocalConfiguration', changeReasonComment: '']
