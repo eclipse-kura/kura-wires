@@ -23,7 +23,7 @@
 
     <properties>
         <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/../../tests/*/target/site/jacoco-aggregate/jacoco.xml
+            ${project.basedir}/../../tests/org.eclipse.kura.internal.asset.cloudlet.test/target/site/jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
