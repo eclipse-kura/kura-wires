@@ -96,6 +96,11 @@
             <artifactId>org.eclipse.kura.wire.script.tools</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kura</groupId>
+            <artifactId>org.eclipse.kura.util.wire.test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <!-- Change this if your org is different -->
@@ -105,7 +110,7 @@
     </organization>
 
     <properties>
-    	
+
         <!--
             With n being the start level, config.ini will be populated depending on which plugins directory the bundle is put:
             n => bundle.name:@n;
@@ -129,7 +134,7 @@
         <jar.wire.provider.name>org.eclipse.kura.wire.provider-${project.version}.jar</jar.wire.provider.name>
         <jar.wire.script.tools.name>org.eclipse.kura.wire.script.tools-${project.version}.jar</jar.wire.script.tools.name>
         <jar.rest.wire.provider.name>org.eclipse.kura.rest.wire.provider-${project.version}.jar</jar.rest.wire.provider.name>
-        
+
         <!--
             Available DEB architectures:
             all, amd64, arm64
@@ -252,7 +257,7 @@
                     </includeOnlyProperties>
                 </configuration>
             </plugin>
-            
+
             <!-- Responsible for copying the dependencies into a known location -->
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
