@@ -445,11 +445,6 @@
                                 </requirement>
                                 <requirement>
                                     <type>p2-installable-unit</type>
-                                    <id>org.apache.activemq.artemis-mqtt-protocol</id>
-                                    <versionRange>0.0.0</versionRange>
-                                </requirement>
-                                <requirement>
-                                    <type>p2-installable-unit</type>
                                     <id>com.h2database</id>
                                     <versionRange>0.0.0</versionRange>
                                 </requirement>
