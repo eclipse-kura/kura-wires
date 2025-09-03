@@ -1,0 +1,28 @@
+name: Kura SBOM upload
+
+on:
+  schedule:
+    # At 00:00 on Sunday
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        type: string
+        default: 'develop'
+        required: true
+  workflow_run:
+    workflows: ["Release Notes automation"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  call-workflow-in-public-repo:
+    uses: eclipse-kura/.github/.github/workflows/_shared-sbom-cyclonedx.yml@main
+    with:
+      # The parent project UUID the uploaded SBOM should be associated with.
+      # Refer to https://sbom.eclipse.org/ to retrieve the UUID.
+      dependency-track-id: '4bad25bd-6a8d-4b24-b9fa-d0986b006da8'
