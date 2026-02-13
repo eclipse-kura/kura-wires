@@ -41,6 +41,6 @@
         <module>bundles</module>
         <module>distrib</module>
         <module>tests</module>
-        <module>kura-wires-bom</module>
+        <module>kura-wires-tycho-deps</module>
     </modules>
 </project>

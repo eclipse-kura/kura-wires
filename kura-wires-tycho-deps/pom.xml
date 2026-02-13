@@ -19,11 +19,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
-    <artifactId>kura-wires-bom</artifactId>
+    <artifactId>kura-wires-tycho-deps</artifactId>
     <version>3.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-    <name>Kura Wires BOM</name>
+    <name>Kura Wires Tycho Deps</name>
 
     <distributionManagement>
         <repository>
