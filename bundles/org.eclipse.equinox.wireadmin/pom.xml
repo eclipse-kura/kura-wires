@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Copyright (c) 2019, 2025 Eurotech and/or its affiliates. All rights reserved.
+  Copyright (c) 2019, 2026 Eurotech and/or its affiliates. All rights reserved.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -21,6 +21,14 @@
     <artifactId>org.eclipse.equinox.wireadmin</artifactId>
     <packaging>pom</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.wireadmin</artifactId>
+            <version>${equinox.wireadmin.version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -36,16 +44,10 @@
                         <id>fetch-external-bundles</id>
                         <phase>generate-sources</phase>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.eclipse.platform</groupId>
-                                    <artifactId>org.eclipse.equinox.wireadmin</artifactId>
-                                    <version>${equinox.wireadmin.version}</version>
-                                </artifactItem>
-                            </artifactItems>
+                            <includeArtifactIds>org.eclipse.equinox.wireadmin</includeArtifactIds>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
