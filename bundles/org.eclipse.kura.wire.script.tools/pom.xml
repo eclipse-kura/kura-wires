@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2022, 2024 Eurotech and/or its affiliates and others
+    Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
   
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -31,6 +31,52 @@
     <artifactId>org.eclipse.kura.wire.script.tools</artifactId>
     <packaging>eclipse-plugin</packaging>
 
+    <dependencies>
+        <!-- JS engine dependencies -->
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-scriptengine</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.js</groupId>
+            <artifactId>js-launcher</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <!-- Common infrastructure dependencies -->
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>graal-sdk</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.truffle</groupId>
+            <artifactId>truffle-api</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.regex</groupId>
+            <artifactId>regex</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.graalvm.sdk</groupId>
+            <artifactId>launcher-common</artifactId>
+            <version>${graalvm.version}</version>
+        </dependency>
+        <!-- Transitive dependencies -->
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>72.1</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -43,54 +89,19 @@
                         <configuration>
                             <outputDirectory>${project.basedir}/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
-                            <artifactItems>
-                                <!-- JS engine dependencies -->
-                                <artifactItem>
-                                    <groupId>org.graalvm.js</groupId>
-                                    <artifactId>js</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.graalvm.js</groupId>
-                                    <artifactId>js-scriptengine</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.graalvm.js</groupId>
-                                    <artifactId>js-launcher</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <!-- Common infrastructure dependencies -->
-                                <artifactItem>
-                                    <groupId>org.graalvm.sdk</groupId>
-                                    <artifactId>graal-sdk</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.graalvm.truffle</groupId>
-                                    <artifactId>truffle-api</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.graalvm.regex</groupId>
-                                    <artifactId>regex</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.graalvm.sdk</groupId>
-                                    <artifactId>launcher-common</artifactId>
-                                    <version>${graalvm.version}</version>
-                                </artifactItem>
-                                <!-- Transitive dependencies -->
-                                <artifactItem>
-                                    <groupId>com.ibm.icu</groupId>
-                                    <artifactId>icu4j</artifactId>
-                                    <version>72.1</version>
-                                </artifactItem>
-                            </artifactItems>
+                            <includeArtifactIds>
+                                js,
+                                js-scriptengine,
+                                js-launcher,
+                                graal-sdk,
+                                truffle-api,
+                                regex,
+                                launcher-common,
+                                icu4j
+                            </includeArtifactIds>
                         </configuration>
                         <goals>
-                            <goal>copy</goal>
+                            <goal>copy-dependencies</goal>
                         </goals>
                     </execution>
                 </executions>
