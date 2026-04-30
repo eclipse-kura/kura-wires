@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     
-    Copyright (c) 2016, 2023 Eurotech and/or its affiliates and others
+    Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
   
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -33,7 +33,8 @@
             cardinality="0"
             required="true"
             default="none"
-            description="Whether or not the gateway's position should be published in the message. Choices are: None - means that no position will be published; Basic - only altitude, longitude and latitude values will be published; Full - available NMEA properties will be mapped to a KuraPosition object and published.">
+            description="Whether or not the gateway's position should be published in the message. Choices are: None - means that no position will be published; Basic - only altitude, longitude and latitude values will be published; Full - available NMEA properties will be mapped to a KuraPosition object and published.\n" + 
+            "Warning: the Basic and Full options require that the PositionService is installed and available in the system.">
             <Option label="None" value="none" />
             <Option label="Basic" value="basic" />
             <Option label="Full" value="full" />
