@@ -96,7 +96,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
     }
 
     public void unsetPositionService(PositionService positionService) {
-        if (this.positionService.isPresent() && positionService.equals(this.positionService.get())) {
+        if (this.positionService.isPresent() && this.positionService.get().equals(positionService)) {
             this.positionService = Optional.empty();
         }
     }
@@ -206,9 +206,13 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
 
         kuraPayload.setTimestamp(new Date());
 
-        if (this.cloudPublisherOptions.getPositionType() != PositionType.NONE && this.positionService.isPresent()) {
-            KuraPosition kuraPosition = getPosition();
-            kuraPayload.setPosition(kuraPosition);
+        if (this.cloudPublisherOptions.getPositionType() != PositionType.NONE) {
+            if (!this.positionService.isPresent()) {
+                logger.warn("Position Service is not available, cannot enrich the message with position information.");
+            } else {
+                KuraPosition kuraPosition = getPosition();
+                kuraPayload.setPosition(kuraPosition);
+            }
         }
 
         final Map<String, TypedValue<?>> wireRecordProperties = wireRecord.getProperties();
