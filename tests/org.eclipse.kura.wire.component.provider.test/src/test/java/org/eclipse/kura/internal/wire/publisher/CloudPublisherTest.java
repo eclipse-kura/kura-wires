@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
  * 
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -192,7 +192,6 @@ public class CloudPublisherTest {
 
     @Test
     public void testOnWireReceiveWithFullPositionWithNoPositionService() throws InvalidSyntaxException {
-        // test publishing a normal message with topic replacement and position
         givenCloudPublisher();
         givenDefaultProperties();
         givenUpdatedProperties("publish.position", "full");

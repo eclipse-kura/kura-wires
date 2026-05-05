@@ -65,7 +65,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
     private CloudPublisherOptions cloudPublisherOptions;
 
     private volatile WireHelperService wireHelperService;
-    private Optional<PositionService> positionService = Optional.empty();
+    private volatile Optional<PositionService> positionService = Optional.empty();
 
     private WireSupport wireSupport;
 
