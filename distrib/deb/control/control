@@ -2,7 +2,8 @@ Package: [[package.name]]
 Version: [[version]]-[[package.revision]]
 Section: admin
 Priority: optional
-Depends: kura-core (>= 6.0.0~), kura-core(<< 7.0.0~)
+Depends: kura-core (>= 6.0.0~), kura-core (<< 7.0.0~)
+Suggests: kura-position (>= 2.0.0~), kura-position (<< 3.0.0~)
 Architecture: [[deb.architecture]]
 Maintainer: Eclipse Kura Developers <kura-dev@eclipse.org>
 Description: [[summary]]
