@@ -49,11 +49,13 @@ import org.osgi.service.wireadmin.Wire;
 
 /**
  * The Class CloudPublisher is the specific Wire Component to publish a list of
- * {@link WireRecord}s as received in {@link WireEnvelope} to the configured cloud
+ * {@link WireRecord}s as received in {@link WireEnvelope} to the configured
+ * cloud
  * platform.<br/>
  * <br/>
  *
- * For every {@link WireRecord} as found in {@link WireEnvelope} will be wrapped inside a Kura
+ * For every {@link WireRecord} as found in {@link WireEnvelope} will be wrapped
+ * inside a Kura
  * Payload and will be sent to the Cloud Platform.
  */
 public final class CloudPublisher implements WireReceiver, ConfigurableComponent {
@@ -63,7 +65,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
     private CloudPublisherOptions cloudPublisherOptions;
 
     private volatile WireHelperService wireHelperService;
-    private PositionService positionService;
+    private Optional<PositionService> positionService = Optional.empty();
 
     private WireSupport wireSupport;
 
@@ -79,7 +81,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * Binds the Wire Helper Service.
      *
      * @param wireHelperService
-     *            the new Wire Helper Service
+     *                          the new Wire Helper Service
      */
     public void bindWireHelperService(final WireHelperService wireHelperService) {
         if (isNull(this.wireHelperService)) {
@@ -88,7 +90,13 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
     }
 
     public void setPositionService(PositionService positionService) {
-        this.positionService = positionService;
+        this.positionService = Optional.ofNullable(positionService);
+    }
+
+    public void unsetPositionService(PositionService positionService) {
+        if (positionService == this.positionService.orElse(null)) {
+            this.positionService = Optional.empty();
+        }
     }
 
     public void setCloudPublisher(org.eclipse.kura.cloudconnection.publisher.CloudPublisher cloudPublisher) {
@@ -111,9 +119,9 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * OSGi Service Component callback for activation.
      *
      * @param componentContext
-     *            the component context
+     *                         the component context
      * @param properties
-     *            the properties
+     *                         the properties
      */
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Cloud Publisher Wire Component...");
@@ -130,7 +138,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * OSGi Service Component callback for updating.
      *
      * @param properties
-     *            the updated properties
+     *                   the updated properties
      */
     public void updated(final Map<String, Object> properties) {
         logger.debug("Updating Cloud Publisher Wire Component...");
@@ -144,7 +152,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * OSGi Service Component callback for deactivation.
      *
      * @param componentContext
-     *            the component context
+     *                         the component context
      */
     protected void deactivate(final ComponentContext componentContext) {
         logger.debug("Deactivating Cloud Publisher Wire Component...");
@@ -185,10 +193,10 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * Builds the Kura payload from the provided {@link WireRecord}.
      *
      * @param wireRecord
-     *            the {@link WireRecord}
+     *                   the {@link WireRecord}
      * @return the Kura payload
      * @throws NullPointerException
-     *             if the {@link WireRecord} provided is null
+     *                              if the {@link WireRecord} provided is null
      */
     private KuraPayload buildKuraPayload(final WireRecord wireRecord) {
         requireNonNull(wireRecord, "Wire Record cannot be null");
@@ -197,10 +205,11 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
         kuraPayload.setTimestamp(new Date());
 
         if (this.cloudPublisherOptions.getPositionType() != PositionType.NONE) {
-            KuraPosition kuraPosition = getPosition();
-            kuraPayload.setPosition(kuraPosition);
+            this.positionService.ifPresentOrElse(
+                    service -> kuraPayload.setPosition(getPosition()),
+                    () -> logger.warn(
+                            "Position Service is not available, cannot enrich message with position information."));
         }
-
         final Map<String, TypedValue<?>> wireRecordProperties = wireRecord.getProperties();
 
         for (final Entry<String, TypedValue<?>> entry : wireRecordProperties.entrySet()) {
@@ -242,7 +251,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
     }
 
     private KuraPosition getPosition() {
-        NmeaPosition position = this.positionService.getNmeaPosition();
+        NmeaPosition position = this.positionService.get().getNmeaPosition();
 
         KuraPosition kuraPosition = new KuraPosition();
         kuraPosition.setAltitude(position.getAltitude());
@@ -263,9 +272,9 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      * Publishes the list of provided {@link WireRecord}s
      *
      * @param wireRecords
-     *            the provided list of {@link WireRecord}s
+     *                    the provided list of {@link WireRecord}s
      * @throws NullPointerException
-     *             if one of the arguments is null
+     *                              if one of the arguments is null
      */
     private void publish(final List<WireRecord> wireRecords) {
         requireNonNull(wireRecords, "Wire Records cannot be null");

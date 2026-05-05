@@ -30,7 +30,7 @@
       <provide interface="org.osgi.service.wireadmin.Consumer"/>
    </service>
    <reference bind="bindWireHelperService" cardinality="1..1" interface="org.eclipse.kura.wire.WireHelperService" name="WireHelperService" policy="static"/>
-   <reference bind="setPositionService" cardinality="1..1" interface="org.eclipse.kura.position.PositionService" name="PositionService" policy="static"/>
+   <reference bind="setPositionService" unbind="unsetPositionService" cardinality="0..1" interface="org.eclipse.kura.position.PositionService" name="PositionService" policy="dynamic"/>
    <reference name="CloudPublisher"
            policy="dynamic"
            bind="setCloudPublisher"
