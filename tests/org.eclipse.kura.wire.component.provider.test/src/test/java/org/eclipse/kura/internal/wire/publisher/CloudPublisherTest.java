@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,7 +30,6 @@ import org.eclipse.kura.KuraException;
 import org.eclipse.kura.cloudconnection.listener.CloudConnectionListener;
 import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
-import org.eclipse.kura.core.testutil.TestUtil;
 import org.eclipse.kura.message.KuraPayload;
 import org.eclipse.kura.message.KuraPosition;
 import org.eclipse.kura.position.NmeaPosition;
@@ -56,7 +54,7 @@ public class CloudPublisherTest {
     private CloudPublisher cp;
     private org.eclipse.kura.cloudconnection.publisher.CloudPublisher cloudPublisherMock;
     private Map<String, Object> properties;
-    private Optional<PositionService> positionServiceMock;
+    private PositionService positionServiceMock;
     private FakeCloudPublisher fakeCloudPublisher;
     private Map<String, TypedValue<?>> recordProps;
     private KuraPayload payload;
@@ -311,7 +309,7 @@ public class CloudPublisherTest {
     }
 
     private void givenPositionServiceMock() {
-        this.positionServiceMock = Optional.of(mock(PositionService.class));
+        this.positionServiceMock = mock(PositionService.class);
     }
 
     private void givenFakeCloudPublisher() {
@@ -347,9 +345,13 @@ public class CloudPublisherTest {
     }
 
     private void whenSetPositionServiceMock() throws NoSuchFieldException {
-        when(this.positionServiceMock.get().getNmeaPosition())
+        when(this.positionServiceMock.getNmeaPosition())
                 .thenReturn(new NmeaPosition(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
-        TestUtil.setFieldValue(this.cp, "positionService", this.positionServiceMock);
+        this.cp.setPositionService(this.positionServiceMock);
+    }
+
+    private void whenUnsetPositionServiceMock() {
+        this.cp.unsetPositionService(this.positionServiceMock);
     }
 
     private void whenKuraMessageReceived() {
