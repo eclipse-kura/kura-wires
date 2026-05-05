@@ -89,11 +89,11 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
         }
     }
 
-    public void setPositionService(PositionService positionService) {
+    public synchronized void setPositionService(PositionService positionService) {
         this.positionService = Optional.ofNullable(positionService);
     }
 
-    public void unsetPositionService(PositionService positionService) {
+    public synchronized void unsetPositionService(PositionService positionService) {
         if (positionService == this.positionService.orElse(null)) {
             this.positionService = Optional.empty();
         }
@@ -205,10 +205,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
         kuraPayload.setTimestamp(new Date());
 
         if (this.cloudPublisherOptions.getPositionType() != PositionType.NONE) {
-            this.positionService.ifPresentOrElse(
-                    service -> kuraPayload.setPosition(getPosition()),
-                    () -> logger.warn(
-                            "Position Service is not available, cannot enrich message with position information."));
+            setKuraPosition(kuraPayload);
         }
         final Map<String, TypedValue<?>> wireRecordProperties = wireRecord.getProperties();
 
@@ -250,9 +247,14 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
         }
     }
 
-    private KuraPosition getPosition() {
-        NmeaPosition position = this.positionService.get().getNmeaPosition();
+    private synchronized void setKuraPosition(KuraPayload kuraPayload) {
+        if (this.positionService.isEmpty()) {
+            logger.debug(
+                    "Position Service is not available, cannot enrich message with position information.");
+            return;
+        }
 
+        NmeaPosition position = this.positionService.get().getNmeaPosition();
         KuraPosition kuraPosition = new KuraPosition();
         kuraPosition.setAltitude(position.getAltitude());
         kuraPosition.setLatitude(position.getLatitude());
@@ -264,8 +266,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
             kuraPosition.setSpeed(position.getSpeed());
             kuraPosition.setSatellites(position.getNrSatellites());
         }
-
-        return kuraPosition;
+        kuraPayload.setPosition(kuraPosition);
     }
 
     /**
