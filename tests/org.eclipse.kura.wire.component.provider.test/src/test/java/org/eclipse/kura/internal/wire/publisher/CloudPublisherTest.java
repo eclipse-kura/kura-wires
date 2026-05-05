@@ -231,6 +231,29 @@ public class CloudPublisherTest {
         thenCheckDefaultKuraMessageProps();
     }
 
+    @Test
+    public void testPayloadHasNotPositionIfPositionServiceIsUnset()
+            throws InvalidSyntaxException, NoSuchFieldException {
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "full");
+        givenActivatedComponentProperties();
+        givenPositionServiceMock();
+        givenDefaultRecordProp();
+
+        whenSetPositionServiceMock();
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenCheckFullPosition();
+
+        whenUnsetPositionServiceMock();
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPayloadHasNullPosition();
+    }
+
     /*
      * Steps
      */
