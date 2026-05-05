@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,7 +56,7 @@ public class CloudPublisherTest {
     private CloudPublisher cp;
     private org.eclipse.kura.cloudconnection.publisher.CloudPublisher cloudPublisherMock;
     private Map<String, Object> properties;
-    private PositionService positionServiceMock;
+    private Optional<PositionService> positionServiceMock;
     private FakeCloudPublisher fakeCloudPublisher;
     private Map<String, TypedValue<?>> recordProps;
     private KuraPayload payload;
@@ -64,7 +65,7 @@ public class CloudPublisherTest {
     private Map<String, Object> kuraMessageProps;
 
     @Test
-    public void testOnWireReceive() throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+    public void testOnWireReceive() throws InvalidSyntaxException {
         // test publishing a normal message with topic replacement
         givenCloudPublisher();
         givenDefaultProperties();
@@ -84,7 +85,7 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testOnWireReceiveSetBody() throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+    public void testOnWireReceiveSetBody() throws InvalidSyntaxException {
         // test publishing a normal message with topic replacement
         givenCloudPublisher();
         givenDefaultProperties();
@@ -105,8 +106,7 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testOnWireReceiveSetBodyRemoveFromMetrics()
-            throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+    public void testOnWireReceiveSetBodyRemoveFromMetrics() throws InvalidSyntaxException {
         // test publishing a normal message with topic replacement
         givenCloudPublisher();
         givenDefaultProperties();
@@ -128,7 +128,7 @@ public class CloudPublisherTest {
 
     @Test
     public void testOnWireReceiveWithBasicPosition()
-            throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+            throws InvalidSyntaxException, NoSuchFieldException {
         // test publishing a normal message with topic replacement and position
         givenCloudPublisher();
         givenDefaultProperties();
@@ -150,7 +150,7 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testOnWireReceiveWithFullPosition() throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+    public void testOnWireReceiveWithFullPosition() throws InvalidSyntaxException, NoSuchFieldException {
         // test publishing a normal message with topic replacement and position
         givenCloudPublisher();
         givenDefaultProperties();
@@ -172,7 +172,46 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testTopicReplacementOnWireReceive() throws InvalidSyntaxException, NoSuchFieldException, KuraException {
+    public void testOnWireReceiveWithBasicPositionWithNoPositionService() throws InvalidSyntaxException {
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "basic");
+        givenActivatedComponentProperties();
+        givenDefaultRecordProp();
+
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPayloadHasNullBody();
+        thenPayloadHasNullPosition();
+        thenTotalMetricReceived(2);
+        thenCheckDefaultMetricReceived();
+        thenTotalKuraMessagePropsReceived(2);
+        thenCheckDefaultKuraMessageProps();
+    }
+
+    @Test
+    public void testOnWireReceiveWithFullPositionWithNoPositionService() throws InvalidSyntaxException {
+        // test publishing a normal message with topic replacement and position
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "full");
+        givenActivatedComponentProperties();
+        givenDefaultRecordProp();
+
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPayloadHasNullBody();
+        thenPayloadHasNullPosition();
+        thenTotalMetricReceived(2);
+        thenCheckDefaultMetricReceived();
+        thenTotalKuraMessagePropsReceived(2);
+        thenCheckDefaultKuraMessageProps();
+    }
+
+    @Test
+    public void testTopicReplacementOnWireReceive() throws InvalidSyntaxException {
         // test publishing a normal message with topic replacement
         givenCloudPublisher();
         givenDefaultProperties();
@@ -273,7 +312,7 @@ public class CloudPublisherTest {
     }
 
     private void givenPositionServiceMock() {
-        this.positionServiceMock = mock(PositionService.class);
+        this.positionServiceMock = Optional.of(mock(PositionService.class));
     }
 
     private void givenFakeCloudPublisher() {
@@ -309,7 +348,7 @@ public class CloudPublisherTest {
     }
 
     private void whenSetPositionServiceMock() throws NoSuchFieldException {
-        when(this.positionServiceMock.getNmeaPosition())
+        when(this.positionServiceMock.get().getNmeaPosition())
                 .thenReturn(new NmeaPosition(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
         TestUtil.setFieldValue(this.cp, "positionService", this.positionServiceMock);
     }

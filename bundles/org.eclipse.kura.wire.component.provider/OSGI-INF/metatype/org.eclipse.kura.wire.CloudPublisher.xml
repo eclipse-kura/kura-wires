@@ -33,7 +33,7 @@
             cardinality="0"
             required="true"
             default="none"
-            description="Whether or not the gateway's position should be published in the message. Choices are: None - means that no position will be published; Basic - only altitude, longitude and latitude values will be published; Full - available NMEA properties will be mapped to a KuraPosition object and published.">
+            description="Whether or not the gateway's position should be published in the message. Choices are: None - means that no position will be published; Basic - only altitude, longitude and latitude values will be published; Full - available NMEA properties will be mapped to a KuraPosition object and published. Note that in order to publish position information, the Position Service must be available.">
             <Option label="None" value="none" />
             <Option label="Basic" value="basic" />
             <Option label="Full" value="full" />
