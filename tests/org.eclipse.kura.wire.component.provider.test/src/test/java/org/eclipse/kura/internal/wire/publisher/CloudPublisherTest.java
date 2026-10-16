@@ -32,7 +32,6 @@ import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
 import org.eclipse.kura.message.KuraPayload;
 import org.eclipse.kura.message.KuraPosition;
-import org.eclipse.kura.position.NmeaPosition;
 import org.eclipse.kura.position.PositionService;
 import org.eclipse.kura.type.StringValue;
 import org.eclipse.kura.type.TypedValue;
@@ -44,6 +43,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.util.measurement.Measurement;
+import org.osgi.util.measurement.Unit;
+import org.osgi.util.position.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +61,7 @@ public class CloudPublisherTest {
     private Map<String, TypedValue<?>> recordProps;
     private KuraPayload payload;
     private KuraPosition position;
+    private Position positionToReturn;
     private KuraMessage kuraMessage;
     private Map<String, Object> kuraMessageProps;
 
@@ -167,6 +170,63 @@ public class CloudPublisherTest {
         thenCheckDefaultMetricReceived();
         thenTotalKuraMessagePropsReceived(2);
         thenCheckDefaultKuraMessageProps();
+    }
+
+    @Test
+    public void testOnWireReceiveConvertsPositionToDegrees() throws InvalidSyntaxException, NoSuchFieldException {
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "full");
+        givenActivatedComponentProperties();
+        givenPositionServiceMock();
+        givenDefaultRecordProp();
+        givenPosition(new Position(new Measurement(Math.toRadians(45.5), Unit.rad),
+                new Measurement(Math.toRadians(9.25), Unit.rad), new Measurement(120.0, Unit.m),
+                new Measurement(3.5, Unit.m_s), new Measurement(Math.toRadians(90.0), Unit.rad)));
+
+        whenSetPositionServiceMock();
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPositionIs(45.5, 9.25, 120.0, 90.0, 3.5);
+    }
+
+    @Test
+    public void testOnWireReceiveWithMissingPositionMeasurements()
+            throws InvalidSyntaxException, NoSuchFieldException {
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "full");
+        givenActivatedComponentProperties();
+        givenPositionServiceMock();
+        givenDefaultRecordProp();
+        givenPosition(new Position(new Measurement(Math.toRadians(45.5), Unit.rad),
+                new Measurement(Math.toRadians(9.25), Unit.rad), null, null, null));
+
+        whenSetPositionServiceMock();
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPositionIs(45.5, 9.25, null, null, null);
+    }
+
+    @Test
+    public void testOnWireReceiveWithNullPosition() throws InvalidSyntaxException, NoSuchFieldException {
+        givenCloudPublisher();
+        givenDefaultProperties();
+        givenUpdatedProperties("publish.position", "full");
+        givenActivatedComponentProperties();
+        givenPositionServiceMock();
+        givenDefaultRecordProp();
+        givenPosition(null);
+
+        whenSetPositionServiceMock();
+        whenOnWireReceive();
+        whenKuraMessageReceived();
+
+        thenPayloadHasNullPosition();
+        thenTotalMetricReceived(2);
+        thenCheckDefaultMetricReceived();
     }
 
     @Test
@@ -333,6 +393,12 @@ public class CloudPublisherTest {
 
     private void givenPositionServiceMock() {
         this.positionServiceMock = mock(PositionService.class);
+        this.positionToReturn = new Position(new Measurement(0, Unit.rad), new Measurement(0, Unit.rad),
+                new Measurement(0, Unit.m), new Measurement(0, Unit.m_s), new Measurement(0, Unit.rad));
+    }
+
+    private void givenPosition(Position position) {
+        this.positionToReturn = position;
     }
 
     private void givenFakeCloudPublisher() {
@@ -368,8 +434,7 @@ public class CloudPublisherTest {
     }
 
     private void whenSetPositionServiceMock() throws NoSuchFieldException {
-        when(this.positionServiceMock.getNmeaPosition())
-                .thenReturn(new NmeaPosition(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+        when(this.positionServiceMock.getPosition()).thenReturn(this.positionToReturn);
         this.cp.setPositionService(this.positionServiceMock);
     }
 
@@ -451,9 +516,25 @@ public class CloudPublisherTest {
         assertNotNull(this.position.getLatitude());
         assertNotNull(this.position.getLongitude());
         assertNotNull(this.position.getHeading());
-        assertNotNull(this.position.getPrecision());
         assertNotNull(this.position.getSpeed());
-        assertNotNull(this.position.getSatellites());
+    }
+
+    private void thenPositionIs(Double latitude, Double longitude, Double altitude, Double heading, Double speed) {
+        assertNotNull(this.position);
+        assertDoubleEquals(latitude, this.position.getLatitude());
+        assertDoubleEquals(longitude, this.position.getLongitude());
+        assertDoubleEquals(altitude, this.position.getAltitude());
+        assertDoubleEquals(heading, this.position.getHeading());
+        assertDoubleEquals(speed, this.position.getSpeed());
+    }
+
+    private void assertDoubleEquals(Double expected, Double actual) {
+        if (expected == null) {
+            assertNull(actual);
+        } else {
+            assertNotNull(actual);
+            assertEquals(expected, actual, 1e-9);
+        }
     }
     /*
      * Utilities
