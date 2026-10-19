@@ -32,7 +32,6 @@ import org.eclipse.kura.cloudconnection.message.KuraMessage;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.message.KuraPayload;
 import org.eclipse.kura.message.KuraPosition;
-import org.eclipse.kura.position.NmeaPosition;
 import org.eclipse.kura.position.PositionService;
 import org.eclipse.kura.type.ByteArrayValue;
 import org.eclipse.kura.type.StringValue;
@@ -46,6 +45,8 @@ import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.wireadmin.Wire;
+import org.osgi.util.measurement.Measurement;
+import org.osgi.util.position.Position;
 
 /**
  * The Class CloudPublisher is the specific Wire Component to publish a list of
@@ -254,19 +255,26 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
             return;
         }
 
-        NmeaPosition position = this.positionService.get().getNmeaPosition();
+        Position position = this.positionService.get().getPosition();
+        if (position == null) {
+            logger.debug("Position is not available, cannot enrich message with position information.");
+            return;
+        }
+
         KuraPosition kuraPosition = new KuraPosition();
-        kuraPosition.setAltitude(position.getAltitude());
-        kuraPosition.setLatitude(position.getLatitude());
-        kuraPosition.setLongitude(position.getLongitude());
+        valueOf(position.getAltitude()).ifPresent(kuraPosition::setAltitude);
+        valueOf(position.getLatitude()).map(Math::toDegrees).ifPresent(kuraPosition::setLatitude);
+        valueOf(position.getLongitude()).map(Math::toDegrees).ifPresent(kuraPosition::setLongitude);
 
         if (this.cloudPublisherOptions.getPositionType() == PositionType.FULL) {
-            kuraPosition.setHeading(position.getTrack());
-            kuraPosition.setPrecision(position.getDOP());
-            kuraPosition.setSpeed(position.getSpeed());
-            kuraPosition.setSatellites(position.getNrSatellites());
+            valueOf(position.getTrack()).map(Math::toDegrees).ifPresent(kuraPosition::setHeading);
+            valueOf(position.getSpeed()).ifPresent(kuraPosition::setSpeed);
         }
         kuraPayload.setPosition(kuraPosition);
+    }
+
+    private static Optional<Double> valueOf(Measurement measurement) {
+        return Optional.ofNullable(measurement).map(Measurement::getValue);
     }
 
     /**
