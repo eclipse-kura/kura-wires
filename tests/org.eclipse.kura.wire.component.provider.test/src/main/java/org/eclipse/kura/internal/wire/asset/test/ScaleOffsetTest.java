@@ -13,7 +13,6 @@
 package org.eclipse.kura.internal.wire.asset.test;
 
 import java.util.Optional;
-
 import org.eclipse.kura.channel.ScaleOffsetType;
 import org.eclipse.kura.type.DataType;
 import org.junit.Test;
@@ -25,8 +24,8 @@ public class ScaleOffsetTest extends WireAssetTestBase {
 
     @Test
     public void shouldSupportMissingScaleOffset() {
-        givenAssetChannel("foo", DataType.DOUBLE, ScaleOffsetType.DEFINED_BY_VALUE_TYPE, Optional.empty(),
-                Optional.empty());
+        givenAssetChannel(
+                "foo", DataType.DOUBLE, ScaleOffsetType.DEFINED_BY_VALUE_TYPE, Optional.empty(), Optional.empty());
 
         whenDriverProducesValue("foo", 1.0d);
 
@@ -71,8 +70,8 @@ public class ScaleOffsetTest extends WireAssetTestBase {
 
     @Test
     public void shouldApplyScaleToIntegerWithIntegerScale() {
-        givenAssetChannel("foo", DataType.INTEGER, ScaleOffsetType.DEFINED_BY_VALUE_TYPE, Optional.of(3),
-                Optional.empty());
+        givenAssetChannel(
+                "foo", DataType.INTEGER, ScaleOffsetType.DEFINED_BY_VALUE_TYPE, Optional.of(3), Optional.empty());
 
         whenDriverProducesValue("foo", 1);
 
@@ -182,9 +181,9 @@ public class ScaleOffsetTest extends WireAssetTestBase {
     public void shouldTolerateScaleAndOffsetOnByteArray() {
         givenAssetChannel("foo", DataType.BYTE_ARRAY, ScaleOffsetType.DOUBLE, Optional.of(6.0f), Optional.of(-2.0d));
 
-        whenDriverProducesValue("foo", new byte[] { 1, 2, 3, 4 });
+        whenDriverProducesValue("foo", new byte[] {1, 2, 3, 4});
 
-        thenAssetOutputContains(0, "foo", new byte[] { 1, 2, 3, 4 });
+        thenAssetOutputContains(0, "foo", new byte[] {1, 2, 3, 4});
     }
 
     @Parameterized.Parameters(name = "{0}")
@@ -203,8 +202,12 @@ public class ScaleOffsetTest extends WireAssetTestBase {
         this.triggerMode = triggerMode;
     }
 
-    private void givenAssetChannel(String name, DataType dataType, ScaleOffsetType scaleOffsetType,
-            Optional<? extends Number> scale, Optional<? extends Number> offset) {
+    private void givenAssetChannel(
+            String name,
+            DataType dataType,
+            ScaleOffsetType scaleOffsetType,
+            Optional<? extends Number> scale,
+            Optional<? extends Number> offset) {
         super.givenAssetChannel(name, this.triggerMode == TriggerMode.LISTEN, dataType, scaleOffsetType, scale, offset);
     }
 

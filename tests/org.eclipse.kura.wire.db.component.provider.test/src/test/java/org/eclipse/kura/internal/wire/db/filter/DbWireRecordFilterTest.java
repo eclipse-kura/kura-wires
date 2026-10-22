@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,7 +14,6 @@ package org.eclipse.kura.internal.wire.db.filter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,14 +27,10 @@ import java.sql.Statement;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.kura.core.testutil.TestUtil;
 import org.eclipse.kura.db.H2DbService;
 import org.eclipse.kura.internal.wire.db.common.DbServiceHelper;
 import org.eclipse.kura.internal.wire.db.common.DbServiceProvider;
-import org.eclipse.kura.internal.wire.db.filter.DbWireRecordFilter;
-import org.eclipse.kura.internal.wire.db.filter.DbWireRecordFilterOptions;
 import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireHelperService;
 import org.eclipse.kura.wire.WireSupport;
@@ -48,7 +43,9 @@ public class DbWireRecordFilterTest {
     private H2DbService createMockH2DbService(final Connection connection) throws SQLException {
         final H2DbService dbServiceMock = mock(H2DbService.class);
         when(dbServiceMock.withConnection(any())).thenAnswer(invocation -> {
-            return invocation.getArgument(0, H2DbService.ConnectionCallable.class).call(connection);
+            return invocation
+                    .getArgument(0, H2DbService.ConnectionCallable.class)
+                    .call(connection);
         });
         when(dbServiceMock.getConnection()).thenReturn(connection);
         return dbServiceMock;
@@ -264,5 +261,4 @@ public class DbWireRecordFilterTest {
 
         verify(mockWireSupport).updated(mockWire, 42);
     }
-
 }

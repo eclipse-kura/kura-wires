@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurationService;
 import org.eclipse.kura.db.H2DbService;
@@ -102,21 +101,23 @@ public class DbWireRecordStoreTest {
 
     @Test
     public void testReceive() throws SQLException, InterruptedException {
-    	Optional<Connection> optionalConnection = getConnection(2);
-    	if (!optionalConnection.isPresent()) {
-			throw new SQLException("Failed to get a connection to the database");
-		}
-    	Connection connection = optionalConnection.get();
+        Optional<Connection> optionalConnection = getConnection(2);
+        if (!optionalConnection.isPresent()) {
+            throw new SQLException("Failed to get a connection to the database");
+        }
+        Connection connection = optionalConnection.get();
 
-    	ResultSet resultSet;
-    	int startCount = 0;
-    	try {
-	        resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
-	        resultSet.next();
-	        startCount = resultSet.getInt(1);
-		} catch (SQLException e) {
-			// The table does not exist, so we start with startCount 0
-		}
+        ResultSet resultSet;
+        int startCount = 0;
+        try {
+            resultSet = connection
+                    .prepareStatement("SELECT count(*) FROM " + tableName)
+                    .executeQuery();
+            resultSet.next();
+            startCount = resultSet.getInt(1);
+        } catch (SQLException e) {
+            // The table does not exist, so we start with startCount 0
+        }
 
         String emitterPid = "emitter";
         List<WireRecord> wireRecords = new ArrayList<WireRecord>();
@@ -140,7 +141,8 @@ public class DbWireRecordStoreTest {
         assertTrue("Only one table was expected", tables.isLast());
         assertEquals(tableName, dbTableName);
 
-        resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
+        resultSet =
+                connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
         resultSet.next();
         int count = resultSet.getInt(1);
         assertEquals("Unexpected number of records in the database.", startCount + 1L, count);
@@ -176,7 +178,8 @@ public class DbWireRecordStoreTest {
         wireRecords.add(record);
         dbstore.onWireReceive(wireEvelope); // adds 3, now
 
-        resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
+        resultSet =
+                connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
         resultSet.next();
         count = resultSet.getInt(1);
         assertEquals("Unexpected number of records", startCount + 5L, count);
@@ -185,17 +188,17 @@ public class DbWireRecordStoreTest {
     @Test
     public void testCleanupSequence() throws SQLException, InterruptedException {
         // create DB, insert a few wire records, check they are actually in there and clean the DB
-    	Optional<Connection> optionalConnection = getConnection(2);
-    	if (!optionalConnection.isPresent()) {
-			throw new SQLException("Failed to get a connection to the database");
-		}
-    	Connection connection = optionalConnection.get();
+        Optional<Connection> optionalConnection = getConnection(2);
+        if (!optionalConnection.isPresent()) {
+            throw new SQLException("Failed to get a connection to the database");
+        }
+        Connection connection = optionalConnection.get();
 
-    	try {
-    		connection.prepareStatement("TRUNCATE TABLE " + tableName).execute();
-		} catch (SQLException e) {
-			// The table does not exist, so we can ignore this
-		}
+        try {
+            connection.prepareStatement("TRUNCATE TABLE " + tableName).execute();
+        } catch (SQLException e) {
+            // The table does not exist, so we can ignore this
+        }
 
         String emitterPid = "emitter";
         List<WireRecord> wireRecords = new ArrayList<WireRecord>();
@@ -217,12 +220,14 @@ public class DbWireRecordStoreTest {
             Thread.currentThread().interrupt();
         }
 
-        ResultSet resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
+        ResultSet resultSet =
+                connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
         resultSet.next();
         int count = resultSet.getInt(1);
         assertEquals("Unexpected number of records", maxSize, count);
 
-        resultSet = connection.prepareStatement("SELECT ID FROM " + tableName + " ORDER BY ID ASC LIMIT 1")
+        resultSet = connection
+                .prepareStatement("SELECT ID FROM " + tableName + " ORDER BY ID ASC LIMIT 1")
                 .executeQuery();
         resultSet.next();
         int oldID = resultSet.getInt(1);
@@ -238,12 +243,14 @@ public class DbWireRecordStoreTest {
             Thread.currentThread().interrupt();
         }
 
-        resultSet = connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
+        resultSet =
+                connection.prepareStatement("SELECT count(*) FROM " + tableName).executeQuery();
         resultSet.next();
         count = resultSet.getInt(1);
         assertEquals("Unexpected number of records", cleanupSize + 4L, count);
 
-        resultSet = connection.prepareStatement("SELECT ID FROM " + tableName + " ORDER BY ID ASC LIMIT 1")
+        resultSet = connection
+                .prepareStatement("SELECT ID FROM " + tableName + " ORDER BY ID ASC LIMIT 1")
                 .executeQuery();
         resultSet.next();
         int newID = resultSet.getInt(1);
@@ -282,20 +289,20 @@ public class DbWireRecordStoreTest {
     }
 
     private Optional<Connection> getConnection(int retries) throws InterruptedException {
-    	Optional<Connection> connection = Optional.empty();
-    	if (dbsvc == null) {
-    		return connection;
-    	}
-    	
-		for (int i = 0; i < retries; i++) {
-			try {
-				connection = Optional.of(dbsvc.getConnection());
-				break;
-			} catch (SQLException e) {
-				Thread.sleep(1000);
-			}
-		}
+        Optional<Connection> connection = Optional.empty();
+        if (dbsvc == null) {
+            return connection;
+        }
 
-		return connection;
-	}
+        for (int i = 0; i < retries; i++) {
+            try {
+                connection = Optional.of(dbsvc.getConnection());
+                break;
+            } catch (SQLException e) {
+                Thread.sleep(1000);
+            }
+        }
+
+        return connection;
+    }
 }

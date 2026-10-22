@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -21,7 +21,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -62,8 +61,8 @@ public class Fifo implements WireEmitter, WireReceiver, ConfigurableComponent {
 
     public void activate(final Map<String, Object> properties, ComponentContext componentContext) {
         logger.info("Activating Fifo...");
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         updated(properties);
         logger.info("Activating Fifo... Done");
     }
@@ -77,8 +76,8 @@ public class Fifo implements WireEmitter, WireReceiver, ConfigurableComponent {
     public void updated(final Map<String, Object> properties) {
         logger.info("Updating Fifo...");
 
-        String threadName = (String) properties.getOrDefault(ConfigurationService.KURA_SERVICE_PID, "Fifo")
-                + "-EmitterThread";
+        String threadName =
+                (String) properties.getOrDefault(ConfigurationService.KURA_SERVICE_PID, "Fifo") + "-EmitterThread";
         int queueCapacity = (Integer) properties.getOrDefault(QUEUE_CAPACITY_PROP_NAME, 50);
         boolean discardEnvelopes = (Boolean) properties.getOrDefault(DISCARD_ENVELOPES_PROP_NAME, false);
 
@@ -97,8 +96,11 @@ public class Fifo implements WireEmitter, WireReceiver, ConfigurableComponent {
     private synchronized void restartEmitterThread(String threadName, int queueCapacity, boolean discardEnvelopes) {
         stopEmitterThread();
 
-        logger.debug("Creating new emitter thread: {}, queue capacity: {}, discard envelopes: {}", threadName,
-                queueCapacity, discardEnvelopes);
+        logger.debug(
+                "Creating new emitter thread: {}, queue capacity: {}, discard envelopes: {}",
+                threadName,
+                queueCapacity,
+                discardEnvelopes);
         this.emitterThread = new FifoEmitterThread(threadName, queueCapacity, discardEnvelopes);
         this.emitterThread.start();
     }

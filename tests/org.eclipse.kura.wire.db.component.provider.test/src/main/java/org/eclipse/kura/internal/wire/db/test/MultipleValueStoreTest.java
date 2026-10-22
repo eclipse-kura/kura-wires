@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2024, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.type.TypedValue;
 import org.junit.Test;
@@ -50,8 +49,11 @@ public class MultipleValueStoreTest extends DbComponentsTestBase {
     private final TypedValue<?> insertedValue;
     private final TypedValue<?> expectedValue;
 
-    public MultipleValueStoreTest(WireComponentTestTarget wireComponentTestTarget, StoreTestTarget storeTestTarget,
-            final TypedValue<?> insertedValue, final TypedValue<?> extractedValue)
+    public MultipleValueStoreTest(
+            WireComponentTestTarget wireComponentTestTarget,
+            StoreTestTarget storeTestTarget,
+            final TypedValue<?> insertedValue,
+            final TypedValue<?> extractedValue)
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
         super(wireComponentTestTarget, storeTestTarget);
         this.insertedValue = insertedValue;
@@ -67,10 +69,10 @@ public class MultipleValueStoreTest extends DbComponentsTestBase {
         final Double testDouble = 1d;
         final Float testFloat = 1f;
         final String testString = "foo";
-        final byte[] testBa = new byte[] { 1, 2, 3 };
+        final byte[] testBa = new byte[] {1, 2, 3};
 
-        final List<WireComponentTestTarget> wireComponentTestTargets = Arrays
-                .asList(WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE);
+        final List<WireComponentTestTarget> wireComponentTestTargets =
+                Arrays.asList(WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE);
 
         final List<StoreTestTarget> storeTestTargets = Arrays.asList(StoreTestTarget.SQLITE, StoreTestTarget.H2);
 
@@ -82,7 +84,7 @@ public class MultipleValueStoreTest extends DbComponentsTestBase {
                 testFloat, //
                 testString, //
                 testBa //
-        );
+                );
 
         final List<Object> expectedValues = Arrays.asList( //
                 testBoolean, //
@@ -92,7 +94,7 @@ public class MultipleValueStoreTest extends DbComponentsTestBase {
                 testDouble, // floats are returned as doubles
                 testString, //
                 testBa //
-        );
+                );
 
         final List<Object[]> result = new ArrayList<>();
 
@@ -103,14 +105,13 @@ public class MultipleValueStoreTest extends DbComponentsTestBase {
                 final Iterator<Object> expectedIter = expectedValues.iterator();
 
                 while (insertedIter.hasNext()) {
-                    result.add(new Object[] { wt, st, newTypedValue(insertedIter.next()),
-                            newTypedValue(expectedIter.next()) });
+                    result.add(
+                            new Object[] {wt, st, newTypedValue(insertedIter.next()), newTypedValue(expectedIter.next())
+                            });
                 }
             }
         }
 
         return result;
-
     }
-
 }

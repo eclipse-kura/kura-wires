@@ -38,7 +38,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.annotation.Extensible;
@@ -225,7 +224,9 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
             this.driverServiceTracker.close();
             this.driverServiceTracker = null;
         }
-        this.driverServiceTracker = new ServiceTracker<>(this.context.getBundleContext(), Driver.class.getName(),
+        this.driverServiceTracker = new ServiceTracker<>(
+                this.context.getBundleContext(),
+                Driver.class.getName(),
                 new DriverTrackerCustomizer(this.context.getBundleContext(), this, driverId));
         this.driverServiceTracker.open();
 
@@ -256,8 +257,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
                 }
             }
             updateChannelListenerRegistrations(this.channelListeners, this.config.getAssetConfiguration());
-            newState.syncChannelListeners(this.channelListeners,
-                    this.config.getAssetConfiguration().getAssetChannels());
+            newState.syncChannelListeners(
+                    this.channelListeners, this.config.getAssetConfiguration().getAssetChannels());
         });
     }
 
@@ -291,7 +292,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
 
         final Map<String, Object> properties = this.config.getProperties();
 
-        final String componentName = properties.get(ConfigurationService.KURA_SERVICE_PID).toString();
+        final String componentName =
+                properties.get(ConfigurationService.KURA_SERVICE_PID).toString();
 
         Tocd ocd = this.config.getDefinition();
 
@@ -343,11 +345,12 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         }));
 
         logger.debug("Reading asset channels...Done");
-        return getFinalRecords(channelRecords, this.config.getAssetConfiguration().getAssetChannels());
+        return getFinalRecords(
+                channelRecords, this.config.getAssetConfiguration().getAssetChannels());
     }
 
-    private void validateChannel(final Channel channel, final EnumSet<ChannelType> allowedTypes,
-            final String typeNotAllowedMessage) {
+    private void validateChannel(
+            final Channel channel, final EnumSet<ChannelType> allowedTypes, final String typeNotAllowedMessage) {
         if (channel == null) {
             throw new IllegalArgumentException("Channel not available");
         } else if (!allowedTypes.contains(channel.getType())) {
@@ -368,7 +371,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
             throw new KuraException(KuraErrorCode.CONFIGURATION_ERROR, "Driver not attached");
         }
 
-        final Map<String, Channel> channels = this.config.getAssetConfiguration().getAssetChannels();
+        final Map<String, Channel> channels =
+                this.config.getAssetConfiguration().getAssetChannels();
 
         final List<ChannelRecord> channelRecords = new ArrayList<>(channelNames.size());
         final List<ChannelRecord> validRecords = new ArrayList<>(channelNames.size());
@@ -377,11 +381,13 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
 
             final Channel channel = channels.get(name);
             try {
-                validateChannel(channel, EnumSet.of(READ, READ_WRITE),
+                validateChannel(
+                        channel,
+                        EnumSet.of(READ, READ_WRITE),
                         "Channel type not within expected types (READ or READ_WRITE)");
             } catch (Exception e) {
-                final ChannelRecord channelRecord = ChannelRecord.createStatusRecord(name,
-                        new ChannelStatus(FAILURE, e.getMessage(), e));
+                final ChannelRecord channelRecord =
+                        ChannelRecord.createStatusRecord(name, new ChannelStatus(FAILURE, e.getMessage(), e));
                 channelRecord.setTimestamp(System.currentTimeMillis());
                 channelRecords.add(channelRecord);
                 continue;
@@ -416,10 +422,14 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
     }
 
     private boolean shouldApplyScaleAndOffset(final ChannelRecord channelRecord, final Channel channel) {
-        return !isNull(channelRecord) && //
-                !isNull(channelRecord.getValueType()) && //
-                !isNull(channelRecord.getValue()) && //
-                (!channel.getValueScaleAsNumber().equals(1.0d) || !channel.getValueOffsetAsNumber().equals(0.0d));
+        return !isNull(channelRecord)
+                && //
+                !isNull(channelRecord.getValueType())
+                && //
+                !isNull(channelRecord.getValue())
+                && //
+                (!channel.getValueScaleAsNumber().equals(1.0d)
+                        || !channel.getValueOffsetAsNumber().equals(0.0d));
     }
 
     @SuppressWarnings("unchecked")
@@ -428,84 +438,88 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         final Number channelOffset = channel.getValueOffsetAsNumber();
 
         switch (channel.getValueType()) {
-        case DOUBLE:
-        case FLOAT:
-        case INTEGER:
-        case LONG:
-            TypedValue<? extends Number> newValue;
-            if (channel.getScaleOffsetType() == ScaleOffsetType.DEFINED_BY_VALUE_TYPE) {
-                newValue = calculateScaleAndOffsetByTypedValue((TypedValue<? extends Number>) channelRecord.getValue(),
-                        channelScale, channelOffset);
-            } else {
-                newValue = calculateScaleAndOffset(channel.getValueType(),
-                        (TypedValue<? extends Number>) channelRecord.getValue(), channel.getScaleOffsetType(),
-                        channelScale, channelOffset);
-            }
+            case DOUBLE:
+            case FLOAT:
+            case INTEGER:
+            case LONG:
+                TypedValue<? extends Number> newValue;
+                if (channel.getScaleOffsetType() == ScaleOffsetType.DEFINED_BY_VALUE_TYPE) {
+                    newValue = calculateScaleAndOffsetByTypedValue(
+                            (TypedValue<? extends Number>) channelRecord.getValue(), channelScale, channelOffset);
+                } else {
+                    newValue = calculateScaleAndOffset(
+                            channel.getValueType(),
+                            (TypedValue<? extends Number>) channelRecord.getValue(),
+                            channel.getScaleOffsetType(),
+                            channelScale,
+                            channelOffset);
+                }
 
-            channelRecord.setValue(newValue);
-            break;
-        case BOOLEAN:
-        case BYTE_ARRAY:
-        case STRING:
-            // DO NOTHING
-            break;
-        default:
-            throw new IllegalStateException("Unsupported channel type: " + channel.getValueType());
+                channelRecord.setValue(newValue);
+                break;
+            case BOOLEAN:
+            case BYTE_ARRAY:
+            case STRING:
+                // DO NOTHING
+                break;
+            default:
+                throw new IllegalStateException("Unsupported channel type: " + channel.getValueType());
         }
-
     }
 
     // legacy method
-    private TypedValue<? extends Number> calculateScaleAndOffsetByTypedValue(TypedValue<? extends Number> typedValue,
-            Number scale, Number offset) {
+    private TypedValue<? extends Number> calculateScaleAndOffsetByTypedValue(
+            TypedValue<? extends Number> typedValue, Number scale, Number offset) {
 
         Number result;
 
         switch (typedValue.getType()) {
-        case FLOAT:
-            result = (float) typedValue.getValue() * scale.floatValue() + offset.floatValue();
-            break;
-        case DOUBLE:
-            result = (double) typedValue.getValue() * scale.doubleValue() + offset.doubleValue();
-            break;
-        case INTEGER:
-            result = (int) typedValue.getValue() * scale.intValue() + offset.intValue();
-            break;
-        case LONG:
-            result = (long) typedValue.getValue() * scale.longValue() + offset.longValue();
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown value type" + typedValue.getType());
+            case FLOAT:
+                result = (float) typedValue.getValue() * scale.floatValue() + offset.floatValue();
+                break;
+            case DOUBLE:
+                result = (double) typedValue.getValue() * scale.doubleValue() + offset.doubleValue();
+                break;
+            case INTEGER:
+                result = (int) typedValue.getValue() * scale.intValue() + offset.intValue();
+                break;
+            case LONG:
+                result = (long) typedValue.getValue() * scale.longValue() + offset.longValue();
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown value type" + typedValue.getType());
         }
 
         return toTypedValue(typedValue.getType(), result);
-
     }
 
-    private TypedValue<? extends Number> calculateScaleAndOffset(DataType outputValueType,
-            TypedValue<? extends Number> typedValue, ScaleOffsetType scaleOffsetType, Number scale, Number offset) {
+    private TypedValue<? extends Number> calculateScaleAndOffset(
+            DataType outputValueType,
+            TypedValue<? extends Number> typedValue,
+            ScaleOffsetType scaleOffsetType,
+            Number scale,
+            Number offset) {
 
         Number result = null;
 
         switch (scaleOffsetType) {
-        case FLOAT:
-            result = scale.floatValue() * typedValue.getValue().floatValue() + offset.floatValue();
-            break;
-        case DOUBLE:
-            result = scale.doubleValue() * typedValue.getValue().doubleValue() + offset.doubleValue();
-            break;
-        case INTEGER:
-            result = scale.intValue() * typedValue.getValue().intValue() + offset.intValue();
-            break;
-        case LONG:
-            result = scale.longValue() * typedValue.getValue().longValue() + offset.longValue();
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid scale/offset type");
+            case FLOAT:
+                result = scale.floatValue() * typedValue.getValue().floatValue() + offset.floatValue();
+                break;
+            case DOUBLE:
+                result = scale.doubleValue() * typedValue.getValue().doubleValue() + offset.doubleValue();
+                break;
+            case INTEGER:
+                result = scale.intValue() * typedValue.getValue().intValue() + offset.intValue();
+                break;
+            case LONG:
+                result = scale.longValue() * typedValue.getValue().longValue() + offset.longValue();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid scale/offset type");
         }
 
         return toTypedValue(outputValueType, result);
-
     }
 
     private static TypedValue<? extends Number> toTypedValue(final DataType type, final Number value) {
@@ -513,18 +527,17 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         Objects.requireNonNull(value, "value cannot be null");
 
         switch (type) {
-        case DOUBLE:
-            return TypedValues.newDoubleValue(value.doubleValue());
-        case FLOAT:
-            return TypedValues.newFloatValue(value.floatValue());
-        case INTEGER:
-            return TypedValues.newIntegerValue(value.intValue());
-        case LONG:
-            return TypedValues.newLongValue(value.longValue());
-        default:
-            throw new IllegalArgumentException(value + " cannot be converted into a TypedValue of type " + type);
+            case DOUBLE:
+                return TypedValues.newDoubleValue(value.doubleValue());
+            case FLOAT:
+                return TypedValues.newFloatValue(value.floatValue());
+            case INTEGER:
+                return TypedValues.newIntegerValue(value.intValue());
+            case LONG:
+                return TypedValues.newLongValue(value.longValue());
+            default:
+                throw new IllegalArgumentException(value + " cannot be converted into a TypedValue of type " + type);
         }
-
     }
 
     public boolean hasReadChannels() {
@@ -539,7 +552,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         requireNonNull(channelListener, "Asset Listener cannot be null");
 
         logger.debug("Registering Channel Listener for monitoring...");
-        final Map<String, Channel> channels = this.config.getAssetConfiguration().getAssetChannels();
+        final Map<String, Channel> channels =
+                this.config.getAssetConfiguration().getAssetChannels();
 
         final Channel channel = channels.get(channelName);
 
@@ -584,7 +598,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
             return;
         }
 
-        final Map<String, Channel> channels = this.config.getAssetConfiguration().getAssetChannels();
+        final Map<String, Channel> channels =
+                this.config.getAssetConfiguration().getAssetChannels();
 
         this.executor.runConfig(() -> state.syncChannelListeners(this.channelListeners, channels));
     }
@@ -605,10 +620,10 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
 
         // TODO make this configurable and maybe allow using shared thread pools
 
-        final ExecutorService ioExecutor = new ThreadPoolExecutor(1, 5, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>());
-        final ExecutorService configExecutor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>());
+        final ExecutorService ioExecutor =
+                new ThreadPoolExecutor(1, 5, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        final ExecutorService configExecutor =
+                new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
         return new BaseAssetExecutor(ioExecutor, configExecutor);
     }
@@ -624,7 +639,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
             throw new KuraException(KuraErrorCode.CONFIGURATION_ERROR, "Driver not attached");
         }
 
-        final Map<String, Channel> channels = this.config.getAssetConfiguration().getAssetChannels();
+        final Map<String, Channel> channels =
+                this.config.getAssetConfiguration().getAssetChannels();
 
         final List<ChannelRecord> validRecords = new ArrayList<>(channelRecords.size());
 
@@ -633,7 +649,9 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
 
             final Channel channel = channels.get(channelName);
             try {
-                validateChannel(channel, EnumSet.of(WRITE, READ_WRITE),
+                validateChannel(
+                        channel,
+                        EnumSet.of(WRITE, READ_WRITE),
                         "Channel type not within expected types (WRITE or READ_WRITE)");
             } catch (Exception e) {
                 channelRecord.setChannelStatus(new ChannelStatus(FAILURE, e.getMessage(), e));
@@ -669,8 +687,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         return channel != null;
     }
 
-    protected void updateChannelListenerRegistrations(final Set<ChannelListenerHolder> listeners,
-            final AssetConfiguration config) {
+    protected void updateChannelListenerRegistrations(
+            final Set<ChannelListenerHolder> listeners, final AssetConfiguration config) {
         final Map<String, Channel> channels = config.getAssetChannels();
 
         final Iterator<ChannelListenerHolder> i = listeners.iterator();
@@ -732,8 +750,8 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         }
 
         private ChannelRecord cloneRecord(final ChannelRecord originalRecord) {
-            final ChannelRecord clonedRecord = ChannelRecord.createReadRecord(originalRecord.getChannelName(),
-                    originalRecord.getValueType());
+            final ChannelRecord clonedRecord =
+                    ChannelRecord.createReadRecord(originalRecord.getChannelName(), originalRecord.getValueType());
 
             if (originalRecord.getValue() != null) {
                 clonedRecord.setValue(originalRecord.getValue());
@@ -756,7 +774,10 @@ public class BaseAsset implements Asset, SelfConfiguringComponent {
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + (this.channel.getName() == null ? 0 : this.channel.getName().hashCode());
+            result = prime * result
+                    + (this.channel.getName() == null
+                            ? 0
+                            : this.channel.getName().hashCode());
             result = prime * result + (this.listener == null ? 0 : this.listener.hashCode());
             return result;
         }

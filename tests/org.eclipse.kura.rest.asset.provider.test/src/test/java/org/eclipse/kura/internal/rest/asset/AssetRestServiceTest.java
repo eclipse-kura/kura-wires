@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -24,6 +24,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.JsonElement;
+import jakarta.ws.rs.WebApplicationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,9 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import jakarta.ws.rs.WebApplicationException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
 import org.eclipse.kura.asset.AssetConfiguration;
@@ -52,8 +51,6 @@ import org.eclipse.kura.type.TypedValues;
 import org.junit.Test;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import com.google.gson.JsonElement;
 
 public class AssetRestServiceTest {
 
@@ -124,12 +121,24 @@ public class AssetRestServiceTest {
 
         Map<String, Channel> channels = new TreeMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel ch1 = new Channel("ch1", ChannelType.READ, DataType.INTEGER, ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
-                1.0d, 0.0d, channelConfig);
+        Channel ch1 = new Channel(
+                "ch1",
+                ChannelType.READ,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put(ch1.getName(), ch1);
         channelConfig = new HashMap<>();
-        Channel ch2 = new Channel("ch2", ChannelType.WRITE, DataType.STRING, ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
-                1.0d, 0.0d, channelConfig);
+        Channel ch2 = new Channel(
+                "ch2",
+                ChannelType.WRITE,
+                DataType.STRING,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put(ch2.getName(), ch2);
 
         AssetConfiguration assetConfig = new AssetConfiguration("description", "driverPid", channels);
@@ -174,7 +183,7 @@ public class AssetRestServiceTest {
         records.add(channelRecord);
         channelRecord = ChannelRecord.createReadRecord("ch5", DataType.BYTE_ARRAY);
         channelRecord.setChannelStatus(new ChannelStatus(ChannelFlag.SUCCESS));
-        channelRecord.setValue(TypedValues.newByteArrayValue(new byte[] { 1, 2, 3 }));
+        channelRecord.setValue(TypedValues.newByteArrayValue(new byte[] {1, 2, 3}));
         records.add(channelRecord);
         channelRecord = ChannelRecord.createReadRecord("ch6", DataType.DOUBLE);
         channelRecord.setChannelStatus(new ChannelStatus(ChannelFlag.SUCCESS));
@@ -333,20 +342,22 @@ public class AssetRestServiceTest {
         };
 
         doAnswer(invocation -> {
-            @SuppressWarnings("unchecked")
-            List<ChannelRecord> records = invocation.getArgument(0, List.class);
-            assertEquals(7, records.size());
+                    @SuppressWarnings("unchecked")
+                    List<ChannelRecord> records = invocation.getArgument(0, List.class);
+                    assertEquals(7, records.size());
 
-            assertChannelWrite(records, 0, "ch1", TypedValues.newDoubleValue(1.234));
-            assertChannelWrite(records, 1, "ch2", TypedValues.newStringValue("val"));
-            assertChannelWrite(records, 2, "ch3", TypedValues.newBooleanValue(true));
-            assertChannelWrite(records, 3, "ch4", TypedValues.newByteArrayValue(new byte[] { 1, 2, 3 }));
-            assertChannelWrite(records, 4, "ch5", TypedValues.newFloatValue(12.34f));
-            assertChannelWrite(records, 5, "ch6", TypedValues.newIntegerValue(12));
-            assertChannelWrite(records, 6, "ch7", TypedValues.newLongValue(1234L));
+                    assertChannelWrite(records, 0, "ch1", TypedValues.newDoubleValue(1.234));
+                    assertChannelWrite(records, 1, "ch2", TypedValues.newStringValue("val"));
+                    assertChannelWrite(records, 2, "ch3", TypedValues.newBooleanValue(true));
+                    assertChannelWrite(records, 3, "ch4", TypedValues.newByteArrayValue(new byte[] {1, 2, 3}));
+                    assertChannelWrite(records, 4, "ch5", TypedValues.newFloatValue(12.34f));
+                    assertChannelWrite(records, 5, "ch6", TypedValues.newIntegerValue(12));
+                    assertChannelWrite(records, 6, "ch7", TypedValues.newLongValue(1234L));
 
-            return null;
-        }).when(asset).write(any());
+                    return null;
+                })
+                .when(asset)
+                .write(any());
 
         svc.write(pid, requestsMock);
 
@@ -396,5 +407,4 @@ public class AssetRestServiceTest {
         addRequest(channels, null, DataType.BOOLEAN, "true");
         assertFalse(req.isValid());
     }
-
 }

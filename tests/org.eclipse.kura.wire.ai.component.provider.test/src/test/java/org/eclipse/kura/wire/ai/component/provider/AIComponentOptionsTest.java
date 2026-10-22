@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  ******************************************************************************/
-
 package org.eclipse.kura.wire.ai.component.provider;
 
 import static org.junit.Assert.assertEquals;
@@ -20,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import org.junit.Test;
 
 public class AIComponentOptionsTest {

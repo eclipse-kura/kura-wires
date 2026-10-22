@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,14 +14,13 @@ package org.eclipse.kura.internal.wire.db.common;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import org.eclipse.kura.wire.WireRecord;
 
 public interface DbServiceProvider {
 
     /**
      * Truncates the records in the table
-     * 
+     *
      * @param noOfRecordsToKeep
      *            the no of records to keep in the table
      * @param tableName
@@ -35,7 +34,7 @@ public interface DbServiceProvider {
 
     /**
      * Return the size of the table
-     * 
+     *
      * @param tableName
      *            the name of the table
      * @return the no of records currently stored in the given table
@@ -85,7 +84,7 @@ public interface DbServiceProvider {
 
     /**
      * Perform the given query
-     * 
+     *
      * @param query
      *            the query to be run
      * @return a List of WireRecords that contains the result of the query

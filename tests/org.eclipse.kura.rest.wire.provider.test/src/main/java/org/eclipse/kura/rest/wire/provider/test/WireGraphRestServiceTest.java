@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -20,6 +20,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +33,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.configuration.ConfigurationService;
@@ -55,15 +56,13 @@ import org.junit.runners.Parameterized;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonValue;
-
 @RunWith(Parameterized.class)
 public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
 
     private static final String TEST_ASSET_PID = "testAsset";
     private static final String TEST_DRIVER_PID = "testDriver";
-    private static final String TEST_DRIVER_FACTORY_PID = "org.eclipse.kura.util.test.driver.ChannelDescriptorTestDriver";
+    private static final String TEST_DRIVER_FACTORY_PID =
+            "org.eclipse.kura.util.test.driver.ChannelDescriptorTestDriver";
     private static final String WIRE_ASSET_FACTORY_PID = "org.eclipse.kura.wire.WireAsset";
 
     @Test
@@ -92,7 +91,9 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void deleteGraphWithUpdateRequest() {
         givenWireGraphWith(testEmitterReceiver("foo"), testEmitterReceiver("bar"), wire("foo", "bar"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot",
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
                 "{\"configs\":[{\"pid\":\"org.eclipse.kura.wire.graph.WireGraphService\",\"properties\":{\"WireGraph\":{\"value\":\"{}\",\"type\":\"STRING\"}}}]}");
 
         thenRequestSucceeds();
@@ -114,21 +115,27 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         givenNoFactoryComponentsWithPid(TEST_DRIVER_PID);
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" + "  \"configs\": [\n" + "    {\n"
-                + "      \"pid\": \"test1\",\n" + "      \"properties\": {\n" + "        \"service.factoryPid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" + "          \"type\": \"STRING\"\n"
-                + "        }\n" + "      }\n" + "    },\n" + "    {\n" + "      \"pid\": \"log1\",\n"
-                + "      \"properties\": {\n" + "        \"service.factoryPid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.Logger\",\n" + "          \"type\": \"STRING\"\n"
-                + "        }\n" + "      }\n" + "    },\n" + "    {\n"
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" + "      \"properties\": {\n"
-                + "        \"WireGraph\": {\n"
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}},{\\\"pid\\\":\\\"log1\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-60,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[{\\\"emitter\\\":\\\"test1\\\",\\\"emitterPort\\\":0,\\\"receiver\\\":\\\"log1\\\",\\\"receiverPort\\\":0}]}\",\n"
-                + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"kura.service.pid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
-                + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"service.pid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
-                + "          \"type\": \"STRING\"\n" + "        }\n" + "      }\n" + "    }\n" + "  ]\n" + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" + "  \"configs\": [\n" + "    {\n"
+                        + "      \"pid\": \"test1\",\n" + "      \"properties\": {\n"
+                        + "        \"service.factoryPid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" + "          \"type\": \"STRING\"\n"
+                        + "        }\n" + "      }\n" + "    },\n" + "    {\n" + "      \"pid\": \"log1\",\n"
+                        + "      \"properties\": {\n" + "        \"service.factoryPid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.Logger\",\n"
+                        + "          \"type\": \"STRING\"\n"
+                        + "        }\n" + "      }\n" + "    },\n" + "    {\n"
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "      \"properties\": {\n"
+                        + "        \"WireGraph\": {\n"
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}},{\\\"pid\\\":\\\"log1\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-60,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[{\\\"emitter\\\":\\\"test1\\\",\\\"emitterPort\\\":0,\\\"receiver\\\":\\\"log1\\\",\\\"receiverPort\\\":0}]}\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"kura.service.pid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"service.pid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        }\n" + "      }\n" + "    }\n" + "  ]\n" + "}");
 
         thenRequestSucceeds();
         thenCurrentGraphContainsComponent("test1");
@@ -142,18 +149,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void addWireComponentToExistingGraph() throws InterruptedException {
         givenWireGraphWith(wireComponent("test1", "org.eclipse.kura.wire.Timer"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" + "  \"configs\": [\n" + "    {\n"
-                + "      \"pid\": \"log1\",\n" + "      \"properties\": {\n" + "        \"service.factoryPid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.Logger\",\n" + "          \"type\": \"STRING\"\n"
-                + "        }\n" + "      }\n" + "    },\n" + "    {\n"
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" + "      \"properties\": {\n"
-                + "        \"WireGraph\": {\n"
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}},{\\\"pid\\\":\\\"log1\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-60,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n"
-                + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"kura.service.pid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
-                + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"service.pid\": {\n"
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
-                + "          \"type\": \"STRING\"\n" + "        }\n" + "      }\n" + "    }\n" + "  ]\n" + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" + "  \"configs\": [\n" + "    {\n"
+                        + "      \"pid\": \"log1\",\n" + "      \"properties\": {\n"
+                        + "        \"service.factoryPid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.Logger\",\n"
+                        + "          \"type\": \"STRING\"\n"
+                        + "        }\n" + "      }\n" + "    },\n" + "    {\n"
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "      \"properties\": {\n"
+                        + "        \"WireGraph\": {\n"
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}},{\\\"pid\\\":\\\"log1\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-60,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"kura.service.pid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        },\n" + "        \"service.pid\": {\n"
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n"
+                        + "          \"type\": \"STRING\"\n" + "        }\n" + "      }\n" + "    }\n" + "  ]\n" + "}");
 
         thenRequestSucceeds();
         thenCurrentGraphContainsComponent("test1");
@@ -166,25 +179,28 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void rejectUpdateIfConfigurationForComponentToBeCreatedIsNotSpecified() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"WireGraph\": {\n" //
-                + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"kura.service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"WireGraph\": {\n" //
+                        + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"kura.service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }]\n" //
+                        + "}");
 
         thenResponseCodeIs(400);
     }
@@ -193,28 +209,31 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void rejectUpdateIfFactoryPidForComponentToBeCreatedIsNotSpecified() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "    \"pid\": \"test1\",\n" //
-                + "    \"properties\": {}\n" //
-                + "  }, {\n" //
-                + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"WireGraph\": {\n" //
-                + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"kura.service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "    \"pid\": \"test1\",\n" //
+                        + "    \"properties\": {}\n" //
+                        + "  }, {\n" //
+                        + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"WireGraph\": {\n" //
+                        + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"kura.service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }]\n" //
+                        + "}");
 
         thenResponseCodeIs(400);
     }
@@ -223,33 +242,36 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void rejectUpdateIfInputPortCountIsNotSpecified() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "    \"pid\": \"test1\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"service.factoryPid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.Logger\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }, {\n" //
-                + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"WireGraph\": {\n" //
-                + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"kura.service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "    \"pid\": \"test1\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"service.factoryPid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.Logger\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }, {\n" //
+                        + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"WireGraph\": {\n" //
+                        + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"kura.service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }]\n" //
+                        + "}");
 
         thenResponseCodeIs(400);
     }
@@ -258,62 +280,69 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void rejectUpdateIfOutputPortCountIsNotSpecified() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "    \"pid\": \"test1\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"service.factoryPid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.Logger\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }, {\n" //
-                + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"WireGraph\": {\n" //
-                + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"kura.service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "    \"pid\": \"test1\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"service.factoryPid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.Logger\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }, {\n" //
+                        + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"WireGraph\": {\n" //
+                        + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"test1\\\",\\\"inputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-260,\\\"y\\\":-40},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}]}\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"kura.service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }]\n" //
+                        + "}");
 
         thenResponseCodeIs(400);
     }
 
     @Test
     public void deleteExistingComponentNotReferencedByProvidedGraph() {
-        givenWireGraphWith(wireComponent("toBeDeleted", "org.eclipse.kura.wire.Logger"),
+        givenWireGraphWith(
+                wireComponent("toBeDeleted", "org.eclipse.kura.wire.Logger"),
                 wireComponent("toBeKept", "org.eclipse.kura.wire.Logger"));
         givenDeleteTrackerForPid("toBeDeleted");
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "    \"properties\": {\n" //
-                + "      \"WireGraph\": {\n" //
-                + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"toBeKept\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-240,\\\"y\\\":-80},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"kura.service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      },\n" //
-                + "      \"service.pid\": {\n" //
-                + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "        \"type\": \"STRING\"\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  }]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "    \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "    \"properties\": {\n" //
+                        + "      \"WireGraph\": {\n" //
+                        + "        \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"toBeKept\\\",\\\"inputPortCount\\\":1,\\\"outputPortCount\\\":0,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-240,\\\"y\\\":-80},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"kura.service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      },\n" //
+                        + "      \"service.pid\": {\n" //
+                        + "        \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "        \"type\": \"STRING\"\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  }]\n" //
+                        + "}");
 
         thenRequestSucceeds();
         thenCurrentGraphContainsComponent("toBeKept");
@@ -326,35 +355,38 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void fillDefaultRenderingPropertiesIfNotSpecified() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"WireGraph\": {\n" //
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1}],\\\"wires\\\":[]}\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"kura.service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]\n" //
-                + "}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"WireGraph\": {\n" //
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1}],\\\"wires\\\":[]}\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"kura.service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]\n" //
+                        + "}");
 
         thenRequestSucceeds();
         thenWireComponentPropertyEquals("timer", "position.x", 0.0f);
@@ -365,39 +397,42 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void updateWireComponentConfigurationProperty() {
         givenWireGraphWith(wireComponent("test1", "org.eclipse.kura.wire.Timer"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"WireGraph\": {\n" //
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"kura.service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]\n" //
-                + "}"); //
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"WireGraph\": {\n" //
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"kura.service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]\n" //
+                        + "}"); //
 
         thenRequestSucceeds();
         thenWireComponentConfigurationPropertyEquals("timer", "simple.interval", 100);
@@ -407,39 +442,42 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void createWireComponentWithModifiedConfigurationProperty() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"WireGraph\": {\n" //
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"kura.service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]\n" //
-                + "}"); //
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"WireGraph\": {\n" //
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"kura.service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]\n" //
+                        + "}"); //
 
         thenRequestSucceeds();
         thenWireComponentConfigurationPropertyEquals("timer", "simple.interval", 100);
@@ -450,52 +488,55 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         givenEmptyWireGraph();
         givenNoFactoryComponentsWithPid(TEST_DRIVER_PID);
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"WireGraph\": {\n" //
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"kura.service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"test.property\": {\n" //
-                + "          \"value\": \"foo bar baz\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }" //
-                + "  ]\n" //
-                + "}"); //
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"WireGraph\": {\n" //
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"kura.service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"test.property\": {\n" //
+                        + "          \"value\": \"foo bar baz\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }" //
+                        + "  ]\n" //
+                        + "}"); //
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_DRIVER_PID, "test.property", "foo bar baz");
@@ -504,55 +545,58 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void updateNonGraphFactoryConfiguration() {
         givenEmptyWireGraph();
-        givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID,
-                Collections.singletonMap("test.property", "bar"));
+        givenFactoryComponent(
+                TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.singletonMap("test.property", "bar"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/graph/snapshot", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"WireGraph\": {\n" //
-                + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"kura.service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.pid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "    {\n" //
-                + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"test.property\": {\n" //
-                + "          \"value\": \"foo bar baz\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }" //
-                + "  ]\n" //
-                + "}"); //
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/graph/snapshot",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"WireGraph\": {\n" //
+                        + "          \"value\": \"{\\\"components\\\":[{\\\"pid\\\":\\\"timer\\\",\\\"inputPortCount\\\":0,\\\"outputPortCount\\\":1,\\\"renderingProperties\\\":{\\\"position\\\":{\\\"x\\\":-300,\\\"y\\\":-60},\\\"inputPortNames\\\":{},\\\"outputPortNames\\\":{}}}],\\\"wires\\\":[]}\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"kura.service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.pid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.graph.WireGraphService\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "    {\n" //
+                        + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"test.property\": {\n" //
+                        + "          \"value\": \"foo bar baz\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }" //
+                        + "  ]\n" //
+                        + "}"); //
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_DRIVER_PID, "test.property", "foo bar baz");
@@ -565,44 +609,45 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         whenRequestIsPerformed(new MethodSpec("GET"), "/graph/topology");
 
         thenRequestSucceeds();
-        thenResponseBodyEqualsJson("{\n" //
-                + "    \"components\": [\n" //
-                + "        {\n" //
-                + "            \"pid\": \"foo\",\n" //
-                + "            \"inputPortCount\": 1,\n" //
-                + "            \"outputPortCount\": 1,\n" //
-                + "            \"renderingProperties\": {\n" //
-                + "                \"position\": {\n" //
-                + "                    \"x\": 0,\n" //
-                + "                    \"y\": 0\n" //
-                + "                },\n" //
-                + "                \"inputPortNames\": {},\n" //
-                + "                \"outputPortNames\": {}\n" //
-                + "            }\n" //
-                + "        },\n" //
-                + "        {\n" //
-                + "            \"pid\": \"bar\",\n" //
-                + "            \"inputPortCount\": 1,\n" //
-                + "            \"outputPortCount\": 1,\n" //
-                + "            \"renderingProperties\": {\n" //
-                + "                \"position\": {\n" //
-                + "                    \"x\": 0,\n" //
-                + "                    \"y\": 0\n" //
-                + "                },\n" //
-                + "                \"inputPortNames\": {},\n" //
-                + "                \"outputPortNames\": {}\n" //
-                + "            }\n" //
-                + "        }\n" //
-                + "    ],\n" //
-                + "    \"wires\": [\n" //
-                + "        {\n" //
-                + "            \"emitter\": \"foo\",\n" //
-                + "            \"emitterPort\": 0,\n" //
-                + "            \"receiver\": \"bar\",\n" //
-                + "            \"receiverPort\": 0\n" //
-                + "        }\n" //
-                + "    ]\n" //
-                + "}");
+        thenResponseBodyEqualsJson(
+                "{\n" //
+                        + "    \"components\": [\n" //
+                        + "        {\n" //
+                        + "            \"pid\": \"foo\",\n" //
+                        + "            \"inputPortCount\": 1,\n" //
+                        + "            \"outputPortCount\": 1,\n" //
+                        + "            \"renderingProperties\": {\n" //
+                        + "                \"position\": {\n" //
+                        + "                    \"x\": 0,\n" //
+                        + "                    \"y\": 0\n" //
+                        + "                },\n" //
+                        + "                \"inputPortNames\": {},\n" //
+                        + "                \"outputPortNames\": {}\n" //
+                        + "            }\n" //
+                        + "        },\n" //
+                        + "        {\n" //
+                        + "            \"pid\": \"bar\",\n" //
+                        + "            \"inputPortCount\": 1,\n" //
+                        + "            \"outputPortCount\": 1,\n" //
+                        + "            \"renderingProperties\": {\n" //
+                        + "                \"position\": {\n" //
+                        + "                    \"x\": 0,\n" //
+                        + "                    \"y\": 0\n" //
+                        + "                },\n" //
+                        + "                \"inputPortNames\": {},\n" //
+                        + "                \"outputPortNames\": {}\n" //
+                        + "            }\n" //
+                        + "        }\n" //
+                        + "    ],\n" //
+                        + "    \"wires\": [\n" //
+                        + "        {\n" //
+                        + "            \"emitter\": \"foo\",\n" //
+                        + "            \"emitterPort\": 0,\n" //
+                        + "            \"receiver\": \"bar\",\n" //
+                        + "            \"receiverPort\": 0\n" //
+                        + "        }\n" //
+                        + "    ]\n" //
+                        + "}");
     }
 
     @Test
@@ -612,11 +657,22 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         whenRequestIsPerformed(new MethodSpec("POST"), "/configs/byPid", "{\"pids\":[\"test1\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(Json.value("test1"), self().field("configs").arrayItem(0).field("pid"));
-        thenResponseElementIs(Json.value(10),
-                self().field("configs").arrayItem(0).field("properties").field("simple.interval").field("value"));
-        thenResponseElementIs(Json.value("INTEGER"),
-                self().field("configs").arrayItem(0).field("properties").field("simple.interval").field("type"));
+        thenResponseElementIs(
+                Json.value("test1"), self().field("configs").arrayItem(0).field("pid"));
+        thenResponseElementIs(
+                Json.value(10),
+                self().field("configs")
+                        .arrayItem(0)
+                        .field("properties")
+                        .field("simple.interval")
+                        .field("value"));
+        thenResponseElementIs(
+                Json.value("INTEGER"),
+                self().field("configs")
+                        .arrayItem(0)
+                        .field("properties")
+                        .field("simple.interval")
+                        .field("type"));
     }
 
     @Test
@@ -626,24 +682,32 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         whenRequestIsPerformed(new MethodSpec("POST"), "/configs/byPid", "{\"pids\":[\"" + TEST_DRIVER_PID + "\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(Json.value(TEST_DRIVER_PID), self().field("configs").arrayItem(0).field("pid"));
+        thenResponseElementIs(
+                Json.value(TEST_DRIVER_PID),
+                self().field("configs").arrayItem(0).field("pid"));
     }
 
     @Test
     public void getConfigsAsset() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        givenFactoryComponent(TEST_ASSET_PID, WIRE_ASSET_FACTORY_PID,
-                Collections.singletonMap("driver.pid", TEST_DRIVER_PID), SelfConfiguringComponent.class);
+        givenFactoryComponent(
+                TEST_ASSET_PID,
+                WIRE_ASSET_FACTORY_PID,
+                Collections.singletonMap("driver.pid", TEST_DRIVER_PID),
+                SelfConfiguringComponent.class);
 
         whenRequestIsPerformed(new MethodSpec("POST"), "/configs/byPid", "{\"pids\":[\"" + TEST_ASSET_PID + "\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(Json.value(TEST_ASSET_PID), self().field("configs").arrayItem(0).field("pid"));
+        thenResponseElementIs(
+                Json.value(TEST_ASSET_PID), self().field("configs").arrayItem(0).field("pid"));
     }
 
     @Test
     public void getConfigsUnpermitted() {
-        whenRequestIsPerformed(new MethodSpec("POST"), "/configs/byPid",
+        whenRequestIsPerformed(
+                new MethodSpec("POST"),
+                "/configs/byPid",
                 "{\"pids\":[\"org.eclipse.kura.internal.rest.provider.RestService\"]}");
 
         thenRequestSucceeds();
@@ -664,21 +728,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void updateConfigsWireComponent() {
         givenWireGraphWith(wireComponent("timer", "org.eclipse.kura.wire.Timer"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals("timer", "simple.interval", 100);
@@ -688,21 +755,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void updateConfigsWireComponentNotInGraph() {
         givenEmptyWireGraph();
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"timer\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"simple.interval\": {\n" //
-                + "          \"value\": 100,\n" //
-                + "          \"type\": \"INTEGER\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    },\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"timer\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"simple.interval\": {\n" //
+                        + "          \"value\": 100,\n" //
+                        + "          \"type\": \"INTEGER\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"org.eclipse.kura.wire.Timer\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    },\n" //
+                        + "  ]}");
 
         thenResponseCodeIs(400);
     }
@@ -711,21 +781,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     public void updateConfigCreateDriver() {
         givenNoFactoryComponentsWithPid(TEST_DRIVER_PID);
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"test.property\": {\n" //
-                + "          \"value\": \"foo\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"test.property\": {\n" //
+                        + "          \"value\": \"foo\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_DRIVER_PID, "test.property", "foo");
@@ -733,24 +806,27 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
 
     @Test
     public void updateConfigModifyDriver() {
-        givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID,
-                Collections.singletonMap("test.property", "bar"));
+        givenFactoryComponent(
+                TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.singletonMap("test.property", "bar"));
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"test.property\": {\n" //
-                + "          \"value\": \"foo\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"test.property\": {\n" //
+                        + "          \"value\": \"foo\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_DRIVER_PID, "test.property", "foo");
@@ -761,21 +837,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
         givenNoFactoryComponentsWithPid(TEST_ASSET_PID);
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"" + TEST_ASSET_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"driver.pid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + WIRE_ASSET_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"" + TEST_ASSET_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"driver.pid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + WIRE_ASSET_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_ASSET_PID, "driver.pid", TEST_DRIVER_PID);
@@ -784,24 +863,30 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void updateConfigModifyAsset() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        givenFactoryComponent(TEST_ASSET_PID, WIRE_ASSET_FACTORY_PID, Collections.singletonMap("driver.pid", "bar"),
+        givenFactoryComponent(
+                TEST_ASSET_PID,
+                WIRE_ASSET_FACTORY_PID,
+                Collections.singletonMap("driver.pid", "bar"),
                 SelfConfiguringComponent.class);
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"" + TEST_ASSET_PID + "\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"driver.pid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        },\n" //
-                + "        \"service.factoryPid\": {\n" //
-                + "          \"value\": \"" + WIRE_ASSET_FACTORY_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"" + TEST_ASSET_PID + "\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"driver.pid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        },\n" //
+                        + "        \"service.factoryPid\": {\n" //
+                        + "          \"value\": \"" + WIRE_ASSET_FACTORY_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenRequestSucceeds();
         thenComponentConfigurationEquals(TEST_ASSET_PID, "driver.pid", TEST_DRIVER_PID);
@@ -810,17 +895,20 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void updateConfigUnpermitted() {
 
-        whenRequestIsPerformed(new MethodSpec("PUT"), "/configs", "{\n" //
-                + "  \"configs\": [{\n" //
-                + "      \"pid\": \"org.eclipse.kura.internal.rest.provider.RestService\",\n" //
-                + "      \"properties\": {\n" //
-                + "        \"driver.pid\": {\n" //
-                + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
-                + "          \"type\": \"STRING\"\n" //
-                + "        }\n" //
-                + "      }\n" //
-                + "    }\n" //
-                + "  ]}");
+        whenRequestIsPerformed(
+                new MethodSpec("PUT"),
+                "/configs",
+                "{\n" //
+                        + "  \"configs\": [{\n" //
+                        + "      \"pid\": \"org.eclipse.kura.internal.rest.provider.RestService\",\n" //
+                        + "      \"properties\": {\n" //
+                        + "        \"driver.pid\": {\n" //
+                        + "          \"value\": \"" + TEST_DRIVER_PID + "\",\n" //
+                        + "          \"type\": \"STRING\"\n" //
+                        + "        }\n" //
+                        + "      }\n" //
+                        + "    }\n" //
+                        + "  ]}");
 
         thenResponseCodeIs(400);
     }
@@ -839,8 +927,8 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
         givenDeleteTrackerForPid(TEST_DRIVER_PID);
 
-        whenRequestIsPerformed(new MethodSpec("DELETE", "DEL"), "/configs/byPid",
-                "{\"pids\":[\"" + TEST_DRIVER_PID + "\"]}");
+        whenRequestIsPerformed(
+                new MethodSpec("DELETE", "DEL"), "/configs/byPid", "{\"pids\":[\"" + TEST_DRIVER_PID + "\"]}");
 
         thenRequestSucceeds();
         thenTrackedComponentIsDeleted(TEST_DRIVER_PID);
@@ -849,12 +937,15 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void deleteAsset() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        givenFactoryComponent(TEST_ASSET_PID, WIRE_ASSET_FACTORY_PID,
-                Collections.singletonMap("driver.pid", TEST_DRIVER_PID), SelfConfiguringComponent.class);
+        givenFactoryComponent(
+                TEST_ASSET_PID,
+                WIRE_ASSET_FACTORY_PID,
+                Collections.singletonMap("driver.pid", TEST_DRIVER_PID),
+                SelfConfiguringComponent.class);
         givenDeleteTrackerForPid(TEST_ASSET_PID);
 
-        whenRequestIsPerformed(new MethodSpec("DELETE", "DEL"), "/configs/byPid",
-                "{\"pids\":[\"" + TEST_ASSET_PID + "\"]}");
+        whenRequestIsPerformed(
+                new MethodSpec("DELETE", "DEL"), "/configs/byPid", "{\"pids\":[\"" + TEST_ASSET_PID + "\"]}");
 
         thenRequestSucceeds();
         thenTrackedComponentIsDeleted(TEST_ASSET_PID);
@@ -898,20 +989,24 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void getWireComponentDefinitionsByFactoryPid() {
 
-        whenRequestIsPerformed(new MethodSpec("POST"), "/metadata/wireComponents/definitions/byFactoryPid",
+        whenRequestIsPerformed(
+                new MethodSpec("POST"),
+                "/metadata/wireComponents/definitions/byFactoryPid",
                 "{\"pids\":[\"org.eclipse.kura.util.wire.test.TestEmitterReceiver\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(parse(Snippets.TEST_EMITTER_RECEIVER_DEFINITION),
+        thenResponseElementIs(
+                parse(Snippets.TEST_EMITTER_RECEIVER_DEFINITION),
                 self().field("wireComponentDefinitions").arrayItem(0));
-        thenResponseElementDoesNotExists(self().field("wireComponentDefinitions").arrayItem(1));
+        thenResponseElementDoesNotExists(
+                self().field("wireComponentDefinitions").arrayItem(1));
     }
 
     @Test
     public void getWireComponentDefinitionsNotExisting() {
 
-        whenRequestIsPerformed(new MethodSpec("POST"), "/metadata/wireComponents/definitions/byFactoryPid",
-                "{\"pids\":[\"foo\"]}");
+        whenRequestIsPerformed(
+                new MethodSpec("POST"), "/metadata/wireComponents/definitions/byFactoryPid", "{\"pids\":[\"foo\"]}");
 
         thenRequestSucceeds();
         thenResponseBodyEqualsJson("{}");
@@ -957,11 +1052,15 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void getDriverOCDsByFactoryPid() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        whenRequestIsPerformed(new MethodSpec("POST"), "/metadata/drivers/ocds/byFactoryPid",
+        whenRequestIsPerformed(
+                new MethodSpec("POST"),
+                "/metadata/drivers/ocds/byFactoryPid",
                 "{\"pids\":[\"org.eclipse.kura.util.test.driver.ChannelDescriptorTestDriver\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(Json.parse(Snippets.TEST_DRIVER_DEFINITION), self().field("driverOCDs").arrayItem(0));
+        thenResponseElementIs(
+                Json.parse(Snippets.TEST_DRIVER_DEFINITION),
+                self().field("driverOCDs").arrayItem(0));
         thenResponseElementDoesNotExists(self().field("driverOCDs").arrayItem(1));
     }
 
@@ -987,20 +1086,22 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void getDriverChannelDescriptorsByPid() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        whenRequestIsPerformed(new MethodSpec("POST"), "/metadata/drivers/channelDescriptors/byPid",
-                "{\"pids\":[\"testDriver\"]}");
+        whenRequestIsPerformed(
+                new MethodSpec("POST"), "/metadata/drivers/channelDescriptors/byPid", "{\"pids\":[\"testDriver\"]}");
 
         thenRequestSucceeds();
-        thenResponseElementIs(Json.parse(Snippets.TEST_DRIVER_DESCRIPTOR),
+        thenResponseElementIs(
+                Json.parse(Snippets.TEST_DRIVER_DESCRIPTOR),
                 self().field("driverChannelDescriptors").arrayItem(0));
-        thenResponseElementDoesNotExists(self().field("driverChannelDescriptors").arrayItem(1));
+        thenResponseElementDoesNotExists(
+                self().field("driverChannelDescriptors").arrayItem(1));
     }
 
     @Test
     public void getDriverChannelDescriptorsByPidNotFound() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        whenRequestIsPerformed(new MethodSpec("POST"), "/metadata/drivers/channelDescriptors/byPid",
-                "{\"pids\":[\"foo\"]}");
+        whenRequestIsPerformed(
+                new MethodSpec("POST"), "/metadata/drivers/channelDescriptors/byPid", "{\"pids\":[\"foo\"]}");
 
         thenRequestSucceeds();
         thenResponseBodyEqualsJson("{}");
@@ -1027,8 +1128,11 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     @Test
     public void getAssetPidsSingleAsset() {
         givenFactoryComponent(TEST_DRIVER_PID, TEST_DRIVER_FACTORY_PID, Collections.emptyMap());
-        givenFactoryComponent(TEST_ASSET_PID, WIRE_ASSET_FACTORY_PID,
-                Collections.singletonMap("driver.pid", TEST_DRIVER_PID), SelfConfiguringComponent.class);
+        givenFactoryComponent(
+                TEST_ASSET_PID,
+                WIRE_ASSET_FACTORY_PID,
+                Collections.singletonMap("driver.pid", TEST_DRIVER_PID),
+                SelfConfiguringComponent.class);
 
         whenRequestIsPerformed(new MethodSpec("GET"), "/assets/pids");
 
@@ -1046,20 +1150,21 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         return Arrays.asList(new RestTransport("wire/v1"), new MqttTransport("WIRE-V1"));
     }
 
-    public WireGraphRestServiceTest(final Transport transport) throws InterruptedException, ExecutionException,
-            TimeoutException, KuraException, InvalidSyntaxException, IOException {
+    public WireGraphRestServiceTest(final Transport transport)
+            throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException,
+                    IOException {
         super(transport);
-        this.wireGraphService = ServiceUtil.trackService(WireGraphService.class, Optional.empty()).get(30,
-                TimeUnit.SECONDS);
-        this.configurationService = ServiceUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                TimeUnit.SECONDS);
+        this.wireGraphService = ServiceUtil.trackService(WireGraphService.class, Optional.empty())
+                .get(30, TimeUnit.SECONDS);
+        this.configurationService = ServiceUtil.trackService(ConfigurationService.class, Optional.empty())
+                .get(30, TimeUnit.SECONDS);
     }
 
     private void givenEmptyWireGraph() {
         try {
 
-            final CompletableFuture<Void> wireGraphServiceUpdate = WireTestUtil
-                    .modified("(kura.service.pid=org.eclipse.kura.wire.graph.WireGraphService)");
+            final CompletableFuture<Void> wireGraphServiceUpdate =
+                    WireTestUtil.modified("(kura.service.pid=org.eclipse.kura.wire.graph.WireGraphService)");
 
             wireGraphService.delete();
 
@@ -1078,8 +1183,11 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         }
 
         try {
-            builder.replaceExistingGraph(FrameworkUtil.getBundle(WireGraphRestServiceTest.class).getBundleContext(),
-                    wireGraphService).get(30, TimeUnit.SECONDS);
+            builder.replaceExistingGraph(
+                            FrameworkUtil.getBundle(WireGraphRestServiceTest.class)
+                                    .getBundleContext(),
+                            wireGraphService)
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             fail("failed to update wire graph " + e);
         }
@@ -1100,16 +1208,18 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
         } catch (KuraException e) {
             fail("failed to delete factory configuration for pid: " + pid);
         }
-
     }
 
-    private void givenFactoryComponent(final String pid, final String factoryPid,
-            final Map<String, Object> properties) {
+    private void givenFactoryComponent(
+            final String pid, final String factoryPid, final Map<String, Object> properties) {
 
         givenFactoryComponent(pid, factoryPid, properties, ConfigurableComponent.class);
     }
 
-    private void givenFactoryComponent(final String pid, final String factoryPid, final Map<String, Object> properties,
+    private void givenFactoryComponent(
+            final String pid,
+            final String factoryPid,
+            final Map<String, Object> properties,
             final Class<?> serviceInterface) {
 
         givenNoFactoryComponentsWithPid(pid);
@@ -1154,60 +1264,77 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     private void thenCurrentGraphContainsComponent(final String componentPid) {
         final WireGraphConfiguration config = expectCurrentWireGraphConfiguration();
 
-        assertTrue("graph does not contain component with pid " + componentPid, config.getWireComponentConfigurations()
-                .stream().map(c -> c.getConfiguration().getPid()).anyMatch(componentPid::equals));
+        assertTrue(
+                "graph does not contain component with pid " + componentPid,
+                config.getWireComponentConfigurations().stream()
+                        .map(c -> c.getConfiguration().getPid())
+                        .anyMatch(componentPid::equals));
     }
 
-    private void thenWireComponentPropertyEquals(final String pid, final String propertyKey,
-            final Object expectedValue) {
+    private void thenWireComponentPropertyEquals(
+            final String pid, final String propertyKey, final Object expectedValue) {
         final WireComponentConfiguration wireComponentConfig = expectWireComponentConfiguration(pid);
 
         assertEquals(expectedValue, wireComponentConfig.getProperties().get(propertyKey));
     }
 
-    private void thenComponentConfigurationEquals(final String pid, final String propertyKey,
-            final Object expectedValue) {
+    private void thenComponentConfigurationEquals(
+            final String pid, final String propertyKey, final Object expectedValue) {
         try {
-            ServiceUtil.trackService("*", Optional.of("(kura.service.pid=" + pid + ")")).get(30, TimeUnit.SECONDS);
+            ServiceUtil.trackService("*", Optional.of("(kura.service.pid=" + pid + ")"))
+                    .get(30, TimeUnit.SECONDS);
         } catch (Exception e) {
             fail("component with pid " + pid + " cannot be found");
         }
 
         try {
-            assertEquals(expectedValue,
-                    configurationService.getComponentConfiguration(pid).getConfigurationProperties().get(propertyKey));
+            assertEquals(
+                    expectedValue,
+                    configurationService
+                            .getComponentConfiguration(pid)
+                            .getConfigurationProperties()
+                            .get(propertyKey));
         } catch (KuraException e) {
             fail("failed to get component configuration for " + pid);
         }
     }
 
-    private void thenWireComponentConfigurationPropertyEquals(final String pid, final String propertyKey,
-            final Object expectedValue) {
+    private void thenWireComponentConfigurationPropertyEquals(
+            final String pid, final String propertyKey, final Object expectedValue) {
 
         final WireComponentConfiguration wireComponentConfig = expectWireComponentConfiguration(pid);
 
-        assertEquals(expectedValue,
-                wireComponentConfig.getConfiguration().getConfigurationProperties().get(propertyKey));
+        assertEquals(
+                expectedValue,
+                wireComponentConfig
+                        .getConfiguration()
+                        .getConfigurationProperties()
+                        .get(propertyKey));
     }
 
     private void thenCurrentGraphDoesNotContainsComponent(final String componentPid) {
         final WireGraphConfiguration config = expectCurrentWireGraphConfiguration();
 
-        assertTrue("graph does not contain component with pid " + componentPid, config.getWireComponentConfigurations()
-                .stream().map(c -> c.getConfiguration().getPid()).noneMatch(componentPid::equals));
+        assertTrue(
+                "graph does not contain component with pid " + componentPid,
+                config.getWireComponentConfigurations().stream()
+                        .map(c -> c.getConfiguration().getPid())
+                        .noneMatch(componentPid::equals));
     }
 
     private void thenCurrentGraphContainsWire(final String emitterPid, final String receiverPid) {
         final WireGraphConfiguration config = expectCurrentWireGraphConfiguration();
 
-        assertTrue("graph does not contain a wire from " + emitterPid + " to " + receiverPid,
+        assertTrue(
+                "graph does not contain a wire from " + emitterPid + " to " + receiverPid,
                 config.getWireConfigurations().stream()
                         .anyMatch(c -> emitterPid.equals(c.getEmitterPid()) && receiverPid.equals(c.getReceiverPid())));
     }
 
     private void thenComponentExists(final String pid, final Class<?> clazz) {
         try {
-            WireTestUtil.trackService(clazz, Optional.of("(kura.service.pid=" + pid + ")")).get(60, TimeUnit.SECONDS);
+            WireTestUtil.trackService(clazz, Optional.of("(kura.service.pid=" + pid + ")"))
+                    .get(60, TimeUnit.SECONDS);
         } catch (Exception e) {
             fail("failed to track component with pid " + pid);
         }
@@ -1236,13 +1363,15 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     private WireComponentConfiguration expectWireComponentConfiguration(final String pid) {
         final WireGraphConfiguration config = expectCurrentWireGraphConfiguration();
 
-        return config.getWireComponentConfigurations().stream().filter(c -> pid.equals(c.getConfiguration().getPid()))
-                .findFirst().orElseThrow(() -> new IllegalStateException("component with pid " + pid + " not found"));
+        return config.getWireComponentConfigurations().stream()
+                .filter(c -> pid.equals(c.getConfiguration().getPid()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("component with pid " + pid + " not found"));
     }
 
     private void thenResponseElementIs(final JsonValue expected, final JsonProjection projection) {
-        final JsonValue root = Json
-                .parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
+        final JsonValue root =
+                Json.parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
 
         final JsonValue actual = applyProjection(root, projection);
 
@@ -1250,8 +1379,8 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     }
 
     private void thenResponseElementExists(final JsonProjection projection) {
-        final JsonValue root = Json
-                .parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
+        final JsonValue root =
+                Json.parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
 
         final JsonValue actual = applyProjection(root, projection);
 
@@ -1259,8 +1388,8 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
     }
 
     private void thenResponseElementDoesNotExists(final JsonProjection projection) {
-        final JsonValue root = Json
-                .parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
+        final JsonValue root =
+                Json.parse(expectResponse().getBody().orElseThrow(() -> new IllegalStateException("expected body")));
 
         final JsonValue actual = applyProjection(root, projection);
 
@@ -1276,5 +1405,4 @@ public class WireGraphRestServiceTest extends AbstractRequestHandlerTest {
             throw new IllegalStateException("unreachable");
         }
     }
-
 }

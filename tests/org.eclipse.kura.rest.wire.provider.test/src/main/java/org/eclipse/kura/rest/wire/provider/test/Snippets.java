@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  * Eurotech
  ******************************************************************************/
@@ -587,7 +587,7 @@ public class Snippets {
             + "        }";
 
     public static final String TEST_EMITTER_RECEIVER_DEFINITION = "{\n" //
-            + "            \"factoryPid\": \"org.eclipse.kura.util.wire.test.TestEmitterReceiver\",\n"  //
+            + "            \"factoryPid\": \"org.eclipse.kura.util.wire.test.TestEmitterReceiver\",\n" //
             + "            \"minInputPorts\": 1,\n" //
             + "            \"maxInputPorts\": 1,\n" //
             + "            \"defaultInputPorts\": 1,\n" //
@@ -617,6 +617,5 @@ public class Snippets {
             + "            }\n" //
             + "        }";
 
-    private Snippets() {
-    }
+    private Snippets() {}
 }

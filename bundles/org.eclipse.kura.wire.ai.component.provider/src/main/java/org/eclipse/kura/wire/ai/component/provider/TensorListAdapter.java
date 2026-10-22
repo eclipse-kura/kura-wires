@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.KuraIOException;
@@ -34,8 +33,7 @@ public class TensorListAdapter {
     private static TensorListAdapter instance;
     private List<TensorDescriptor> descriptors;
 
-    private TensorListAdapter() {
-    }
+    private TensorListAdapter() {}
 
     private void setDescriptors(List<TensorDescriptor> descriptors) {
         instance.descriptors = descriptors;
@@ -137,47 +135,47 @@ public class TensorListAdapter {
             throws KuraIOException {
         Object value = typedValue.getValue();
         switch (typedValue.getType()) {
-        case BOOLEAN:
-            List<Boolean> boolData = new ArrayList<>();
-            boolData.add((Boolean) value);
+            case BOOLEAN:
+                List<Boolean> boolData = new ArrayList<>();
+                boolData.add((Boolean) value);
 
-            return new Tensor(Boolean.class, descriptor, boolData);
-        case BYTE_ARRAY:
-            byte[] byteArrayValue = (byte[]) value;
+                return new Tensor(Boolean.class, descriptor, boolData);
+            case BYTE_ARRAY:
+                byte[] byteArrayValue = (byte[]) value;
 
-            List<Byte> byteArrayData = new ArrayList<>();
-            for (byte b : byteArrayValue) {
-                byteArrayData.add(b);
-            }
+                List<Byte> byteArrayData = new ArrayList<>();
+                for (byte b : byteArrayValue) {
+                    byteArrayData.add(b);
+                }
 
-            return new Tensor(Byte.class, descriptor, byteArrayData);
-        case DOUBLE:
-            List<Double> doubleData = new ArrayList<>();
-            doubleData.add((Double) value);
+                return new Tensor(Byte.class, descriptor, byteArrayData);
+            case DOUBLE:
+                List<Double> doubleData = new ArrayList<>();
+                doubleData.add((Double) value);
 
-            return new Tensor(Double.class, descriptor, doubleData);
-        case FLOAT:
-            List<Float> floatData = new ArrayList<>();
-            floatData.add((Float) value);
+                return new Tensor(Double.class, descriptor, doubleData);
+            case FLOAT:
+                List<Float> floatData = new ArrayList<>();
+                floatData.add((Float) value);
 
-            return new Tensor(Float.class, descriptor, floatData);
-        case INTEGER:
-            List<Integer> intData = new ArrayList<>();
-            intData.add((Integer) value);
+                return new Tensor(Float.class, descriptor, floatData);
+            case INTEGER:
+                List<Integer> intData = new ArrayList<>();
+                intData.add((Integer) value);
 
-            return new Tensor(Integer.class, descriptor, intData);
-        case LONG:
-            List<Long> longData = new ArrayList<>();
-            longData.add((Long) value);
+                return new Tensor(Integer.class, descriptor, intData);
+            case LONG:
+                List<Long> longData = new ArrayList<>();
+                longData.add((Long) value);
 
-            return new Tensor(Long.class, descriptor, longData);
-        case STRING:
-            List<String> stringData = new ArrayList<>();
-            stringData.add((String) value);
+                return new Tensor(Long.class, descriptor, longData);
+            case STRING:
+                List<String> stringData = new ArrayList<>();
+                stringData.add((String) value);
 
-            return new Tensor(String.class, descriptor, stringData);
-        default:
-            throw new KuraIOException("Unable to create Tensor: unsupported type.");
+                return new Tensor(String.class, descriptor, stringData);
+            default:
+                throw new KuraIOException("Unable to create Tensor: unsupported type.");
         }
     }
 

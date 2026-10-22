@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -17,7 +17,6 @@ import static java.util.Objects.requireNonNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.WireComponent;
@@ -69,8 +68,8 @@ public final class ConditionalComponent extends EngineProvider
         logger.info("Activating Conditional Component...");
         this.conditionalOptions = new ConditionalComponentOptions(properties);
 
-        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         final List<EmitterPort> emitterPorts = this.wireSupport.getEmitterPorts();
         this.thenPort = emitterPorts.get(0);
         this.elsePort = emitterPorts.get(1);
@@ -104,7 +103,6 @@ public final class ConditionalComponent extends EngineProvider
         requireNonNull(wireEnvelope, "Wire Envelope cannot be null");
 
         evaluateScriptAndEmitOutput(wireEnvelope);
-
     }
 
     private void evaluateScriptAndEmitOutput(WireEnvelope wireEnvelope) {

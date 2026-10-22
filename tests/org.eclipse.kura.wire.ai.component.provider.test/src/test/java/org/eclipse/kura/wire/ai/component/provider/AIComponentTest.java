@@ -1,30 +1,29 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
 package org.eclipse.kura.wire.ai.component.provider;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.mockito.ArgumentMatchers.any;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.ai.inference.ModelInfo;
 import org.eclipse.kura.ai.inference.TensorDescriptor;
 import org.eclipse.kura.type.TypedValue;
@@ -179,11 +178,12 @@ public class AIComponentTest {
         List<WireRecord> records = new ArrayList<>();
         Map<String, TypedValue<?>> recordProps = new HashMap<String, TypedValue<?>>() {
             private static final long serialVersionUID = 1L;
+
             {
                 put("IN_INT", TypedValues.newIntegerValue(10));
                 put("IN_BOOL", TypedValues.newBooleanValue(false));
                 put("IN_STR", TypedValues.newStringValue("99"));
-                put("IN_BYTEARR", TypedValues.newByteArrayValue(new byte[] { (byte) 0xe0, 0x4f }));
+                put("IN_BYTEARR", TypedValues.newByteArrayValue(new byte[] {(byte) 0xe0, 0x4f}));
                 put("IN_DOUBLE", TypedValues.newDoubleValue((double) 0.16));
                 put("IN_FLOAT", TypedValues.newFloatValue((float) 30));
                 put("IN_LONG", TypedValues.newLongValue((long) 11));

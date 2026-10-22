@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -95,7 +95,8 @@ public final class WireHelperServiceImpl implements WireHelperService {
     @Override
     public boolean isEmitter(final String wireComponentPid) {
         requireNonNull(wireComponentPid, "Wire Component PID cannot be null");
-        final BundleContext context = FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
+        final BundleContext context =
+                FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
         final ServiceReference<?>[] refs = ServiceUtil.getServiceReferences(context, WireComponent.class, null);
         try {
             for (final ServiceReference<?> ref : refs) {
@@ -114,7 +115,8 @@ public final class WireHelperServiceImpl implements WireHelperService {
     @Override
     public boolean isReceiver(final String wireComponentPid) {
         requireNonNull(wireComponentPid, "Wire Component PID cannot be null");
-        final BundleContext context = FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
+        final BundleContext context =
+                FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
         final ServiceReference<?>[] refs = ServiceUtil.getServiceReferences(context, WireComponent.class, null);
         try {
             for (final ServiceReference<?> ref : refs) {
@@ -138,8 +140,8 @@ public final class WireHelperServiceImpl implements WireHelperService {
 
     /** {@inheritDoc} */
     @Override
-    public WireSupport newWireSupport(final WireComponent wireComponent,
-            ServiceReference<WireComponent> wireComponentRef) {
+    public WireSupport newWireSupport(
+            final WireComponent wireComponent, ServiceReference<WireComponent> wireComponentRef) {
         if (wireComponentRef == null) {
             return null;
         }
@@ -151,9 +153,11 @@ public final class WireHelperServiceImpl implements WireHelperService {
         }
         final String servicePid = (String) wireComponentRef.getProperty(SERVICE_PID);
         final String kuraServicePid = (String) wireComponentRef.getProperty(KURA_SERVICE_PID);
-        int receiverPortCount = getIntOrDefault(wireComponentRef.getProperty(RECEIVER_PORT_COUNT_PROP_NAME.value()),
+        int receiverPortCount = getIntOrDefault(
+                wireComponentRef.getProperty(RECEIVER_PORT_COUNT_PROP_NAME.value()),
                 wireComponent instanceof WireReceiver ? 1 : 0);
-        int emitterPortCount = getIntOrDefault(wireComponentRef.getProperty(EMITTER_PORT_COUNT_PROP_NAME.value()),
+        int emitterPortCount = getIntOrDefault(
+                wireComponentRef.getProperty(EMITTER_PORT_COUNT_PROP_NAME.value()),
                 wireComponent instanceof WireEmitter ? 1 : 0);
 
         return new WireSupportImpl(wireComponent, servicePid, kuraServicePid, receiverPortCount, emitterPortCount);

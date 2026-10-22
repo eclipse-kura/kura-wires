@@ -1,15 +1,15 @@
 /*******************************************************************************
  * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
- * 
+ *
  *******************************************************************************/
 package org.eclipse.kura.internal.wire.query;
 
@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.KuraStoreException;
@@ -59,8 +58,8 @@ public class WireRecordQueryComponent implements WireEmitter, WireReceiver, Conf
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Wire Record Query component...");
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updateState(s -> s.setOptions(new WireRecordQueryComponentOptions(properties)));
 
@@ -74,7 +73,7 @@ public class WireRecordQueryComponent implements WireEmitter, WireReceiver, Conf
 
         logger.debug("Updating Wire Record Query component... Done");
     }
-    
+
     protected void deactivate() {
         logger.debug("Deactivating Wire Record Query Component...");
 
@@ -176,7 +175,6 @@ public class WireRecordQueryComponent implements WireEmitter, WireReceiver, Conf
 
             throw new KuraStoreException("Component dependencies are not satisfied");
         }
-
     }
 
     private static class Satisfied implements State {
@@ -186,8 +184,8 @@ public class WireRecordQueryComponent implements WireEmitter, WireReceiver, Conf
 
         private Optional<CachedRecords> cachedRecords = Optional.empty();
 
-        public Satisfied(final WireRecordQueryComponentOptions options,
-                final QueryableWireRecordStoreProvider provider) {
+        public Satisfied(
+                final WireRecordQueryComponentOptions options, final QueryableWireRecordStoreProvider provider) {
             this.options = options;
             this.provider = provider;
         }
@@ -236,7 +234,6 @@ public class WireRecordQueryComponent implements WireEmitter, WireReceiver, Conf
                 return Optional.empty();
             }
         }
-
     }
 
     private static class CachedRecords {

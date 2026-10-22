@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.channel.ChannelType;
 import org.eclipse.kura.channel.ScaleOffsetType;
 import org.eclipse.kura.driver.Driver;
@@ -58,8 +57,12 @@ public class WireAssetTestBase {
 
     private final List<WireEnvelope> envelopes = new ArrayList<>();
 
-    protected void givenAssetChannel(final String name, final boolean listen, final DataType dataType,
-            final ScaleOffsetType scaleOffsetType, final Optional<? extends Number> scale,
+    protected void givenAssetChannel(
+            final String name,
+            final boolean listen,
+            final DataType dataType,
+            final ScaleOffsetType scaleOffsetType,
+            final Optional<? extends Number> scale,
             final Optional<? extends Number> offset) {
         final Map<String, Object> config = new HashMap<>();
 
@@ -90,17 +93,25 @@ public class WireAssetTestBase {
                 driverRegistration.get().unregister();
             }
 
-            final BundleContext bundleContext = FrameworkUtil.getBundle(OnChangeCacheTest.class).getBundleContext();
+            final BundleContext bundleContext =
+                    FrameworkUtil.getBundle(OnChangeCacheTest.class).getBundleContext();
 
-            final WireGraphService wireGraphService = WireTestUtil
-                    .trackService(WireGraphService.class, Optional.empty()).get(30, TimeUnit.SECONDS);
+            final WireGraphService wireGraphService = WireTestUtil.trackService(
+                            WireGraphService.class, Optional.empty())
+                    .get(30, TimeUnit.SECONDS);
 
-            final GraphBuilder graphBuilder = new GraphBuilder().addTestEmitterReceiver("emitter")
+            final GraphBuilder graphBuilder = new GraphBuilder()
+                    .addTestEmitterReceiver("emitter")
                     .addTestEmitterReceiver("receiver")
                     .addWireComponent("testAsset", WIRE_ASSET_FACTORY_PID, assetConfig, 1, 1)
-                    .addWireComponent("testLogger", LOGGER_FACTORY_PID,
-                            Collections.singletonMap("log.verbosity", "VERBOSE"), 1, 0)
-                    .addWire("emitter", "testAsset").addWire("testAsset", "receiver")
+                    .addWireComponent(
+                            "testLogger",
+                            LOGGER_FACTORY_PID,
+                            Collections.singletonMap("log.verbosity", "VERBOSE"),
+                            1,
+                            0)
+                    .addWire("emitter", "testAsset")
+                    .addWire("testAsset", "receiver")
                     .addWire("testAsset", "testLogger");
 
             graphBuilder.replaceExistingGraph(bundleContext, wireGraphService).get(30, TimeUnit.SECONDS);
@@ -126,16 +137,18 @@ public class WireAssetTestBase {
                 fail("driver not ready " + e);
             }
 
-            final long listenChannelCount = assetConfig.keySet().stream().filter(k -> {
-                final String[] split = k.split("[#]");
+            final long listenChannelCount = assetConfig.keySet().stream()
+                    .filter(k -> {
+                        final String[] split = k.split("[#]");
 
-                if (split.length != 2) {
-                    return false;
-                }
+                        if (split.length != 2) {
+                            return false;
+                        }
 
-                return split[1].equals("+listen");
-
-            }).filter(k -> Objects.equals(true, assetConfig.get(k))).count();
+                        return split[1].equals("+listen");
+                    })
+                    .filter(k -> Objects.equals(true, assetConfig.get(k)))
+                    .count();
 
             synchronized (this.driver.listeners) {
                 while (this.driver.listeners.size() != listenChannelCount) {

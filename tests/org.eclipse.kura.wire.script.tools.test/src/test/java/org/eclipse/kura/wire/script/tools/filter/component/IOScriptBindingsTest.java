@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.wire.WireEnvelope;
@@ -133,13 +132,13 @@ public class IOScriptBindingsTest {
     public void shouldReturnInputByteArray() {
         givenProperty(FilterComponentOptions.SCRIPT_KEY, TestScripts.identityByteArrayOnProperty("p6"));
         givenUpdated(this.properties);
-        givenInputWireRecord("p6", TypedValues.newByteArrayValue(new byte[] { 0, 0 }));
+        givenInputWireRecord("p6", TypedValues.newByteArrayValue(new byte[] {0, 0}));
         givenInputWireEnvelope("test.pid.6");
 
         whenOnWireReceive();
 
         thenOutputWireRecordListIsEmitted();
-        thenOutputContains("p6", new byte[] { 0, 0 });
+        thenOutputContains("p6", new byte[] {0, 0});
     }
 
     @Test
@@ -206,13 +205,13 @@ public class IOScriptBindingsTest {
         for (WireRecord outputRecord : outputRecords) {
             if (outputRecord.getProperties().containsKey(propertyKey)) {
                 TypedValue<?> value = outputRecord.getProperties().get(propertyKey);
-                
+
                 if (value.getValue() instanceof byte[]) {
                     assertTrue(Arrays.equals((byte[]) propertyValue, (byte[]) value.getValue()));
                 } else {
                     assertEquals(propertyValue, value.getValue());
                 }
-                
+
                 found = true;
             }
         }
@@ -229,5 +228,4 @@ public class IOScriptBindingsTest {
         this.properties = new HashMap<>();
         this.inputRecords = new LinkedList<>();
     }
-
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.WireComponent;
@@ -43,8 +42,8 @@ public class TestEmitterReceiver implements WireEmitter, WireReceiver, Configura
 
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.info("activating...");
-        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
-                getWireComponentServiceReference(componentContext));
+        this.wireSupport = (MultiportWireSupport)
+                this.wireHelperService.newWireSupport(this, getWireComponentServiceReference(componentContext));
         logger.info("activating...done");
     }
 

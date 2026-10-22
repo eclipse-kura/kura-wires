@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-
 import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
@@ -43,8 +42,10 @@ public abstract class EngineProvider {
         closeEngine();
 
         try {
-            this.engine = Optional.of(Context.newBuilder(LANGUAGE_ID).option("engine.WarnInterpreterOnly", "false")
-                    .allowHostAccess(HostAccess.ALL).build());
+            this.engine = Optional.of(Context.newBuilder(LANGUAGE_ID)
+                    .option("engine.WarnInterpreterOnly", "false")
+                    .allowHostAccess(HostAccess.ALL)
+                    .build());
             createDefaultBindings();
         } catch (Exception e) {
             logger.error("Failed to initialize engine for language '" + LANGUAGE_ID + "'.", e);
@@ -96,10 +97,10 @@ public abstract class EngineProvider {
 
     public Optional<TypedValue<Boolean>> getResultAsBoolean() {
         if (currentResult.isPresent() && this.currentResult.get().isBoolean()) {
-            return Optional.of(TypedValues.newBooleanValue(this.currentResult.get().asBoolean()));
+            return Optional.of(
+                    TypedValues.newBooleanValue(this.currentResult.get().asBoolean()));
         }
         return Optional.empty();
-
     }
 
     private List<WireRecord> valueToWireRecordList(Value value) {
@@ -123,16 +124,16 @@ public abstract class EngineProvider {
 
         this.bindings.putMember("newBooleanValue", (Function<Boolean, TypedValue<?>>) TypedValues::newBooleanValue);
         this.bindings.putMember("newByteArrayValue", (Function<byte[], TypedValue<?>>) TypedValues::newByteArrayValue);
-        this.bindings.putMember("newDoubleValue",
-                (Function<Number, TypedValue<?>>) num -> TypedValues.newDoubleValue(num.doubleValue()));
-        this.bindings.putMember("newFloatValue",
-                (Function<Number, TypedValue<?>>) num -> TypedValues.newFloatValue(num.floatValue()));
-        this.bindings.putMember("newIntegerValue",
-                (Function<Number, TypedValue<?>>) num -> TypedValues.newIntegerValue(num.intValue()));
-        this.bindings.putMember("newLongValue",
-                (Function<Number, TypedValue<?>>) num -> TypedValues.newLongValue(num.longValue()));
-        this.bindings.putMember("newStringValue",
-                (Function<Object, TypedValue<?>>) obj -> TypedValues.newStringValue(obj.toString()));
+        this.bindings.putMember("newDoubleValue", (Function<Number, TypedValue<?>>)
+                num -> TypedValues.newDoubleValue(num.doubleValue()));
+        this.bindings.putMember(
+                "newFloatValue", (Function<Number, TypedValue<?>>) num -> TypedValues.newFloatValue(num.floatValue()));
+        this.bindings.putMember("newIntegerValue", (Function<Number, TypedValue<?>>)
+                num -> TypedValues.newIntegerValue(num.intValue()));
+        this.bindings.putMember(
+                "newLongValue", (Function<Number, TypedValue<?>>) num -> TypedValues.newLongValue(num.longValue()));
+        this.bindings.putMember(
+                "newStringValue", (Function<Object, TypedValue<?>>) obj -> TypedValues.newStringValue(obj.toString()));
 
         this.bindings.putMember("newByteArray", (Function<Integer, byte[]>) size -> new byte[size]);
 
@@ -143,12 +144,15 @@ public abstract class EngineProvider {
 
     private void logPolyglotException(PolyglotException exception) {
         if (exception.getSourceLocation() != null) {
-            logger.warn("Syntax error at {}:{} - {}:{}:\n{}", exception.getSourceLocation().getStartLine(),
-                    exception.getSourceLocation().getStartColumn(), exception.getSourceLocation().getEndLine(),
-                    exception.getSourceLocation().getEndLine(), exception.getMessage());
+            logger.warn(
+                    "Syntax error at {}:{} - {}:{}:\n{}",
+                    exception.getSourceLocation().getStartLine(),
+                    exception.getSourceLocation().getStartColumn(),
+                    exception.getSourceLocation().getEndLine(),
+                    exception.getSourceLocation().getEndLine(),
+                    exception.getMessage());
         } else {
             logger.warn("Runtime exception.", exception);
         }
     }
-
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
 import org.eclipse.kura.asset.AssetConfiguration;
@@ -127,8 +126,14 @@ public class AssetCloudletTest {
         Asset assetMock = mock(Asset.class);
         Map<String, Channel> channels = new HashMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel channel = new Channel("ch1", ChannelType.READ_WRITE, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 1.0d, 0.0d, channelConfig);
+        Channel channel = new Channel(
+                "ch1",
+                ChannelType.READ_WRITE,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put("ch1", channel);
         AssetConfiguration assetConfiguration = new AssetConfiguration("description", "driverPid", channels);
         when(assetMock.getAssetConfiguration()).thenReturn(assetConfiguration);
@@ -167,7 +172,6 @@ public class AssetCloudletTest {
         assertEquals(
                 "[{\"name\":\"asset2\",\"channels\":[{\"name\":\"ch1\",\"type\":\"INTEGER\",\"mode\":\"READ_WRITE\"}]}]",
                 new String(resPayload.getBody()));
-
     }
 
     @Test(expected = KuraException.class)
@@ -215,8 +219,14 @@ public class AssetCloudletTest {
         Asset assetMock = mock(Asset.class);
         Map<String, Channel> channels = new HashMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel channel = new Channel("ch1", ChannelType.READ_WRITE, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 1.0d, 0.0d, channelConfig);
+        Channel channel = new Channel(
+                "ch1",
+                ChannelType.READ_WRITE,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put("ch1", channel);
         AssetConfiguration assetConfiguration = new AssetConfiguration("description", "driverPid", channels);
         when(assetMock.getAssetConfiguration()).thenReturn(assetConfiguration);
@@ -302,8 +312,14 @@ public class AssetCloudletTest {
         Asset assetMock = mock(Asset.class);
         Map<String, Channel> channels = new HashMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel channel = new Channel("ch1", ChannelType.READ_WRITE, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 1.0d, 0.0d, channelConfig);
+        Channel channel = new Channel(
+                "ch1",
+                ChannelType.READ_WRITE,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put("ch1", channel);
         AssetConfiguration assetConfiguration = new AssetConfiguration("description", "driverPid", channels);
         when(assetMock.getAssetConfiguration()).thenReturn(assetConfiguration);
@@ -347,8 +363,14 @@ public class AssetCloudletTest {
         Asset assetMock = mock(Asset.class);
         Map<String, Channel> channels = new HashMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel channel = new Channel("ch1", ChannelType.READ_WRITE, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 1.0d, 0.0d, channelConfig);
+        Channel channel = new Channel(
+                "ch1",
+                ChannelType.READ_WRITE,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put("ch1", channel);
         AssetConfiguration assetConfiguration = new AssetConfiguration("description", "driverPid", channels);
         when(assetMock.getAssetConfiguration()).thenReturn(assetConfiguration);
@@ -397,8 +419,14 @@ public class AssetCloudletTest {
         Asset assetMock = mock(Asset.class);
         Map<String, Channel> channels = new HashMap<>();
         Map<String, Object> channelConfig = new HashMap<>();
-        Channel channel = new Channel("ch1", ChannelType.READ_WRITE, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 1.0d, 0.0d, channelConfig);
+        Channel channel = new Channel(
+                "ch1",
+                ChannelType.READ_WRITE,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                1.0d,
+                0.0d,
+                channelConfig);
         channels.put("ch1", channel);
         AssetConfiguration assetConfiguration = new AssetConfiguration("description", "driverPid", channels);
         when(assetMock.getAssetConfiguration()).thenReturn(assetConfiguration);
@@ -510,5 +538,4 @@ public class AssetCloudletTest {
 
         assertEquals(KuraResponsePayload.RESPONSE_CODE_OK, resPayload.getResponseCode());
     }
-
 }

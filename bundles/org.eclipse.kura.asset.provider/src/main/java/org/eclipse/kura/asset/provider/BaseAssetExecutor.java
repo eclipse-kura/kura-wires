@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,15 +29,18 @@ public class BaseAssetExecutor {
     private final ExecutorService configExecutor;
     private final boolean isConfigExecutorShared;
 
-    private final AtomicReference<CompletableFuture<Void>> queue = new AtomicReference<>(
-            CompletableFuture.completedFuture(null));
+    private final AtomicReference<CompletableFuture<Void>> queue =
+            new AtomicReference<>(CompletableFuture.completedFuture(null));
 
     public BaseAssetExecutor(final ExecutorService ioExecutor, final ExecutorService configExecutor) {
         this(ioExecutor, false, configExecutor, false);
     }
 
-    public BaseAssetExecutor(final ExecutorService ioExecutor, final boolean isIoExecutorShared,
-            final ExecutorService configExecutor, final boolean isConfigExecutorShared) {
+    public BaseAssetExecutor(
+            final ExecutorService ioExecutor,
+            final boolean isIoExecutorShared,
+            final ExecutorService configExecutor,
+            final boolean isConfigExecutorShared) {
         this.ioExecutor = ioExecutor;
         this.isIoExecutorShared = isIoExecutorShared;
         this.configExecutor = configExecutor;
@@ -85,5 +87,4 @@ public class BaseAssetExecutor {
             this.configExecutor.shutdown();
         }
     }
-
 }

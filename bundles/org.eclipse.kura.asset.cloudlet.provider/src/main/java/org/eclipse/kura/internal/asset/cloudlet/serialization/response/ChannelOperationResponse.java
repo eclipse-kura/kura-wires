@@ -14,21 +14,19 @@ package org.eclipse.kura.internal.asset.cloudlet.serialization.response;
 
 import static java.util.Objects.isNull;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelStatus;
 import org.eclipse.kura.internal.asset.cloudlet.serialization.SerializationConstants;
 import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
-
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
 
 public class ChannelOperationResponse extends AbstractResponse {
 
@@ -108,5 +106,4 @@ public class ChannelOperationResponse extends AbstractResponse {
 
         this.serialized.add(assetObject);
     }
-
 }

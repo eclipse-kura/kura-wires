@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.type.LongValue;
 import org.eclipse.kura.type.StringValue;
 import org.eclipse.kura.type.TypedValue;
@@ -58,13 +57,11 @@ public class FifoTest {
             @Override
             public void updated(Wire wire, Object value) {
                 logger.info("updated called");
-
             }
 
             @Override
             public void producersConnected(Wire[] wires) {
                 logger.info("producersConnected called");
-
             }
 
             @Override
@@ -82,7 +79,8 @@ public class FifoTest {
             public void emit(List<WireRecord> wireRecords) {
                 WireRecord wireRecord = wireRecords.get(0);
 
-                TypedValue<Long> typedValue = (TypedValue<Long>) wireRecord.getProperties().get("timestamp");
+                TypedValue<Long> typedValue =
+                        (TypedValue<Long>) wireRecord.getProperties().get("timestamp");
                 long val = (long) typedValue.getValue();
 
                 assertTrue(val > ts); // verify it's really FIFO
@@ -131,13 +129,11 @@ public class FifoTest {
             @Override
             public void updated(Wire wire, Object value) {
                 logger.info("updated called");
-
             }
 
             @Override
             public void producersConnected(Wire[] wires) {
                 logger.info("producersConnected called");
-
             }
 
             @Override
@@ -155,7 +151,8 @@ public class FifoTest {
             public void emit(List<WireRecord> wireRecords) {
                 WireRecord wireRecord = wireRecords.get(0);
 
-                TypedValue<Long> typedValue = (TypedValue<Long>) wireRecord.getProperties().get("timestamp");
+                TypedValue<Long> typedValue =
+                        (TypedValue<Long>) wireRecord.getProperties().get("timestamp");
                 long val = (long) typedValue.getValue();
 
                 assertTrue(val > ts); // verify it's really FIFO
@@ -201,5 +198,4 @@ public class FifoTest {
 
         return wireEnvelope;
     }
-
 }

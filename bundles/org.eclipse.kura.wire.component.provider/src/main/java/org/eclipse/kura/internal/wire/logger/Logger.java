@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -21,7 +21,6 @@ import static org.eclipse.kura.internal.wire.logger.LoggingVerbosity.VERBOSE;
 
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.apache.logging.log4j.LogManager;
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
@@ -88,8 +87,8 @@ public final class Logger implements WireReceiver, ConfigurableComponent {
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Logger Wire Component...");
         this.properties = properties;
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         logger.debug("Activating Logger Wire Component... Done");
     }
 
@@ -129,7 +128,10 @@ public final class Logger implements WireReceiver, ConfigurableComponent {
                 logger.info("  Record content: ");
 
                 for (Entry<String, TypedValue<?>> entry : record.getProperties().entrySet()) {
-                    logger.info("    {} : {}", () -> entry.getKey(), () -> entry.getValue().getValue());
+                    logger.info(
+                            "    {} : {}",
+                            () -> entry.getKey(),
+                            () -> entry.getValue().getValue());
                 }
             }
             logger.info("");

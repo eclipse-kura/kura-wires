@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2023, 2025 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,6 +14,18 @@ package org.eclipse.kura.internal.rest.wire;
 
 import static java.util.stream.Stream.concat;
 
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -28,7 +40,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
@@ -81,19 +92,6 @@ import org.osgi.service.useradmin.UserAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 @Path("/wire/v1")
 public class WireRestService {
 
@@ -106,20 +104,20 @@ public class WireRestService {
     private static final String APP_ID = "WIRE-V1";
     private static final String WIRE_GRAPH_SERVICE_PID = "org.eclipse.kura.wire.graph.WireGraphService";
 
-    private static final String WIRE_GRAPH_SERVICE_CONFIG_NOT_FOUND_MESSAGE = "Configuration for \""
-            + WIRE_GRAPH_SERVICE_PID + "\" must be specified";
+    private static final String WIRE_GRAPH_SERVICE_CONFIG_NOT_FOUND_MESSAGE =
+            "Configuration for \"" + WIRE_GRAPH_SERVICE_PID + "\" must be specified";
     private static final String WIRE_GRAPH_SERVICE_GRAPH_PROPERTY = "WireGraph";
 
-    private static final String WIRE_GRAPH_PROPERTY_NOT_VALID = "\"" + WIRE_GRAPH_SERVICE_GRAPH_PROPERTY
-            + "\" must be set and of STRING type";
+    private static final String WIRE_GRAPH_PROPERTY_NOT_VALID =
+            "\"" + WIRE_GRAPH_SERVICE_GRAPH_PROPERTY + "\" must be set and of STRING type";
 
     private static final String WIRE_GRAPH_PROPERTY_NOT_FOUND = "\"" + WIRE_GRAPH_SERVICE_PID
             + "\" configuration must contain the \"" + WIRE_GRAPH_SERVICE_GRAPH_PROPERTY + "\" property";
 
     private static final String WIRE_ASSET_FACTORY_PID = "org.eclipse.kura.wire.WireAsset";
 
-    private static final Class<?>[] ALLOWED_SERVICE_INTERFACES = new Class<?>[] { Driver.class, Asset.class,
-            WireComponent.class, WireEmitter.class, WireReceiver.class };
+    private static final Class<?>[] ALLOWED_SERVICE_INTERFACES =
+            new Class<?>[] {Driver.class, Asset.class, WireComponent.class, WireEmitter.class, WireReceiver.class};
 
     private WireGraphService wireGraphService;
     private Marshaller jsonMarshaller;
@@ -215,16 +213,20 @@ public class WireRestService {
 
             final String wireGraphServiceJsonGraph = this.jsonMarshaller.marshal(wireGraphConfiguation);
 
-            final ComponentConfiguration wireGraphServiceConfig = buildWireGraphServiceConfig(
-                    wireGraphServiceJsonGraph);
+            final ComponentConfiguration wireGraphServiceConfig =
+                    buildWireGraphServiceConfig(wireGraphServiceJsonGraph);
 
             final List<ComponentConfiguration> driverConfigs = this.configurationService.getComponentConfigurations(
                     bundleContext.createFilter("(objectClass=" + Driver.class.getName() + ")"));
 
-            final List<ComponentConfiguration> resultConfigs = concat(concat(Stream.of(wireGraphServiceConfig),
-                    wireGraphConfiguation.getWireComponentConfigurations().stream()
-                            .map(WireComponentConfiguration::getConfiguration)),
-                    driverConfigs.stream()).map(WireRestService::removeDefinition).collect(Collectors.toList());
+            final List<ComponentConfiguration> resultConfigs = concat(
+                            concat(
+                                    Stream.of(wireGraphServiceConfig),
+                                    wireGraphConfiguation.getWireComponentConfigurations().stream()
+                                            .map(WireComponentConfiguration::getConfiguration)),
+                            driverConfigs.stream())
+                    .map(WireRestService::removeDefinition)
+                    .collect(Collectors.toList());
 
             return DTOUtil.toComponentConfigurationList(resultConfigs, cryptoService, true);
 
@@ -249,43 +251,45 @@ public class WireRestService {
             final Map<String, ComponentConfigurationDTO> configsByPid = configs.getConfigs().stream()
                     .collect(Collectors.toMap(ComponentConfigurationDTO::getPid, Function.identity()));
 
-            final ComponentConfigurationDTO wireGraphServiceConfig = Optional
-                    .ofNullable(configsByPid.remove(WIRE_GRAPH_SERVICE_PID))
-                    .orElseThrow(() -> DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
-                            WIRE_GRAPH_SERVICE_CONFIG_NOT_FOUND_MESSAGE));
+            final ComponentConfigurationDTO wireGraphServiceConfig = Optional.ofNullable(
+                            configsByPid.remove(WIRE_GRAPH_SERVICE_PID))
+                    .orElseThrow(() -> DefaultExceptionHandler.buildWebApplicationException(
+                            Status.BAD_REQUEST, WIRE_GRAPH_SERVICE_CONFIG_NOT_FOUND_MESSAGE));
 
             final PropertyDTO marshalledWireGraphProperty = wireGraphServiceConfig.getProperties().entrySet().stream()
-                    .filter(e -> WIRE_GRAPH_SERVICE_GRAPH_PROPERTY.equals(e.getKey())).findAny()
-                    .orElseThrow(() -> DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
-                            WIRE_GRAPH_PROPERTY_NOT_FOUND))
+                    .filter(e -> WIRE_GRAPH_SERVICE_GRAPH_PROPERTY.equals(e.getKey()))
+                    .findAny()
+                    .orElseThrow(() -> DefaultExceptionHandler.buildWebApplicationException(
+                            Status.BAD_REQUEST, WIRE_GRAPH_PROPERTY_NOT_FOUND))
                     .getValue();
 
             if (marshalledWireGraphProperty.getType() != Scalar.STRING
                     || !(marshalledWireGraphProperty.getValue() instanceof String)) {
-                throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
-                        WIRE_GRAPH_PROPERTY_NOT_VALID);
+                throw DefaultExceptionHandler.buildWebApplicationException(
+                        Status.BAD_REQUEST, WIRE_GRAPH_PROPERTY_NOT_VALID);
             }
 
             final String marshalledWireGraph = (String) marshalledWireGraphProperty.getValue();
 
-            final WireGraphConfiguration config = jsonUnmarshaller.unmarshal(marshalledWireGraph,
-                    WireGraphConfiguration.class);
+            final WireGraphConfiguration config =
+                    jsonUnmarshaller.unmarshal(marshalledWireGraph, WireGraphConfiguration.class);
 
             final List<WireComponentConfiguration> resultConfigs = config.getWireComponentConfigurations().stream()
                     .map(c -> {
-                        final Optional<ComponentConfigurationDTO> receivedConfig = Optional
-                                .ofNullable(configsByPid.remove(c.getConfiguration().getPid()));
+                        final Optional<ComponentConfigurationDTO> receivedConfig = Optional.ofNullable(
+                                configsByPid.remove(c.getConfiguration().getPid()));
 
                         if (receivedConfig.isPresent()) {
-                            return new WireComponentConfiguration(toComponentConfiguration(receivedConfig.get()),
-                                    c.getProperties());
+                            return new WireComponentConfiguration(
+                                    toComponentConfiguration(receivedConfig.get()), c.getProperties());
                         } else {
                             return c;
                         }
-                    }).collect(Collectors.toList());
+                    })
+                    .collect(Collectors.toList());
 
-            final WireGraphConfiguration result = new WireGraphConfiguration(resultConfigs,
-                    config.getWireConfigurations());
+            final WireGraphConfiguration result =
+                    new WireGraphConfiguration(resultConfigs, config.getWireConfigurations());
 
             for (final ComponentConfigurationDTO c : configsByPid.values()) {
                 validateConfigForUpdate(result, c);
@@ -338,7 +342,8 @@ public class WireRestService {
 
             return Response.status(200)
                     .entity(new ByteArrayInputStream(wireGraphServiceJsonGraph.getBytes(StandardCharsets.UTF_8)))
-                    .type(MediaType.APPLICATION_JSON).build();
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
 
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
@@ -362,7 +367,8 @@ public class WireRestService {
                 }
             }
 
-            return DTOUtil.toComponentConfigurationList(result, cryptoService, false).replacePasswordsWithPlaceholder();
+            return DTOUtil.toComponentConfigurationList(result, cryptoService, false)
+                    .replacePasswordsWithPlaceholder();
 
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
@@ -381,12 +387,13 @@ public class WireRestService {
 
             for (final String pid : pidSet.getPids()) {
                 if (isReferencedByGraph(pid, graph)) {
-                    throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
-                            "\"" + pid + "\" is referenced by the Wire Graph");
+                    throw DefaultExceptionHandler.buildWebApplicationException(
+                            Status.BAD_REQUEST, "\"" + pid + "\" is referenced by the Wire Graph");
                 }
 
                 if (!isAllowedPid(pid)) {
-                    throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
+                    throw DefaultExceptionHandler.buildWebApplicationException(
+                            Status.BAD_REQUEST,
                             "\"" + pid + "\" does not exist or it is not a Driver, Asset or Wire Component instance");
                 }
             }
@@ -394,8 +401,8 @@ public class WireRestService {
             final FailureHandler handler = new FailureHandler();
 
             for (final String pid : pidSet.getPids()) {
-                handler.runFallibleSubtask("delete:" + pid,
-                        () -> this.configurationService.deleteFactoryConfiguration(pid, false));
+                handler.runFallibleSubtask(
+                        "delete:" + pid, () -> this.configurationService.deleteFactoryConfiguration(pid, false));
             }
 
             if (!pidSet.getPids().isEmpty()) {
@@ -435,7 +442,6 @@ public class WireRestService {
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
         }
-
     }
 
     @GET
@@ -446,8 +452,8 @@ public class WireRestService {
 
         try {
 
-            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs = getWireComponentDefinitionsInternal(
-                    c -> true);
+            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs =
+                    getWireComponentDefinitionsInternal(c -> true);
 
             final List<DriverDescriptorDTO> driverDescriptors = getDriverDescriptorsInternal(c -> true);
 
@@ -455,8 +461,8 @@ public class WireRestService {
 
             final List<AdDTO> baseChannelDescriptor = getBaseChannelDescriptorInternal();
 
-            return new WireGraphMetadata(wireComponentDefinitionDTOs, driverDefinitions, driverDescriptors,
-                    baseChannelDescriptor);
+            return new WireGraphMetadata(
+                    wireComponentDefinitionDTOs, driverDefinitions, driverDescriptors, baseChannelDescriptor);
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
         }
@@ -471,7 +477,8 @@ public class WireRestService {
         try {
 
             return new PidSet(this.wireComponentDefinitionService.getComponentDefinitions().stream()
-                    .map(WireComponentDefinition::getFactoryPid).collect(Collectors.toSet()));
+                    .map(WireComponentDefinition::getFactoryPid)
+                    .collect(Collectors.toSet()));
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
         }
@@ -485,8 +492,8 @@ public class WireRestService {
 
         try {
 
-            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs = getWireComponentDefinitionsInternal(
-                    c -> true);
+            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs =
+                    getWireComponentDefinitionsInternal(c -> true);
 
             return new WireGraphMetadata(wireComponentDefinitionDTOs, null, null, null);
         } catch (final Exception e) {
@@ -505,8 +512,8 @@ public class WireRestService {
 
         try {
 
-            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs = getWireComponentDefinitionsInternal(
-                    c -> pidSet.getPids().contains(c.getFactoryPid()));
+            final List<WireComponentDefinitionDTO> wireComponentDefinitionDTOs =
+                    getWireComponentDefinitionsInternal(c -> pidSet.getPids().contains(c.getFactoryPid()));
 
             return new WireGraphMetadata(wireComponentDefinitionDTOs, null, null, null);
         } catch (final Exception e) {
@@ -523,7 +530,8 @@ public class WireRestService {
         try {
 
             return new PidSet(this.ocdService.getServiceProviderOCDs(Driver.class).stream()
-                    .map(ComponentConfiguration::getPid).collect(Collectors.toSet()));
+                    .map(ComponentConfiguration::getPid)
+                    .collect(Collectors.toSet()));
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
         }
@@ -553,8 +561,8 @@ public class WireRestService {
         pidSet.validate();
 
         try {
-            final List<ComponentConfigurationDTO> result = getDriverDefinitionsInternal(
-                    c -> pidSet.getPids().contains(c.getPid()));
+            final List<ComponentConfigurationDTO> result =
+                    getDriverDefinitionsInternal(c -> pidSet.getPids().contains(c.getPid()));
 
             return new WireGraphMetadata(null, result, null, null);
         } catch (final Exception e) {
@@ -585,8 +593,8 @@ public class WireRestService {
         pidSet.validate();
 
         try {
-            final List<DriverDescriptorDTO> driverDescriptors = getDriverDescriptorsInternal(
-                    c -> pidSet.getPids().contains(c.getPid()));
+            final List<DriverDescriptorDTO> driverDescriptors =
+                    getDriverDescriptorsInternal(c -> pidSet.getPids().contains(c.getPid()));
 
             return new WireGraphMetadata(null, null, driverDescriptors, null);
         } catch (final Exception e) {
@@ -610,30 +618,38 @@ public class WireRestService {
 
     @SuppressWarnings("unchecked")
     private List<AdDTO> getBaseChannelDescriptorInternal() {
-        return ((List<AD>) WireAssetChannelDescriptor.get().getDescriptor()).stream().map(AdDTO::new)
-                .collect(Collectors.toList());
+        return ((List<AD>) WireAssetChannelDescriptor.get().getDescriptor())
+                .stream().map(AdDTO::new).collect(Collectors.toList());
     }
 
     private List<DriverDescriptorDTO> getDriverDescriptorsInternal(final Predicate<DriverDescriptor> filter) {
-        return this.driverDescriptorService.listDriverDescriptors().stream().filter(filter)
-                .map(DriverDescriptorDTO::new).collect(Collectors.toList());
+        return this.driverDescriptorService.listDriverDescriptors().stream()
+                .filter(filter)
+                .map(DriverDescriptorDTO::new)
+                .collect(Collectors.toList());
     }
 
     private List<ComponentConfigurationDTO> getDriverDefinitionsInternal(
             final Predicate<ComponentConfiguration> filter) {
-        return ocdService.getServiceProviderOCDs(Driver.class).stream().filter(filter)
+        return ocdService.getServiceProviderOCDs(Driver.class).stream()
+                .filter(filter)
                 .map(WireRestService::removeProperties)
-                .map(c -> DTOUtil.toComponentConfigurationDTO(c, cryptoService, false)).collect(Collectors.toList());
+                .map(c -> DTOUtil.toComponentConfigurationDTO(c, cryptoService, false))
+                .collect(Collectors.toList());
     }
 
     private List<WireComponentDefinitionDTO> getWireComponentDefinitionsInternal(
             final Predicate<WireComponentDefinition> filter) throws KuraException {
-        return this.wireComponentDefinitionService.getComponentDefinitions().stream().filter(filter).map(c -> {
-            if (WIRE_ASSET_FACTORY_PID.equals(c.getFactoryPid())) {
-                setDefinition(c, (OCD) new WireAssetOCD());
-            }
-            return c;
-        }).map(WireComponentDefinitionDTO::new).collect(Collectors.toCollection(ArrayList::new));
+        return this.wireComponentDefinitionService.getComponentDefinitions().stream()
+                .filter(filter)
+                .map(c -> {
+                    if (WIRE_ASSET_FACTORY_PID.equals(c.getFactoryPid())) {
+                        setDefinition(c, (OCD) new WireAssetOCD());
+                    }
+                    return c;
+                })
+                .map(WireComponentDefinitionDTO::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     private static ComponentConfiguration removeDefinition(final ComponentConfiguration config) {
@@ -696,7 +712,6 @@ public class WireRestService {
                 return properties;
             }
         };
-
     }
 
     private static ComponentConfiguration removeProperties(final ComponentConfiguration config) {
@@ -749,15 +764,17 @@ public class WireRestService {
         final Map<String, PropertyDTO> properties = config.getProperties();
 
         if (properties == null) {
-            throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
-                    "\"" + config.getPid() + "\": configuration properties are not specified.");
+            throw DefaultExceptionHandler.buildWebApplicationException(
+                    Status.BAD_REQUEST, "\"" + config.getPid() + "\": configuration properties are not specified.");
         }
 
         final PropertyDTO rawFactoryPid = properties.get(ConfigurationAdmin.SERVICE_FACTORYPID);
 
-        if (rawFactoryPid == null || rawFactoryPid.getType() != Scalar.STRING
+        if (rawFactoryPid == null
+                || rawFactoryPid.getType() != Scalar.STRING
                 || !(rawFactoryPid.getValue() instanceof String)) {
-            throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
+            throw DefaultExceptionHandler.buildWebApplicationException(
+                    Status.BAD_REQUEST,
                     "\"" + config.getPid() + "\": \"" + ConfigurationAdmin.SERVICE_FACTORYPID
                             + "\" property is missing or it is not a string.");
         }
@@ -765,8 +782,10 @@ public class WireRestService {
         final String factoryPid = (String) rawFactoryPid.getValue();
 
         if (!isAllowedFactoryPid(factoryPid)) {
-            throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST, "\"" + config.getPid()
-                    + "\": \"" + factoryPid + "\" is not a Wire Component, Asset or Driver factory pid.");
+            throw DefaultExceptionHandler.buildWebApplicationException(
+                    Status.BAD_REQUEST,
+                    "\"" + config.getPid() + "\": \"" + factoryPid
+                            + "\" is not a Wire Component, Asset or Driver factory pid.");
         }
     }
 
@@ -774,17 +793,19 @@ public class WireRestService {
         try {
             final ServiceReference<?>[] refs = ServiceUtil.getServiceReferences(bundleContext, classz, null);
 
-            return new PidAndFactoryPidSet(Arrays.stream(refs).map(ref -> {
-                final Object pid = ref.getProperty(ConfigurationService.KURA_SERVICE_PID);
-                final Object factoryPid = ref.getProperty(ConfigurationAdmin.SERVICE_FACTORYPID);
+            return new PidAndFactoryPidSet(Arrays.stream(refs)
+                    .map(ref -> {
+                        final Object pid = ref.getProperty(ConfigurationService.KURA_SERVICE_PID);
+                        final Object factoryPid = ref.getProperty(ConfigurationAdmin.SERVICE_FACTORYPID);
 
-                if (pid instanceof String && factoryPid instanceof String) {
-                    return new PidAndFactoryPid((String) pid, (String) factoryPid);
-                } else {
-                    return null;
-                }
-
-            }).filter(Objects::nonNull).collect(Collectors.toSet()));
+                        if (pid instanceof String && factoryPid instanceof String) {
+                            return new PidAndFactoryPid((String) pid, (String) factoryPid);
+                        } else {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet()));
         } catch (final Exception e) {
             throw DefaultExceptionHandler.toWebApplicationException(e);
         }
@@ -815,8 +836,8 @@ public class WireRestService {
     }
 
     private boolean isWireComponent(final String factoryPid) {
-        return ServiceUtil.isFactoryOfAnyService(bundleContext, factoryPid, WireEmitter.class, WireReceiver.class,
-                WireComponent.class);
+        return ServiceUtil.isFactoryOfAnyService(
+                bundleContext, factoryPid, WireEmitter.class, WireReceiver.class, WireComponent.class);
     }
 
     private void updateGraphInternal(final WireGraphConfiguration result, final FailureHandler failureHandler)
@@ -832,14 +853,15 @@ public class WireRestService {
         }
     }
 
-    private void updateConfigurationsInternal(final FailureHandler handler,
-            final Collection<ComponentConfigurationDTO> configs) {
+    private void updateConfigurationsInternal(
+            final FailureHandler handler, final Collection<ComponentConfigurationDTO> configs) {
 
         for (final ComponentConfigurationDTO config : configs) {
             final String factoryPid = getFactoryPid(config);
 
             if (WIRE_ASSET_FACTORY_PID.equals(factoryPid)) {
-                handler.runFallibleSubtask("delete:" + config.getPid(),
+                handler.runFallibleSubtask(
+                        "delete:" + config.getPid(),
                         () -> this.configurationService.deleteFactoryConfiguration(config.getPid(), false));
             }
         }
@@ -849,12 +871,12 @@ public class WireRestService {
                 final String factoryPid = getFactoryPid(config);
 
                 handler.runFallibleSubtask("update:" + config.getPid(), () -> {
-                    final Map<String, Object> properties = WireRestService.toComponentConfiguration(config)
-                            .getConfigurationProperties();
+                    final Map<String, Object> properties =
+                            WireRestService.toComponentConfiguration(config).getConfigurationProperties();
 
                     if (WIRE_ASSET_FACTORY_PID.equals(factoryPid)) {
-                        this.configurationService.createFactoryConfiguration(factoryPid, config.getPid(), properties,
-                                false);
+                        this.configurationService.createFactoryConfiguration(
+                                factoryPid, config.getPid(), properties, false);
                     } else {
                         this.configurationService.updateConfiguration(config.getPid(), properties, false);
                     }
@@ -873,39 +895,45 @@ public class WireRestService {
         }
 
         if (isWireComponent(factoryPid) && !isReferencedByGraph(config.getPid(), graph)) {
-            throw DefaultExceptionHandler.buildWebApplicationException(Status.BAD_REQUEST,
+            throw DefaultExceptionHandler.buildWebApplicationException(
+                    Status.BAD_REQUEST,
                     "\"" + config.getPid() + "\" is a Wire Component but it is not referenced by the Wire Graph");
         }
     }
 
     private boolean isReferencedByGraph(final String pid, final WireGraphConfiguration graph) {
-        return graph.getWireComponentConfigurations().stream().anyMatch(c -> c.getConfiguration().getPid().equals(pid));
+        return graph.getWireComponentConfigurations().stream()
+                .anyMatch(c -> c.getConfiguration().getPid().equals(pid));
     }
 
     private String getFactoryPid(final ComponentConfigurationDTO config) {
-        return (String) config.getProperties().get(ConfigurationAdmin.SERVICE_FACTORYPID).getValue();
+        return (String) config.getProperties()
+                .get(ConfigurationAdmin.SERVICE_FACTORYPID)
+                .getValue();
     }
 
     private boolean implementsAnyOf(final String pid, final Class<?>... classes) {
         try {
-            return ServiceUtil.withService(bundleContext, s -> {
-                if (!s.isPresent()) {
-                    return false;
-                }
+            return ServiceUtil.withService(
+                    bundleContext,
+                    s -> {
+                        if (!s.isPresent()) {
+                            return false;
+                        }
 
-                final Object o = s.get();
+                        final Object o = s.get();
 
-                for (final Class<?> classz : classes) {
-                    if (classz.isInstance(o)) {
-                        return true;
-                    }
-                }
+                        for (final Class<?> classz : classes) {
+                            if (classz.isInstance(o)) {
+                                return true;
+                            }
+                        }
 
-                return false;
-            }, "(kura.service.pid=" + pid + ")");
+                        return false;
+                    },
+                    "(kura.service.pid=" + pid + ")");
         } catch (InvalidSyntaxException e) {
             return false;
         }
     }
-
 }

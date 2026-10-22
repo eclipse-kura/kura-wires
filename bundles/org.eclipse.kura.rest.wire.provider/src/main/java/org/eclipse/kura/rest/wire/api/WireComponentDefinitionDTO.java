@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -15,7 +15,6 @@ package org.eclipse.kura.rest.wire.api;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.eclipse.kura.rest.configuration.api.AdDTO;
 import org.eclipse.kura.wire.graph.WireComponentDefinition;
 
@@ -48,7 +47,8 @@ public class WireComponentDefinitionDTO {
         this.outputPortNames = definition.getOutputPortNames();
 
         if (definition.getComponentOCD() != null && definition.getComponentOCD().getDefinition() != null) {
-            this.componentOCD = definition.getComponentOCD().getDefinition().getAD().stream().map(AdDTO::new)
+            this.componentOCD = definition.getComponentOCD().getDefinition().getAD().stream()
+                    .map(AdDTO::new)
                     .collect(Collectors.toList());
         } else {
             this.componentOCD = null;
@@ -94,5 +94,4 @@ public class WireComponentDefinitionDTO {
     public List<AdDTO> getComponentOCD() {
         return this.componentOCD;
     }
-
 }

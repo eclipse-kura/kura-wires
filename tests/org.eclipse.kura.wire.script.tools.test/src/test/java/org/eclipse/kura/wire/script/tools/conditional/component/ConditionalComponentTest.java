@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 import org.eclipse.kura.wire.WireEnvelope;
@@ -82,8 +81,8 @@ public class ConditionalComponentTest {
 
     @Test
     public void compareBooleanTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newBooleanValue(true), "p2", TypedValues.newBooleanValue(true));
         givenInputWireEnvelope("test.pid.1");
@@ -91,13 +90,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareStringTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newStringValue("123"), "p2", TypedValues.newStringValue("123"));
         givenInputWireEnvelope("test.pid.1");
@@ -105,28 +103,26 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareFloatTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
-        givenInputWireRecord("p1", TypedValues.newFloatValue((float) 1.334), "p2",
-                TypedValues.newFloatValue((float) 1.334));
+        givenInputWireRecord(
+                "p1", TypedValues.newFloatValue((float) 1.334), "p2", TypedValues.newFloatValue((float) 1.334));
         givenInputWireEnvelope("test.pid.1");
 
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareDoubleTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newDoubleValue(1.1), "p2", TypedValues.newDoubleValue(1.1));
         givenInputWireEnvelope("test.pid.1");
@@ -134,13 +130,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareLongTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newLongValue(111111), "p2", TypedValues.newLongValue(111111));
         givenInputWireEnvelope("test.pid.1");
@@ -148,13 +143,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareIntTrue() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newIntegerValue(0), "p2", TypedValues.newIntegerValue(0));
         givenInputWireEnvelope("test.pid.1");
@@ -162,13 +156,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputTrue();
-
     }
 
     @Test
     public void compareBooleanFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newBooleanValue(false), "p2", TypedValues.newBooleanValue(true));
         givenInputWireEnvelope("test.pid.1");
@@ -176,13 +169,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
     public void compareStringFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newStringValue("ghrt5g5"), "p2", TypedValues.newStringValue("123"));
         givenInputWireEnvelope("test.pid.1");
@@ -190,28 +182,26 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
     public void compareFloatFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
-        givenInputWireRecord("p1", TypedValues.newFloatValue((float) 1.434353), "p2",
-                TypedValues.newFloatValue((float) 1.334));
+        givenInputWireRecord(
+                "p1", TypedValues.newFloatValue((float) 1.434353), "p2", TypedValues.newFloatValue((float) 1.334));
         givenInputWireEnvelope("test.pid.1");
 
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
     public void compareDoubleFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newDoubleValue(43.456), "p2", TypedValues.newDoubleValue(1.1));
         givenInputWireEnvelope("test.pid.1");
@@ -219,13 +209,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
     public void compareLongFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newLongValue(234234), "p2", TypedValues.newLongValue(111111));
         givenInputWireEnvelope("test.pid.1");
@@ -233,13 +222,12 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
     public void compareIntFalse() {
-        givenProperty(ConditionalComponentOptions.CONDITION_PROPERTY_KEY,
-                TestScripts.comparePropsOnProperty("p1", "p2"));
+        givenProperty(
+                ConditionalComponentOptions.CONDITION_PROPERTY_KEY, TestScripts.comparePropsOnProperty("p1", "p2"));
         givenUpdated(this.properties);
         givenInputWireRecord("p1", TypedValues.newIntegerValue(42), "p2", TypedValues.newIntegerValue(0));
         givenInputWireEnvelope("test.pid.1");
@@ -247,7 +235,6 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenOutputFalse();
-
     }
 
     @Test
@@ -260,7 +247,6 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenNoOutputProvided();
-
     }
 
     @Test
@@ -273,7 +259,6 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenNoOutputProvided();
-
     }
 
     @Test
@@ -286,7 +271,6 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenNoOutputProvided();
-
     }
 
     @Test
@@ -299,7 +283,6 @@ public class ConditionalComponentTest {
         whenOnWireReceive();
 
         thenNoOutputProvided();
-
     }
 
     /*
@@ -318,8 +301,8 @@ public class ConditionalComponentTest {
         this.conditionalComponent.updated(properties);
     }
 
-    private void givenInputWireRecord(String propertyKey, TypedValue<?> propertyValue, String propertyKey2,
-            TypedValue<?> propertyValue2) {
+    private void givenInputWireRecord(
+            String propertyKey, TypedValue<?> propertyValue, String propertyKey2, TypedValue<?> propertyValue2) {
 
         this.wireKey1 = propertyKey;
         this.wireVal1 = propertyValue;
@@ -352,7 +335,6 @@ public class ConditionalComponentTest {
     private void thenOutputTrue() {
         verify(this.portThen, times(1)).emit((WireEnvelope) this.outputCaptor.capture());
         verify(this.portElse, times(0)).emit(any());
-
     }
 
     private void thenOutputFalse() {

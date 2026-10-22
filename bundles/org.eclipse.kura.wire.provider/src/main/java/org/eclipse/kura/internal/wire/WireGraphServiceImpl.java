@@ -36,7 +36,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
@@ -150,10 +149,10 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
 
             if (this.wireComponentServiceTracker == null) {
                 logger.info("Opening Wire Component Service tracker...");
-                WireComponentTrackerCustomizer wireComponentTrackerCustomizer = new WireComponentTrackerCustomizer(
-                        this.bundleContext, this);
-                this.wireComponentServiceTracker = new ServiceTracker<>(this.bundleContext, WireComponent.class,
-                        wireComponentTrackerCustomizer);
+                WireComponentTrackerCustomizer wireComponentTrackerCustomizer =
+                        new WireComponentTrackerCustomizer(this.bundleContext, this);
+                this.wireComponentServiceTracker =
+                        new ServiceTracker<>(this.bundleContext, WireComponent.class, wireComponentTrackerCustomizer);
                 this.wireComponentServiceTracker.open();
                 logger.info("Opening Wire Component Service tracker...done");
             }
@@ -164,7 +163,6 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         } catch (Exception e) {
             logger.warn("Failed to update WireGraphServiceImpl", e);
         }
-
     }
 
     protected void deactivate(final ComponentContext componentContext) {
@@ -179,8 +177,12 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         logger.info("Deactivating Wire Service Component...Done");
     }
 
-    private boolean checkWireExistence(final String emitterServicePid, final String receiverServicePid,
-            final int emitterPort, final int receiverPort) throws InvalidSyntaxException {
+    private boolean checkWireExistence(
+            final String emitterServicePid,
+            final String receiverServicePid,
+            final int emitterPort,
+            final int receiverPort)
+            throws InvalidSyntaxException {
         requireNonNull(emitterServicePid, "Emitter Service PID cannot be null");
         requireNonNull(receiverServicePid, "Receiver Service PID cannot be null");
 
@@ -197,10 +199,10 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             }
         }
         return false;
-
     }
 
-    private void createConfiguration(Collection<ServiceReference<WireComponent>> wireComponentServiceReferences,
+    private void createConfiguration(
+            Collection<ServiceReference<WireComponent>> wireComponentServiceReferences,
             final MultiportWireConfiguration conf) {
         requireNonNull(conf, "Wire Configuration cannot be null");
 
@@ -208,15 +210,19 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         String receiverPid = conf.getReceiverPid();
         try {
             final String emitterServicePid = getServicePidByKuraServicePid(wireComponentServiceReferences, emitterPid);
-            final String receiverServicePid = getServicePidByKuraServicePid(wireComponentServiceReferences,
-                    receiverPid);
+            final String receiverServicePid =
+                    getServicePidByKuraServicePid(wireComponentServiceReferences, receiverPid);
             final int emitterPort = conf.getEmitterPort();
             final int receiverPort = conf.getReceiverPort();
             if (nonNull(emitterServicePid) && nonNull(receiverServicePid)) {
-                final boolean found = checkWireExistence(emitterServicePid, receiverServicePid, emitterPort,
-                        receiverPort);
+                final boolean found =
+                        checkWireExistence(emitterServicePid, receiverServicePid, emitterPort, receiverPort);
                 if (!found) {
-                    logger.info("Creating wire between {}/{} and {}/{}...", emitterPid, emitterPort, receiverPid,
+                    logger.info(
+                            "Creating wire between {}/{} and {}/{}...",
+                            emitterPid,
+                            emitterPort,
+                            receiverPid,
                             receiverPort);
                     final Dictionary<String, Object> properties = new Hashtable<>();
                     properties.put(Constants.WIRE_EMITTER_PORT_PROP_NAME.value(), emitterPort);
@@ -239,8 +245,8 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
      */
     synchronized void createWires() {
         try {
-            Collection<ServiceReference<WireComponent>> wireComponentServiceReferences = this.bundleContext
-                    .getServiceReferences(WireComponent.class, null);
+            Collection<ServiceReference<WireComponent>> wireComponentServiceReferences =
+                    this.bundleContext.getServiceReferences(WireComponent.class, null);
             for (final MultiportWireConfiguration wireConfig : this.currentConfiguration.getWireConfigurations()) {
                 createConfiguration(wireComponentServiceReferences, wireConfig);
             }
@@ -257,17 +263,20 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         final Object emitterPort = wireProps.get(Constants.WIRE_EMITTER_PORT_PROP_NAME.value());
         final Object receiverPort = wireProps.get(Constants.WIRE_RECEIVER_PORT_PROP_NAME.value());
 
-        if (!(emitterKuraServicePid instanceof String) || !(receiverKuraServicePid instanceof String)
-                || !(emitterPort instanceof Integer) || !(receiverPort instanceof Integer)) {
+        if (!(emitterKuraServicePid instanceof String)
+                || !(receiverKuraServicePid instanceof String)
+                || !(emitterPort instanceof Integer)
+                || !(receiverPort instanceof Integer)) {
             return null;
         }
 
-        return new MultiportWireConfiguration((String) emitterKuraServicePid, (String) receiverKuraServicePid,
-                (Integer) emitterPort, (Integer) receiverPort);
+        return new MultiportWireConfiguration(
+                (String) emitterKuraServicePid, (String) receiverKuraServicePid, (Integer) emitterPort, (Integer)
+                        receiverPort);
     }
 
-    private void deleteNoLongerExistingWires(final Set<MultiportWireConfiguration> newWires,
-            final Set<String> componentsToDelete) {
+    private void deleteNoLongerExistingWires(
+            final Set<MultiportWireConfiguration> newWires, final Set<String> componentsToDelete) {
         try {
             final Wire[] wiresList = this.wireAdmin.getWires(null);
             if (wiresList == null) {
@@ -278,12 +287,13 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
                 if (wire == null) {
                     continue;
                 }
-                if (!newWires.contains(wire) || componentsToDelete.contains(wire.getEmitterPid())
+                if (!newWires.contains(wire)
+                        || componentsToDelete.contains(wire.getEmitterPid())
                         || componentsToDelete.contains(wire.getReceiverPid())) {
                     logger.info("Removing wire between {} and {} ...", wire.getEmitterPid(), wire.getReceiverPid());
                     this.wireAdmin.deleteWire(osgiWire);
-                    logger.info("Removing wire between {} and {} ... done", wire.getEmitterPid(),
-                            wire.getReceiverPid());
+                    logger.info(
+                            "Removing wire between {} and {} ... done", wire.getEmitterPid(), wire.getReceiverPid());
                 }
             }
         } catch (InvalidSyntaxException e) {
@@ -308,20 +318,19 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         } catch (InvalidSyntaxException e) {
             // no need since no filter is passed to getWires()
         }
-
     }
 
     @Override
     public synchronized void update(WireGraphConfiguration newConfiguration) throws KuraException {
 
         final WireGraphConfiguration currentGraphConfiguration = get();
-        final List<WireComponentConfiguration> currentWireComponents = currentGraphConfiguration
-                .getWireComponentConfigurations();
+        final List<WireComponentConfiguration> currentWireComponents =
+                currentGraphConfiguration.getWireComponentConfigurations();
 
         List<ComponentConfiguration> componentConfigurations = new ArrayList<>();
 
-        List<WireComponentConfiguration> newWireComponentConfigurations = newConfiguration
-                .getWireComponentConfigurations();
+        List<WireComponentConfiguration> newWireComponentConfigurations =
+                newConfiguration.getWireComponentConfigurations();
 
         validateWireComponentConfigurations(newWireComponentConfigurations);
 
@@ -330,11 +339,11 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         Set<MultiportWireConfiguration> newWires = new HashSet<>(newConfiguration.getWireConfigurations());
 
         // Evaluate deletable components
-        Set<String> componentsToDeletePids = getComponentsToDelete(currentWireComponents,
-                newWireComponentConfigurations);
+        Set<String> componentsToDeletePids =
+                getComponentsToDelete(currentWireComponents, newWireComponentConfigurations);
 
-        List<WireComponentConfiguration> componentsToCreate = getComponentsToCreate(currentWireComponents,
-                newWireComponentConfigurations);
+        List<WireComponentConfiguration> componentsToCreate =
+                getComponentsToCreate(currentWireComponents, newWireComponentConfigurations);
 
         validateComponentsToCreate(componentsToCreate);
 
@@ -362,13 +371,13 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
 
                 String factoryPid = (String) configurationProps.get(SERVICE_FACTORYPID);
 
-                configurationProps.put(Constants.RECEIVER_PORT_COUNT_PROP_NAME.value(),
-                        wireComponentProps.get(INPUT_PORT_COUNT));
-                configurationProps.put(Constants.EMITTER_PORT_COUNT_PROP_NAME.value(),
-                        wireComponentProps.get(OUTPUT_PORT_COUNT));
+                configurationProps.put(
+                        Constants.RECEIVER_PORT_COUNT_PROP_NAME.value(), wireComponentProps.get(INPUT_PORT_COUNT));
+                configurationProps.put(
+                        Constants.EMITTER_PORT_COUNT_PROP_NAME.value(), wireComponentProps.get(OUTPUT_PORT_COUNT));
 
-                this.configurationService.createFactoryConfiguration(factoryPid, configToCreate.getPid(),
-                        configurationProps, false);
+                this.configurationService.createFactoryConfiguration(
+                        factoryPid, configToCreate.getPid(), configurationProps, false);
             } catch (Exception e) {
                 deleteConfigurations(createdPids);
                 throw e;
@@ -377,18 +386,18 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         }
 
         // Evaluate updatable components
-        List<WireComponentConfiguration> componentsToUpdate = getComponentsToUpdate(newWireComponentConfigurations,
-                componentsToCreate);
+        List<WireComponentConfiguration> componentsToUpdate =
+                getComponentsToUpdate(newWireComponentConfigurations, componentsToCreate);
         for (WireComponentConfiguration componentToUpdate : componentsToUpdate) {
             componentConfigurations.add(componentToUpdate.getConfiguration());
         }
 
-        final WireGraphConfiguration resultConfig = new WireGraphConfiguration(newWireComponentConfigurations,
-                newConfiguration.getWireConfigurations());
+        final WireGraphConfiguration resultConfig =
+                new WireGraphConfiguration(newWireComponentConfigurations, newConfiguration.getWireConfigurations());
 
         String jsonConfig = marshal(resultConfig);
-        ComponentConfiguration wireGraphServiceComponentConfig = this.configurationService
-                .getComponentConfiguration(CONF_PID);
+        ComponentConfiguration wireGraphServiceComponentConfig =
+                this.configurationService.getComponentConfiguration(CONF_PID);
         wireGraphServiceComponentConfig.getConfigurationProperties().put(NEW_WIRE_GRAPH_PROPERTY, jsonConfig);
 
         componentConfigurations.add(wireGraphServiceComponentConfig);
@@ -406,23 +415,23 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             final Map<String, Object> configurationProps = configToCreate.getConfigurationProperties();
 
             if (configurationProps == null) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        configurationPropertiesMissingMessage(componentToCreate));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, configurationPropertiesMissingMessage(componentToCreate));
             }
 
             if (!(configurationProps.get(SERVICE_FACTORYPID) instanceof String)) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        propertyMissingMessage(componentToCreate, SERVICE_FACTORYPID));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, propertyMissingMessage(componentToCreate, SERVICE_FACTORYPID));
             }
 
             if (!(wireComponentProps.get(INPUT_PORT_COUNT) instanceof Integer)) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        propertyMissingMessage(componentToCreate, INPUT_PORT_COUNT));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, propertyMissingMessage(componentToCreate, INPUT_PORT_COUNT));
             }
 
             if (!(wireComponentProps.get(OUTPUT_PORT_COUNT) instanceof Integer)) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        propertyMissingMessage(componentToCreate, OUTPUT_PORT_COUNT));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, propertyMissingMessage(componentToCreate, OUTPUT_PORT_COUNT));
             }
         }
     }
@@ -434,13 +443,13 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             final Map<String, Object> wireComponentProps = componentToCreate.getProperties();
 
             if (!(wireComponentProps.get(INPUT_PORT_COUNT) instanceof Integer)) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        propertyMissingMessage(componentToCreate, INPUT_PORT_COUNT));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, propertyMissingMessage(componentToCreate, INPUT_PORT_COUNT));
             }
 
             if (!(wireComponentProps.get(OUTPUT_PORT_COUNT) instanceof Integer)) {
-                throw new KuraException(KuraErrorCode.BAD_REQUEST, null,
-                        propertyMissingMessage(componentToCreate, OUTPUT_PORT_COUNT));
+                throw new KuraException(
+                        KuraErrorCode.BAD_REQUEST, null, propertyMissingMessage(componentToCreate, OUTPUT_PORT_COUNT));
             }
         }
     }
@@ -484,48 +493,54 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             List<WireComponentConfiguration> oldWireComponentConfigurations,
             List<WireComponentConfiguration> newWireComponentConfigurations) {
 
-        Set<String> oldPids = oldWireComponentConfigurations.stream().map(com -> com.getConfiguration().getPid())
+        Set<String> oldPids = oldWireComponentConfigurations.stream()
+                .map(com -> com.getConfiguration().getPid())
                 .collect(Collectors.toSet());
 
-        return newWireComponentConfigurations.stream().filter(newCom -> {
-            final Optional<String> factoryPid = getFactoryPid(newCom);
+        return newWireComponentConfigurations.stream()
+                .filter(newCom -> {
+                    final Optional<String> factoryPid = getFactoryPid(newCom);
 
-            final boolean isNewComponent = !oldPids.contains(newCom.getConfiguration().getPid());
-            final boolean isWireAsset = factoryPid.isPresent()
-                    && WIRE_ASSET_FACTORY_PID.contentEquals(factoryPid.get());
+                    final boolean isNewComponent =
+                            !oldPids.contains(newCom.getConfiguration().getPid());
+                    final boolean isWireAsset =
+                            factoryPid.isPresent() && WIRE_ASSET_FACTORY_PID.contentEquals(factoryPid.get());
 
-            return isNewComponent || isWireAsset;
-        }).collect(Collectors.toList());
-
+                    return isNewComponent || isWireAsset;
+                })
+                .collect(Collectors.toList());
     }
 
-    private Set<String> getComponentsToDelete(List<WireComponentConfiguration> oldWireComponentConfigurations,
+    private Set<String> getComponentsToDelete(
+            List<WireComponentConfiguration> oldWireComponentConfigurations,
             List<WireComponentConfiguration> newWireComponentConfigurations) {
 
         final Map<String, WireComponentConfiguration> newGrouped = newWireComponentConfigurations.stream()
                 .collect(Collectors.toMap(c -> c.getConfiguration().getPid(), c -> c));
 
-        return Stream.concat(//
-                oldWireComponentConfigurations.stream().filter(comp -> {
-                    final ComponentConfiguration config = comp.getConfiguration();
+        return Stream.concat( //
+                        oldWireComponentConfigurations.stream().filter(comp -> {
+                            final ComponentConfiguration config = comp.getConfiguration();
 
-                    final String pid = config.getPid();
+                            final String pid = config.getPid();
 
-                    final Optional<String> oldFactoryPid = getFactoryPid(comp);
-                    final Optional<String> newFactoryPid = Optional.ofNullable(newGrouped.get(pid))
-                            .flatMap(WireGraphServiceImpl::getFactoryPid);
+                            final Optional<String> oldFactoryPid = getFactoryPid(comp);
+                            final Optional<String> newFactoryPid = Optional.ofNullable(newGrouped.get(pid))
+                                    .flatMap(WireGraphServiceImpl::getFactoryPid);
 
-                    final boolean hasBeenRemoved = !newGrouped.containsKey(pid);
-                    final boolean isWireAsset = oldFactoryPid.isPresent()
-                            && WIRE_ASSET_FACTORY_PID.equals(oldFactoryPid.get());
-                    final boolean hasChangedFactoryPid = newFactoryPid.isPresent() && oldFactoryPid.isPresent()
-                            && !oldFactoryPid.get().contentEquals(newFactoryPid.get());
+                            final boolean hasBeenRemoved = !newGrouped.containsKey(pid);
+                            final boolean isWireAsset =
+                                    oldFactoryPid.isPresent() && WIRE_ASSET_FACTORY_PID.equals(oldFactoryPid.get());
+                            final boolean hasChangedFactoryPid = newFactoryPid.isPresent()
+                                    && oldFactoryPid.isPresent()
+                                    && !oldFactoryPid.get().contentEquals(newFactoryPid.get());
 
-                    return hasChangedFactoryPid || hasBeenRemoved && !isWireAsset;
-                }), //
-                newWireComponentConfigurations.stream().filter(WireGraphServiceImpl::isWireAsset)//
-        ).map(c -> c.getConfiguration().getPid()).collect(Collectors.toSet());
-
+                            return hasChangedFactoryPid || hasBeenRemoved && !isWireAsset;
+                        }), //
+                        newWireComponentConfigurations.stream().filter(WireGraphServiceImpl::isWireAsset) //
+                        )
+                .map(c -> c.getConfiguration().getPid())
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -533,32 +548,33 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
         deleteAllWires();
 
         for (WireComponentConfiguration config : this.currentConfiguration.getWireComponentConfigurations()) {
-            this.configurationService.deleteFactoryConfiguration(config.getConfiguration().getPid(), false);
+            this.configurationService.deleteFactoryConfiguration(
+                    config.getConfiguration().getPid(), false);
         }
 
-        WireGraphConfiguration newWireGraphConfiguration = new WireGraphConfiguration(new ArrayList<>(),
-                new ArrayList<>());
+        WireGraphConfiguration newWireGraphConfiguration =
+                new WireGraphConfiguration(new ArrayList<>(), new ArrayList<>());
 
         String jsonConfig = marshal(newWireGraphConfiguration);
-        ComponentConfiguration wireGraphServiceComponentConfig = this.configurationService
-                .getComponentConfiguration(CONF_PID);
+        ComponentConfiguration wireGraphServiceComponentConfig =
+                this.configurationService.getComponentConfiguration(CONF_PID);
         wireGraphServiceComponentConfig.getConfigurationProperties().put(NEW_WIRE_GRAPH_PROPERTY, jsonConfig);
 
-        this.configurationService.updateConfiguration(CONF_PID,
-                wireGraphServiceComponentConfig.getConfigurationProperties(), true);
+        this.configurationService.updateConfiguration(
+                CONF_PID, wireGraphServiceComponentConfig.getConfigurationProperties(), true);
         this.currentConfiguration = newWireGraphConfiguration;
     }
 
     @Override
     public WireGraphConfiguration get() throws KuraException {
 
-        List<ComponentConfiguration> configServiceComponentConfigurations = this.configurationService
-                .getComponentConfigurations(WIRE_COMPONENT_FILTER);
+        List<ComponentConfiguration> configServiceComponentConfigurations =
+                this.configurationService.getComponentConfigurations(WIRE_COMPONENT_FILTER);
 
         WireGraphConfiguration wireGraphConfiguration = this.currentConfiguration;
 
-        List<WireComponentConfiguration> wireComponentConfigurations = wireGraphConfiguration
-                .getWireComponentConfigurations();
+        List<WireComponentConfiguration> wireComponentConfigurations =
+                wireGraphConfiguration.getWireComponentConfigurations();
 
         List<WireComponentConfiguration> completeWireComponentConfigurations = new ArrayList<>();
         for (WireComponentConfiguration wireComponentConfiguration : wireComponentConfigurations) {
@@ -568,27 +584,32 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
 
             for (ComponentConfiguration configServiceComponentConfiguration : configServiceComponentConfigurations) {
                 if (wComponentPid.equals(configServiceComponentConfiguration.getPid())) {
-                    wComponentConfiguration = new ComponentConfigurationImpl(wComponentPid,
+                    wComponentConfiguration = new ComponentConfigurationImpl(
+                            wComponentPid,
                             (Tocd) configServiceComponentConfiguration.getDefinition(),
                             configServiceComponentConfiguration.getConfigurationProperties());
                     break;
                 }
             }
-            completeWireComponentConfigurations
-                    .add(new WireComponentConfiguration(wComponentConfiguration, wComponentProperties));
+            completeWireComponentConfigurations.add(
+                    new WireComponentConfiguration(wComponentConfiguration, wComponentProperties));
         }
 
-        return new WireGraphConfiguration(completeWireComponentConfigurations,
-                wireGraphConfiguration.getWireConfigurations());
+        return new WireGraphConfiguration(
+                completeWireComponentConfigurations, wireGraphConfiguration.getWireConfigurations());
     }
 
     private ServiceReference<Marshaller>[] getJsonMarshallers() {
-        return ServiceUtil.getServiceReferences(this.bundleContext, Marshaller.class,
+        return ServiceUtil.getServiceReferences(
+                this.bundleContext,
+                Marshaller.class,
                 "(kura.service.pid=org.eclipse.kura.json.marshaller.unmarshaller.provider)");
     }
 
     private ServiceReference<Unmarshaller>[] getJsonUnmarshallers() {
-        return ServiceUtil.getServiceReferences(this.bundleContext, Unmarshaller.class,
+        return ServiceUtil.getServiceReferences(
+                this.bundleContext,
+                Unmarshaller.class,
                 "(kura.service.pid=org.eclipse.kura.json.marshaller.unmarshaller.provider)");
     }
 
@@ -641,13 +662,15 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             Collection<ServiceReference<WireComponent>> wireComponentServiceReferences, String kuraServicePid) {
         return wireComponentServiceReferences.stream()
                 .filter(ref -> kuraServicePid.equals(ref.getProperty(KURA_SERVICE_PID)))
-                .map(ref -> (String) ref.getProperty(SERVICE_PID)).findAny().orElse(null);
+                .map(ref -> (String) ref.getProperty(SERVICE_PID))
+                .findAny()
+                .orElse(null);
     }
 
     protected String getServicePidByKuraServicePid(String kuraServicePid) {
         try {
-            return getServicePidByKuraServicePid(this.bundleContext.getServiceReferences(WireComponent.class, null),
-                    kuraServicePid);
+            return getServicePidByKuraServicePid(
+                    this.bundleContext.getServiceReferences(WireComponent.class, null), kuraServicePid);
         } catch (InvalidSyntaxException e) {
             return null;
         }
@@ -676,18 +699,20 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
     private static List<WireComponentConfiguration> fillRenderingPropertyDefaults(
             List<WireComponentConfiguration> newWireComponentConfigurations) {
 
-        return newWireComponentConfigurations.stream().map(config -> {
-            final Optional<Map<String, Object>> originalRenderingProperties = Optional
-                    .ofNullable(config.getProperties());
+        return newWireComponentConfigurations.stream()
+                .map(config -> {
+                    final Optional<Map<String, Object>> originalRenderingProperties =
+                            Optional.ofNullable(config.getProperties());
 
-            final Map<String, Object> result = new HashMap<>(DEFAULT_RENDERING_PROPERTIES);
+                    final Map<String, Object> result = new HashMap<>(DEFAULT_RENDERING_PROPERTIES);
 
-            if (originalRenderingProperties.isPresent()) {
-                result.putAll(originalRenderingProperties.get());
-            }
+                    if (originalRenderingProperties.isPresent()) {
+                        result.putAll(originalRenderingProperties.get());
+                    }
 
-            return new WireComponentConfiguration(config.getConfiguration(), result);
-        }).collect(Collectors.toList());
+                    return new WireComponentConfiguration(config.getConfiguration(), result);
+                })
+                .collect(Collectors.toList());
     }
 
     private static Optional<String> getFactoryPid(final WireComponentConfiguration config) {
@@ -722,5 +747,4 @@ public class WireGraphServiceImpl implements ConfigurableComponent, WireGraphSer
             return null;
         }
     }
-
 }

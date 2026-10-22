@@ -21,15 +21,13 @@
         <version>3.0.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>
-            ${project.basedir}/../../tests/org.eclipse.kura.wire.script.tools.test/target/site/jacoco-aggregate/jacoco.xml
-        </sonar.coverage.jacoco.xmlReportPaths>
-        <graalvm.version>21.3.9</graalvm.version>
-    </properties>
-
     <artifactId>org.eclipse.kura.wire.script.tools</artifactId>
     <packaging>eclipse-plugin</packaging>
+
+    <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../../tests/org.eclipse.kura.wire.script.tools.test/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <graalvm.version>21.3.9</graalvm.version>
+    </properties>
 
     <dependencies>
         <!-- JS engine dependencies -->
@@ -85,24 +83,22 @@
                 <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
                         <phase>generate-sources</phase>
                         <configuration>
                             <outputDirectory>${project.basedir}/lib</outputDirectory>
                             <stripVersion>true</stripVersion>
-                            <includeArtifactIds>
-                                js,
+                            <includeArtifactIds>js,
                                 js-scriptengine,
                                 js-launcher,
                                 graal-sdk,
                                 truffle-api,
                                 regex,
                                 launcher-common,
-                                icu4j
-                            </includeArtifactIds>
+                                icu4j</includeArtifactIds>
                         </configuration>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>

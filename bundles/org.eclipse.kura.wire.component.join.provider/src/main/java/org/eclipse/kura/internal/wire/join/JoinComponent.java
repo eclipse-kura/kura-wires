@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-
 import org.eclipse.kura.configuration.ConfigurableComponent;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.wire.WireComponent;
@@ -62,8 +61,8 @@ public final class JoinComponent implements MultiportWireReceiver, WireEmitter, 
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Join Wire Component...");
         this.context = componentContext;
-        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = (MultiportWireSupport) this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updated(properties);
 
@@ -74,7 +73,9 @@ public final class JoinComponent implements MultiportWireReceiver, WireEmitter, 
         logger.debug("Updating Join Wire Component...");
         this.joinComponentOptions = new JoinComponentOptions(properties, context.getBundleContext());
 
-        this.joinComponentOptions.getPortAggregatorFactory().build(wireSupport.getReceiverPorts())
+        this.joinComponentOptions
+                .getPortAggregatorFactory()
+                .build(wireSupport.getReceiverPorts())
                 .onWireReceive(this::onWireReceive);
 
         logger.debug("Updating Join Wire Component... Done");
@@ -83,10 +84,10 @@ public final class JoinComponent implements MultiportWireReceiver, WireEmitter, 
     private void onWireReceive(List<WireEnvelope> envelopes) {
         final WireEnvelope firstEnvelope = envelopes.get(0);
         final WireEnvelope secondEnvelope = envelopes.get(1);
-        final List<WireRecord> firstRecords = firstEnvelope != null ? firstEnvelope.getRecords()
-                : Collections.emptyList();
-        final List<WireRecord> secondRecords = firstEnvelope != null ? secondEnvelope.getRecords()
-                : Collections.emptyList();
+        final List<WireRecord> firstRecords =
+                firstEnvelope != null ? firstEnvelope.getRecords() : Collections.emptyList();
+        final List<WireRecord> secondRecords =
+                firstEnvelope != null ? secondEnvelope.getRecords() : Collections.emptyList();
         final List<WireRecord> result = new ArrayList<>();
         forEachPair(firstRecords.iterator(), secondRecords.iterator(), (first, second) -> {
             if (first == null) {

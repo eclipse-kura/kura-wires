@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.KuraException;
@@ -65,8 +64,8 @@ public class WireRecordStoreComponent implements WireEmitter, WireReceiver, Conf
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Wire Record Store Component...");
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updateState(s -> s.setOptions(new WireRecordStoreComponentOptions(properties)));
 
@@ -198,7 +197,6 @@ public class WireRecordStoreComponent implements WireEmitter, WireReceiver, Conf
         public Optional<WireRecordStoreProvider> getWireRecordStoreProvider() {
             return this.provider;
         }
-
     }
 
     private static class Satisfied implements State {
@@ -250,8 +248,8 @@ public class WireRecordStoreComponent implements WireEmitter, WireReceiver, Conf
             final WireRecordStore currentStore = getWireRecordStore();
 
             if (currentStore.getSize() >= this.options.getMaximumStoreSize()) {
-                final int recordsToKeep = Math.min(this.options.getCleanupRecordsKeep(),
-                        this.options.getMaximumStoreSize());
+                final int recordsToKeep =
+                        Math.min(this.options.getCleanupRecordsKeep(), this.options.getMaximumStoreSize());
 
                 currentStore.truncate(Math.max(0, recordsToKeep - 1));
             }

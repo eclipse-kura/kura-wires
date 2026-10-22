@@ -15,7 +15,6 @@ package org.eclipse.kura.asset.provider;
 /**
  * This class contains constants related to the {@link BaseAsset} configuration persistence.
  */
-
 public enum AssetConstants {
 
     /** Separator for channel configuration property. */
@@ -78,5 +77,4 @@ public enum AssetConstants {
     public String value() {
         return this.value;
     }
-
 }

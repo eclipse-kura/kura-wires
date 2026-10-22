@@ -1,22 +1,20 @@
 /*******************************************************************************
  * Copyright (c) 2024 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.asset.provider.helper.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collections;
-
 import org.eclipse.kura.channel.Channel;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelType;
@@ -32,8 +30,14 @@ public class ChannelRecordHelperTest {
 
     @Test
     public void shouldCreateChannelRecorWithDoubleValueType() {
-        givenChannel(new Channel("test-channel1", ChannelType.READ, DataType.INTEGER, ScaleOffsetType.DOUBLE, 3.3d,
-                33.1d, Collections.emptyMap()));
+        givenChannel(new Channel(
+                "test-channel1",
+                ChannelType.READ,
+                DataType.INTEGER,
+                ScaleOffsetType.DOUBLE,
+                3.3d,
+                33.1d,
+                Collections.emptyMap()));
 
         whenCreatedChannelRecord();
 
@@ -42,8 +46,14 @@ public class ChannelRecordHelperTest {
 
     @Test
     public void shouldCreateChannelRecorWithIntegerValueType() {
-        givenChannel(new Channel("test-channel2", ChannelType.READ, DataType.INTEGER,
-                ScaleOffsetType.DEFINED_BY_VALUE_TYPE, 3.3d, 3.1d, Collections.emptyMap()));
+        givenChannel(new Channel(
+                "test-channel2",
+                ChannelType.READ,
+                DataType.INTEGER,
+                ScaleOffsetType.DEFINED_BY_VALUE_TYPE,
+                3.3d,
+                3.1d,
+                Collections.emptyMap()));
 
         whenCreatedChannelRecord();
 
@@ -52,7 +62,13 @@ public class ChannelRecordHelperTest {
 
     @Test
     public void shouldCreateChannelRecorWithLongValueType() {
-        givenChannel(new Channel("test-channel3", ChannelType.READ, DataType.INTEGER, ScaleOffsetType.LONG, 3l, 4l,
+        givenChannel(new Channel(
+                "test-channel3",
+                ChannelType.READ,
+                DataType.INTEGER,
+                ScaleOffsetType.LONG,
+                3l,
+                4l,
                 Collections.emptyMap()));
 
         whenCreatedChannelRecord();
@@ -62,12 +78,10 @@ public class ChannelRecordHelperTest {
 
     private void thenChannelRecordValueTypeIs(DataType datatype) {
         assertEquals(datatype, this.channelRecord.getValueType());
-
     }
 
     private void givenChannel(Channel channel) {
         this.channel = channel;
-
     }
 
     private void whenCreatedChannelRecord() {

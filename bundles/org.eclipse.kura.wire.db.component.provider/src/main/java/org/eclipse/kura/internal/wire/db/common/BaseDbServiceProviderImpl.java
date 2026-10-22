@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.db.BaseDbService;
@@ -27,7 +26,8 @@ import org.eclipse.kura.wire.WireRecord;
 public class BaseDbServiceProviderImpl extends CommonDbServiceProvider implements DbServiceProvider {
 
     private static final Logger logger = LogManager.getLogger(BaseDbServiceProviderImpl.class);
-    private static final String SQL_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS {0} (ID BIGINT AUTO_INCREMENT, TIMESTAMP BIGINT, primary key (ID));";
+    private static final String SQL_CREATE_TABLE =
+            "CREATE TABLE IF NOT EXISTS {0} (ID BIGINT AUTO_INCREMENT, TIMESTAMP BIGINT, primary key (ID));";
     private static final String SQL_DELETE_RANGE_TABLE = "DELETE FROM {0} ORDER BY ID ASC LIMIT {1};";
     private static final String SQL_SET_AUTOINCREMENT = "ALTER TABLE {0} AUTO_INCREMENT = {1};";
 
@@ -67,7 +67,6 @@ public class BaseDbServiceProviderImpl extends CommonDbServiceProvider implement
                 }
             }
         }
-
     }
 
     @Override
@@ -90,7 +89,6 @@ public class BaseDbServiceProviderImpl extends CommonDbServiceProvider implement
         try (Connection c = this.dbHelper.getConnection()) {
             reconcileColumns(c, tableName, wireRecord, this::format);
         }
-
     }
 
     @Override

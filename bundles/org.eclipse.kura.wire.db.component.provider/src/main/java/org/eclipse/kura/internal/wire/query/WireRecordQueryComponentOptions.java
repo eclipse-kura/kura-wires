@@ -1,29 +1,28 @@
 /*******************************************************************************
  * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
- * 
+ *
  *******************************************************************************/
 package org.eclipse.kura.internal.wire.query;
 
 import java.util.Map;
 import java.util.Objects;
-
 import org.eclipse.kura.util.configuration.Property;
 
 public final class WireRecordQueryComponentOptions {
 
-    private static final Property<String> QUERY_PROPERTY = new Property<>("query",
-            "SELECT * FROM \"WR_data\" LIMIT 10;");
-    private static final Property<Integer> CACHE_EXPIRATION_INTERVAL_PROPERTY = new Property<>(
-            "cache.expiration.interval", 0);
+    private static final Property<String> QUERY_PROPERTY =
+            new Property<>("query", "SELECT * FROM \"WR_data\" LIMIT 10;");
+    private static final Property<Integer> CACHE_EXPIRATION_INTERVAL_PROPERTY =
+            new Property<>("cache.expiration.interval", 0);
     private static final Property<Boolean> EMIT_ON_EMPTY_RESULT_PROPERTY = new Property<>("emit.on.empty.result", true);
 
     private final String query;
@@ -62,8 +61,8 @@ public final class WireRecordQueryComponentOptions {
             return false;
         }
         WireRecordQueryComponentOptions other = (WireRecordQueryComponentOptions) obj;
-        return cacheExpirationInterval == other.cacheExpirationInterval && emitOnEmptyResult == other.emitOnEmptyResult
+        return cacheExpirationInterval == other.cacheExpirationInterval
+                && emitOnEmptyResult == other.emitOnEmptyResult
                 && Objects.equals(query, other.query);
     }
-
 }

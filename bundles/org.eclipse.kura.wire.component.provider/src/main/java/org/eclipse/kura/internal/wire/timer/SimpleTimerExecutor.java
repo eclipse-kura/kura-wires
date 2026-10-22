@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -16,7 +16,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import org.eclipse.kura.wire.WireSupport;
 
 public class SimpleTimerExecutor implements TimerExecutor {
@@ -31,8 +30,11 @@ public class SimpleTimerExecutor implements TimerExecutor {
             firstTickInterval = options.firstTickInterval() * options.getSimpleTimeUnitMultiplier();
         }
 
-        this.executor.scheduleAtFixedRate(() -> Timer.emit(wireSupport), firstTickInterval,
-                options.getSimpleInterval() * options.getSimpleTimeUnitMultiplier(), TimeUnit.MILLISECONDS);
+        this.executor.scheduleAtFixedRate(
+                () -> Timer.emit(wireSupport),
+                firstTickInterval,
+                options.getSimpleInterval() * options.getSimpleTimeUnitMultiplier(),
+                TimeUnit.MILLISECONDS);
     }
 
     private static ThreadFactory getThreadFactory(final String pid) {

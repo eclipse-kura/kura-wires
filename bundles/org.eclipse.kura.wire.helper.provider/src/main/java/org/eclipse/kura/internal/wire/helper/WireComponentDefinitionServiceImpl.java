@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ComponentConfiguration;
 import org.eclipse.kura.configuration.metatype.OCDService;
@@ -83,7 +82,9 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
                     logger.warn("Port index out of range: {}", index);
                     continue;
                 }
-                if (name == null || name.isEmpty() || DEFAULT_PORT_NAME_PATTERN.matcher(name).matches()) {
+                if (name == null
+                        || name.isEmpty()
+                        || DEFAULT_PORT_NAME_PATTERN.matcher(name).matches()) {
                     logger.warn("Invalid port name: {}", name);
                     continue;
                 }
@@ -96,8 +97,8 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
         }
     }
 
-    private WireComponentDefinition getDefinition(ComponentDescriptionDTO componentDescriptionDTO,
-            ComponentConfiguration ocd) {
+    private WireComponentDefinition getDefinition(
+            ComponentDescriptionDTO componentDescriptionDTO, ComponentConfiguration ocd) {
         if (componentDescriptionDTO.properties.get("input.cardinality.minimum") != null) {
             return getDefinitionFromComponentProperties(componentDescriptionDTO, ocd);
         } else {
@@ -105,8 +106,8 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
         }
     }
 
-    private WireComponentDefinition getDefinitionLegacy(ComponentDescriptionDTO componentDescriptionDTO,
-            ComponentConfiguration ocd) {
+    private WireComponentDefinition getDefinitionLegacy(
+            ComponentDescriptionDTO componentDescriptionDTO, ComponentConfiguration ocd) {
         WireComponentDefinition wireComponentDefinition = new WireComponentDefinition();
         wireComponentDefinition.setFactoryPid(componentDescriptionDTO.name);
         for (String service : componentDescriptionDTO.serviceInterfaces) {
@@ -137,10 +138,10 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
         wireComponentDefinition.setMinOutputPorts((int) componentProperties.get("output.cardinality.minimum"));
         wireComponentDefinition.setMaxOutputPorts((int) componentProperties.get("output.cardinality.maximum"));
         wireComponentDefinition.setDefaultOutputPorts((int) componentProperties.get("output.cardinality.default"));
-        wireComponentDefinition.setInputPortNames(parsePortNames(componentProperties.get("input.port.names"),
-                wireComponentDefinition.getMaxInputPorts()));
-        wireComponentDefinition.setOutputPortNames(parsePortNames(componentProperties.get("output.port.names"),
-                wireComponentDefinition.getMaxOutputPorts()));
+        wireComponentDefinition.setInputPortNames(parsePortNames(
+                componentProperties.get("input.port.names"), wireComponentDefinition.getMaxInputPorts()));
+        wireComponentDefinition.setOutputPortNames(parsePortNames(
+                componentProperties.get("output.port.names"), wireComponentDefinition.getMaxOutputPorts()));
         wireComponentDefinition.setComponentOCD(ocd);
 
         return wireComponentDefinition;
@@ -149,20 +150,22 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
     @Override
     public List<WireComponentDefinition> getComponentDefinitions() throws KuraException {
 
-        final BundleContext context = FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
-        ServiceReference<ServiceComponentRuntime> scrServiceRef = context
-                .getServiceReference(ServiceComponentRuntime.class);
+        final BundleContext context =
+                FrameworkUtil.getBundle(WireHelperServiceImpl.class).getBundleContext();
+        ServiceReference<ServiceComponentRuntime> scrServiceRef =
+                context.getServiceReference(ServiceComponentRuntime.class);
         ServiceReference<OCDService> ocdServiceRef = context.getServiceReference(OCDService.class);
 
         try {
             final OCDService ocdService = context.getService(ocdServiceRef);
             final ServiceComponentRuntime scrService = context.getService(scrServiceRef);
 
-            final String[] services = new String[] { WIRE_COMPONENT, WIRE_RECEIVER, WIRE_EMITTER };
+            final String[] services = new String[] {WIRE_COMPONENT, WIRE_RECEIVER, WIRE_EMITTER};
 
-            final Map<Object, ComponentDescriptionDTO> componentDefinitions = scrService.getComponentDescriptionDTOs()
-                    .stream().filter(component -> implementsAnyService(component, services))
-                    .collect(Collectors.toMap(c -> c.name, identity(), (first, second) -> second));
+            final Map<Object, ComponentDescriptionDTO> componentDefinitions =
+                    scrService.getComponentDescriptionDTOs().stream()
+                            .filter(component -> implementsAnyService(component, services))
+                            .collect(Collectors.toMap(c -> c.name, identity(), (first, second) -> second));
 
             final Map<String, ComponentConfiguration> ocds = ocdService.getServiceProviderOCDs(services).stream()
                     .collect(Collectors.toMap(ComponentConfiguration::getPid, identity(), (first, second) -> second));
@@ -175,6 +178,5 @@ public class WireComponentDefinitionServiceImpl implements WireComponentDefiniti
             context.ungetService(scrServiceRef);
             context.ungetService(ocdServiceRef);
         }
-
     }
 }

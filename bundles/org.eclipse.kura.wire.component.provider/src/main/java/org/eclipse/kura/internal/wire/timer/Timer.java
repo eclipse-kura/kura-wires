@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -16,7 +16,6 @@ package org.eclipse.kura.internal.wire.timer;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -51,8 +50,8 @@ public class Timer implements WireEmitter, ConfigurableComponent {
     protected void activate(final ComponentContext ctx, final Map<String, Object> properties) {
         logger.debug("Activating Timer...");
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) ctx.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) ctx.getServiceReference());
 
         doUpdate(new TimerOptions(properties));
 
@@ -115,5 +114,4 @@ public class Timer implements WireEmitter, ConfigurableComponent {
 
         wireSupport.emit(Collections.singletonList(timerWireRecord));
     }
-
 }
