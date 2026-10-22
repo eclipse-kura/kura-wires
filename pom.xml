@@ -13,15 +13,21 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kura</groupId>
     <artifactId>kura-wires</artifactId>
     <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <modules>
+        <module>target-definition</module>
+        <module>bundles</module>
+        <module>distrib</module>
+        <module>tests</module>
+        <module>kura-wires-pde-deps</module>
+    </modules>
 
     <build>
         <plugins>
@@ -58,12 +64,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <modules>
-        <module>target-definition</module>
-        <module>bundles</module>
-        <module>distrib</module>
-        <module>tests</module>
-        <module>kura-wires-pde-deps</module>
-    </modules>
 </project>

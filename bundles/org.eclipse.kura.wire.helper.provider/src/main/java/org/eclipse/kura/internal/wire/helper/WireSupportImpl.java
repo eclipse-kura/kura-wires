@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
-
 import org.eclipse.kura.wire.WireComponent;
 import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireReceiver;
@@ -57,8 +56,12 @@ final class WireSupportImpl implements WireSupport, MultiportWireSupport {
 
     private final Map<Wire, ReceiverPortImpl> receiverPortByWire;
 
-    WireSupportImpl(final WireComponent wireComponent, final String servicePid, final String kuraServicePid,
-            int inputPortCount, int outputPortCount) {
+    WireSupportImpl(
+            final WireComponent wireComponent,
+            final String servicePid,
+            final String kuraServicePid,
+            int inputPortCount,
+            int outputPortCount) {
         requireNonNull(wireComponent, "Wire component cannot be null");
         requireNonNull(servicePid, "service pid cannot be null");
         requireNonNull(kuraServicePid, "kura service pid cannot be null");

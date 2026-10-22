@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.core.testutil.TestUtil;
 import org.eclipse.kura.type.StringValue;
 import org.eclipse.kura.type.TypedValue;
@@ -175,16 +174,18 @@ public class RegexFilterTest {
         WireEnvelope wireEnvelope = new WireEnvelope(emitterPid, wireRecords);
 
         doAnswer(invocation -> {
-            List<WireRecord> records = invocation.getArgument(0, List.class);
+                    List<WireRecord> records = invocation.getArgument(0, List.class);
 
-            assertNotNull(records);
-            assertEquals(1, records.size());
-            assertNotNull(records.get(0));
-            assertNotNull(records.get(0).getProperties());
-            assertEquals(0, records.get(0).getProperties().size());
+                    assertNotNull(records);
+                    assertEquals(1, records.size());
+                    assertNotNull(records.get(0));
+                    assertNotNull(records.get(0).getProperties());
+                    assertEquals(0, records.get(0).getProperties().size());
 
-            return null;
-        }).when(wsMock).emit(any());
+                    return null;
+                })
+                .when(wsMock)
+                .emit(any());
 
         rf.onWireReceive(wireEnvelope);
 
@@ -226,17 +227,19 @@ public class RegexFilterTest {
         WireEnvelope wireEnvelope = new WireEnvelope(emitterPid, wireRecords);
 
         doAnswer(invocation -> {
-            List<WireRecord> records = invocation.getArgument(0, List.class);
+                    List<WireRecord> records = invocation.getArgument(0, List.class);
 
-            assertNotNull(records);
-            assertEquals(1, records.size());
-            assertNotNull(records.get(0));
-            assertNotNull(records.get(0).getProperties());
-            assertEquals(1, records.get(0).getProperties().size());
-            assertTrue(records.get(0).getProperties().containsKey("key"));
+                    assertNotNull(records);
+                    assertEquals(1, records.size());
+                    assertNotNull(records.get(0));
+                    assertNotNull(records.get(0).getProperties());
+                    assertEquals(1, records.get(0).getProperties().size());
+                    assertTrue(records.get(0).getProperties().containsKey("key"));
 
-            return null;
-        }).when(wsMock).emit(any());
+                    return null;
+                })
+                .when(wsMock)
+                .emit(any());
 
         rf.onWireReceive(wireEnvelope);
 
@@ -295,33 +298,35 @@ public class RegexFilterTest {
         WireEnvelope wireEnvelope = new WireEnvelope(emitterPid, wireRecords);
 
         doAnswer(invocation -> {
-            List<WireRecord> records = invocation.getArgument(0, List.class);
+                    List<WireRecord> records = invocation.getArgument(0, List.class);
 
-            assertNotNull(records);
-            assertEquals(3, records.size()); // all records and filtered properties!
+                    assertNotNull(records);
+                    assertEquals(3, records.size()); // all records and filtered properties!
 
-            WireRecord wireRecord = records.get(0);
-            assertNotNull(wireRecord);
-            Map<String, TypedValue<?>> props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(1, props.size());
-            assertTrue(props.containsKey("abBa"));
+                    WireRecord wireRecord = records.get(0);
+                    assertNotNull(wireRecord);
+                    Map<String, TypedValue<?>> props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(1, props.size());
+                    assertTrue(props.containsKey("abBa"));
 
-            wireRecord = records.get(1);
-            assertNotNull(wireRecord);
-            props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(1, props.size());
-            assertTrue(props.containsKey("acbabbc"));
+                    wireRecord = records.get(1);
+                    assertNotNull(wireRecord);
+                    props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(1, props.size());
+                    assertTrue(props.containsKey("acbabbc"));
 
-            wireRecord = records.get(2);
-            assertNotNull(wireRecord);
-            props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(0, props.size());
+                    wireRecord = records.get(2);
+                    assertNotNull(wireRecord);
+                    props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(0, props.size());
 
-            return null;
-        }).when(wsMock).emit(any());
+                    return null;
+                })
+                .when(wsMock)
+                .emit(any());
 
         rf.onWireReceive(wireEnvelope);
 
@@ -380,37 +385,38 @@ public class RegexFilterTest {
         WireEnvelope wireEnvelope = new WireEnvelope(emitterPid, wireRecords);
 
         doAnswer(invocation -> {
-            List<WireRecord> records = invocation.getArgument(0, List.class);
+                    List<WireRecord> records = invocation.getArgument(0, List.class);
 
-            assertNotNull(records);
-            assertEquals(3, records.size());
+                    assertNotNull(records);
+                    assertEquals(3, records.size());
 
-            WireRecord wireRecord = records.get(0);
-            assertNotNull(wireRecord);
-            Map<String, TypedValue<?>> props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(1, props.size());
-            assertTrue(props.containsKey("abBa"));
+                    WireRecord wireRecord = records.get(0);
+                    assertNotNull(wireRecord);
+                    Map<String, TypedValue<?>> props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(1, props.size());
+                    assertTrue(props.containsKey("abBa"));
 
-            wireRecord = records.get(1);
-            assertNotNull(wireRecord);
-            props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(0, props.size());
+                    wireRecord = records.get(1);
+                    assertNotNull(wireRecord);
+                    props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(0, props.size());
 
-            wireRecord = records.get(2);
-            assertNotNull(wireRecord);
-            props = wireRecord.getProperties();
-            assertNotNull(props);
-            assertEquals(1, props.size());
-            assertTrue(props.containsKey("abcacba"));
+                    wireRecord = records.get(2);
+                    assertNotNull(wireRecord);
+                    props = wireRecord.getProperties();
+                    assertNotNull(props);
+                    assertEquals(1, props.size());
+                    assertTrue(props.containsKey("abcacba"));
 
-            return null;
-        }).when(wsMock).emit(any());
+                    return null;
+                })
+                .when(wsMock)
+                .emit(any());
 
         rf.onWireReceive(wireEnvelope);
 
         verify(wsMock, times(1)).emit(any());
     }
-
 }

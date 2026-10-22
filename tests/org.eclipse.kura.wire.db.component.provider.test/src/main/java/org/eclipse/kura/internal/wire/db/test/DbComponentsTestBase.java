@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2023, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -32,7 +32,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.configuration.ConfigurationService;
 import org.eclipse.kura.db.BaseDbService;
@@ -72,8 +71,8 @@ public class DbComponentsTestBase {
 
     private final ConfigurationService configurationService;
 
-    public DbComponentsTestBase(final WireComponentTestTarget wireComponentTestTarget,
-            final StoreTestTarget storeTestTarget)
+    public DbComponentsTestBase(
+            final WireComponentTestTarget wireComponentTestTarget, final StoreTestTarget storeTestTarget)
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
         this.wireComponentTestTarget = wireComponentTestTarget;
         this.storeTestTarget = storeTestTarget;
@@ -88,11 +87,15 @@ public class DbComponentsTestBase {
         this.tableName = "testTable" + suffix;
         this.dbServicePid = "db" + suffix;
 
-        this.configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty()).get(30,
-                TimeUnit.SECONDS);
+        this.configurationService = WireTestUtil.trackService(ConfigurationService.class, Optional.empty())
+                .get(30, TimeUnit.SECONDS);
 
-        WireTestUtil.createFactoryConfiguration(configurationService, BaseDbService.class, dbServicePid,
-                this.storeTestTarget.factoryPid(), this.storeTestTarget.getConfigurationForDatabase(dbServicePid));
+        WireTestUtil.createFactoryConfiguration(
+                configurationService,
+                BaseDbService.class,
+                dbServicePid,
+                this.storeTestTarget.factoryPid(),
+                this.storeTestTarget.getConfigurationForDatabase(dbServicePid));
 
         final WireGraphService wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
                 .get(30, TimeUnit.SECONDS);
@@ -103,18 +106,22 @@ public class DbComponentsTestBase {
         storeConfig.put(wireComponentTestTarget.storeNameKey(), tableName);
         storeConfig.put(wireComponentTestTarget.storeReferenceKey(), h2DbServiceFilter);
 
-        final Map<String, Object> filterConfig = Collections.singletonMap(wireComponentTestTarget.filterReferenceKey(),
-                h2DbServiceFilter);
+        final Map<String, Object> filterConfig =
+                Collections.singletonMap(wireComponentTestTarget.filterReferenceKey(), h2DbServiceFilter);
 
-        final GraphBuilder builder = new GraphBuilder().addTestEmitterReceiver(this.testEmitterPid)
+        final GraphBuilder builder = new GraphBuilder()
+                .addTestEmitterReceiver(this.testEmitterPid)
                 .addWireComponent(this.testStorePid, wireComponentTestTarget.storeFactoryPid(), storeConfig, 1, 1)
                 .addWireComponent(this.testFilterPid, wireComponentTestTarget.filterFactoryPid(), filterConfig, 1, 1)
-                .addTestEmitterReceiver(this.testReceiverPid).addTestEmitterReceiver(this.storeEmitterPid)
-                .addWire(this.testEmitterPid, this.testFilterPid).addWire(this.testFilterPid, this.testReceiverPid)
+                .addTestEmitterReceiver(this.testReceiverPid)
+                .addTestEmitterReceiver(this.storeEmitterPid)
+                .addWire(this.testEmitterPid, this.testFilterPid)
+                .addWire(this.testFilterPid, this.testReceiverPid)
                 .addWire(this.storeEmitterPid, this.testStorePid);
 
-        builder.replaceExistingGraph(FrameworkUtil.getBundle(DbWireComponentsTest.class).getBundleContext(),
-                wireGraphService).get(30, TimeUnit.SECONDS);
+        builder.replaceExistingGraph(
+                        FrameworkUtil.getBundle(DbWireComponentsTest.class).getBundleContext(), wireGraphService)
+                .get(30, TimeUnit.SECONDS);
 
         this.testEmitter = builder.getTrackedWireComponent(this.testEmitterPid);
         this.testReceiver = builder.getTrackedWireComponent(this.testReceiverPid);
@@ -127,10 +134,13 @@ public class DbComponentsTestBase {
         final WireGraphService wireGraphService = WireTestUtil.trackService(WireGraphService.class, Optional.empty())
                 .get(30, TimeUnit.SECONDS);
 
-        new GraphBuilder().replaceExistingGraph(FrameworkUtil.getBundle(DbWireComponentsTest.class).getBundleContext(),
-                wireGraphService).get(30, TimeUnit.SECONDS);
+        new GraphBuilder()
+                .replaceExistingGraph(
+                        FrameworkUtil.getBundle(DbWireComponentsTest.class).getBundleContext(), wireGraphService)
+                .get(30, TimeUnit.SECONDS);
 
-        WireTestUtil.deleteFactoryConfiguration(this.configurationService, dbServicePid).get(30, TimeUnit.SECONDS);
+        WireTestUtil.deleteFactoryConfiguration(this.configurationService, dbServicePid)
+                .get(30, TimeUnit.SECONDS);
     }
 
     protected void givenAColumnWithData(final String name, final Object... data) {
@@ -156,15 +166,17 @@ public class DbComponentsTestBase {
 
     protected void whenDatabaseIsReconfigured()
             throws KuraException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-        WireTestUtil
-                .updateComponentConfiguration(this.configurationService, dbServicePid,
+        WireTestUtil.updateComponentConfiguration(
+                        this.configurationService,
+                        dbServicePid,
                         this.storeTestTarget.getConfigurationForDatabase(System.nanoTime() + ""))
                 .get(30, TimeUnit.SECONDS);
     }
 
     protected void givenComponentWithConfig(final String pid, final Map<String, Object> properties)
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
-        WireTestUtil.updateComponentConfiguration(configurationService, pid, properties).get(30, TimeUnit.SECONDS);
+        WireTestUtil.updateComponentConfiguration(configurationService, pid, properties)
+                .get(30, TimeUnit.SECONDS);
     }
 
     protected void givenPerformedQuery(final String sql)
@@ -174,8 +186,9 @@ public class DbComponentsTestBase {
 
     protected void whenQueryIsPerformed(final String sql)
             throws KuraException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-        WireTestUtil
-                .updateComponentConfiguration(this.configurationService, this.testFilterPid,
+        WireTestUtil.updateComponentConfiguration(
+                        this.configurationService,
+                        this.testFilterPid,
                         Collections.singletonMap(wireComponentTestTarget.filterQueryPropertyKey(), sql))
                 .get(30, TimeUnit.SECONDS);
 
@@ -214,13 +227,13 @@ public class DbComponentsTestBase {
         thenFilterEmitsEnvelopeWithProperty(0, 0, key, value);
     }
 
-    protected void thenFilterEmitsEnvelopeWithProperty(final int recordIndex, final String key,
-            final TypedValue<?> value) {
+    protected void thenFilterEmitsEnvelopeWithProperty(
+            final int recordIndex, final String key, final TypedValue<?> value) {
         thenFilterEmitsEnvelopeWithProperty(0, recordIndex, key, value);
     }
 
-    protected void thenFilterEmitsEnvelopeWithProperty(final int envelopeIndex, final int recordIndex, final String key,
-            final TypedValue<?> value) {
+    protected void thenFilterEmitsEnvelopeWithProperty(
+            final int envelopeIndex, final int recordIndex, final String key, final TypedValue<?> value) {
         final WireEnvelope envelope = this.receivedEnvelopes.get(envelopeIndex);
 
         final WireRecord record = envelope.getRecords().get(recordIndex);
@@ -228,16 +241,19 @@ public class DbComponentsTestBase {
         assertEquals(value, record.getProperties().get(key));
     }
 
-    protected void thenFilterEmitsEnvelopeWithoutProperty(final int envelopeIndex, final int recordIndex,
-            final String key) {
+    protected void thenFilterEmitsEnvelopeWithoutProperty(
+            final int envelopeIndex, final int recordIndex, final String key) {
         final WireEnvelope envelope = this.receivedEnvelopes.get(envelopeIndex);
 
         final WireRecord record = envelope.getRecords().get(recordIndex);
 
         if (record.getProperties().containsKey(key)) {
-            fail("record contains property \"" + key + "\" with value: " + record.getProperties().get(key)
+            fail("record contains property \"" + key + "\" with value: "
+                    + record.getProperties().get(key)
                     + " envelope records: "
-                    + envelope.getRecords().stream().map(WireRecord::getProperties).collect(Collectors.toList()));
+                    + envelope.getRecords().stream()
+                            .map(WireRecord::getProperties)
+                            .collect(Collectors.toList()));
         }
     }
 
@@ -245,8 +261,8 @@ public class DbComponentsTestBase {
         thenFilterEmitsEnvelopeWithByteArrayProperty(0, 0, key, value);
     }
 
-    protected void thenFilterEmitsEnvelopeWithByteArrayProperty(final int envelopeIndex, final int recordIndex,
-            final String key, final byte[] value) {
+    protected void thenFilterEmitsEnvelopeWithByteArrayProperty(
+            final int envelopeIndex, final int recordIndex, final String key, final byte[] value) {
         final WireEnvelope envelope = this.receivedEnvelopes.get(envelopeIndex);
 
         final WireRecord record = envelope.getRecords().get(recordIndex);
@@ -265,7 +281,9 @@ public class DbComponentsTestBase {
     }
 
     protected void thenEnvelopeRecordCountIs(final int envelopeIndex, final int recordCount) {
-        assertEquals(recordCount, this.receivedEnvelopes.get(envelopeIndex).getRecords().size());
+        assertEquals(
+                recordCount,
+                this.receivedEnvelopes.get(envelopeIndex).getRecords().size());
     }
 
     protected <T> Map<String, T> collectArgsToMap(final Object[] args, final Function<Object, T> valueMapper) {

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,13 +14,11 @@ package org.eclipse.kura.internal.wire.asset;
 
 import java.util.Map;
 import java.util.function.Function;
-
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
 
 enum TimestampMode {
-
     NO_TIMESTAMPS(None::new),
     PER_CHANNEL(None::new),
     SINGLE_ASSET_GENERATED(AssetGenerated::new),
@@ -39,8 +37,7 @@ enum TimestampMode {
 
     private static final class None implements TimestampFiller {
 
-        public None(final Map<String, TypedValue<?>> wireRecordProperties) {
-        }
+        public None(final Map<String, TypedValue<?>> wireRecordProperties) {}
 
         @Override
         public void processRecord(ChannelRecord record) {
@@ -51,7 +48,6 @@ enum TimestampMode {
         public void fillSingleTimestamp() {
             // nothing to do
         }
-
     }
 
     private static final class AssetGenerated implements TimestampFiller {
@@ -69,7 +65,8 @@ enum TimestampMode {
 
         @Override
         public void fillSingleTimestamp() {
-            this.wireRecordProperties.put(WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
+            this.wireRecordProperties.put(
+                    WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
                     TypedValues.newLongValue(System.currentTimeMillis()));
         }
     }
@@ -91,8 +88,8 @@ enum TimestampMode {
 
         @Override
         public void fillSingleTimestamp() {
-            this.wireRecordProperties.put(WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
-                    TypedValues.newLongValue(this.timestamp));
+            this.wireRecordProperties.put(
+                    WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(), TypedValues.newLongValue(this.timestamp));
         }
     }
 
@@ -113,8 +110,8 @@ enum TimestampMode {
 
         @Override
         public void fillSingleTimestamp() {
-            this.wireRecordProperties.put(WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
-                    TypedValues.newLongValue(this.timestamp));
+            this.wireRecordProperties.put(
+                    WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(), TypedValues.newLongValue(this.timestamp));
         }
     }
 }

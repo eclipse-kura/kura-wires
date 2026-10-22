@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -20,7 +20,6 @@ import static java.util.Objects.requireNonNull;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -100,8 +99,8 @@ public class DbWireRecordStore implements WireEmitter, WireReceiver, Configurabl
         logger.debug("Activating DB Wire Record Store...");
         this.wireRecordStoreOptions = new DbWireRecordStoreOptions(properties);
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         if (nonNull(this.dbService)) {
             reconcileDB(this.wireRecordStoreOptions.getTableName());

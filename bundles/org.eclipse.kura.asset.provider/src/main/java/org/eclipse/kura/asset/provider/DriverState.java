@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.eclipse.kura.asset.provider.BaseAsset.ChannelListenerHolder;
 import org.eclipse.kura.channel.Channel;
 import org.eclipse.kura.channel.ChannelRecord;
@@ -76,13 +75,13 @@ public class DriverState {
         }
     }
 
-    public void syncChannelListeners(final Set<ChannelListenerHolder> targetState,
-            final Map<String, Channel> channels) {
+    public void syncChannelListeners(
+            final Set<ChannelListenerHolder> targetState, final Map<String, Channel> channels) {
         setChannelListenersInternal(new HashSet<>(targetState), channels);
     }
 
-    private void setChannelListenersInternal(final Set<ChannelListenerHolder> targetState,
-            final Map<String, Channel> channels) {
+    private void setChannelListenersInternal(
+            final Set<ChannelListenerHolder> targetState, final Map<String, Channel> channels) {
 
         final Iterator<ChannelListenerHolder> iter = this.attachedListeners.iterator();
 

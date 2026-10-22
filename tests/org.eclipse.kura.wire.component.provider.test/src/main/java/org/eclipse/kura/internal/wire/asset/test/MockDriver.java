@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelStatus;
@@ -40,12 +39,10 @@ class MockDriver implements Driver {
     Optional<ConnectionException> connectionException = Optional.empty();
 
     @Override
-    public void connect() throws ConnectionException {
-    }
+    public void connect() throws ConnectionException {}
 
     @Override
-    public void disconnect() throws ConnectionException {
-    }
+    public void disconnect() throws ConnectionException {}
 
     @Override
     public ChannelDescriptor getChannelDescriptor() {
@@ -86,7 +83,6 @@ class MockDriver implements Driver {
 
             record.setTimestamp(System.currentTimeMillis());
         }
-
     }
 
     @Override
@@ -101,7 +97,8 @@ class MockDriver implements Driver {
     @Override
     public void unregisterChannelListener(ChannelListener listener) throws ConnectionException {
         synchronized (listeners) {
-            final Iterator<Entry<String, ChannelListener>> iter = listeners.entrySet().iterator();
+            final Iterator<Entry<String, ChannelListener>> iter =
+                    listeners.entrySet().iterator();
 
             while (iter.hasNext()) {
                 final Entry<String, ChannelListener> e = iter.next();
@@ -114,8 +111,7 @@ class MockDriver implements Driver {
     }
 
     @Override
-    public void write(List<ChannelRecord> records) throws ConnectionException {
-    }
+    public void write(List<ChannelRecord> records) throws ConnectionException {}
 
     synchronized void throwConnectionException(final Optional<ConnectionException> connectionException) {
         this.connectionException = connectionException;
@@ -147,5 +143,4 @@ class MockDriver implements Driver {
 
         throw new UnsupportedOperationException();
     }
-
 }

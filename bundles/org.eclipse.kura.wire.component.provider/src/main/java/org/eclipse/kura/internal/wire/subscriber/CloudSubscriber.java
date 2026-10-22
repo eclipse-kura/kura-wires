@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
@@ -112,8 +111,8 @@ public final class CloudSubscriber implements WireEmitter, ConfigurableComponent
      */
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Cloud Subscriber Wire Component...");
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         this.options = new CloudSubscriberOptions(properties);
         logger.debug("Activating Cloud Subscriber Wire Component... Done");
@@ -196,8 +195,11 @@ public final class CloudSubscriber implements WireEmitter, ConfigurableComponent
         return Arrays.asList(wireRecord);
     }
 
-    private void emitBody(final Map<String, TypedValue<?>> wireRecordProperties, final KuraPayload payload,
-            final String property, final DataType dataType) {
+    private void emitBody(
+            final Map<String, TypedValue<?>> wireRecordProperties,
+            final KuraPayload payload,
+            final String property,
+            final DataType dataType) {
         try {
             final byte[] body = payload.getBody();
 

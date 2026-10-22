@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,6 @@
  * Contributors:
  *  Eurotech
  ******************************************************************************/
-
 package org.eclipse.kura.wire.ai.component.provider;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.KuraIOException;
 import org.eclipse.kura.ai.inference.Tensor;
@@ -72,7 +70,7 @@ public class TensorListAdapterTest {
 
     @Test
     public void adapterShouldWorkWithByteArrayWiredRecord() {
-        givenWireRecordPropWith("INPUT0", new ByteArrayValue(new byte[] { 1, 2, 3, 4 }));
+        givenWireRecordPropWith("INPUT0", new ByteArrayValue(new byte[] {1, 2, 3, 4}));
         givenWireRecord();
         givenTensorDescriptorWith("INPUT0", "BYTES", Arrays.asList(1L, 1L));
 
@@ -197,15 +195,15 @@ public class TensorListAdapterTest {
     @Test
     public void adapterShouldWorkWithByteArrayTensor() {
         givenTensorDescriptorWith("OUTPUT0", "BYTES", Arrays.asList(1L, 1L));
-        givenTensorWith("OUTPUT0", "BYTES", Arrays.asList(1L, 1L), Byte.class,
-                Arrays.asList((byte) 1, (byte) 2, (byte) 3));
+        givenTensorWith(
+                "OUTPUT0", "BYTES", Arrays.asList(1L, 1L), Byte.class, Arrays.asList((byte) 1, (byte) 2, (byte) 3));
 
         whenTensorListAdapterConvertsFromTensorList();
 
         thenNoExceptionOccurred();
         thenResultingWireRecordIsSize(1);
         thenAllWireRecordsHaveSingleProperty();
-        thenResultingNamedWireRecordPropertiesAreEqualTo("OUTPUT0", new ByteArrayValue(new byte[] { 1, 2, 3 }));
+        thenResultingNamedWireRecordPropertiesAreEqualTo("OUTPUT0", new ByteArrayValue(new byte[] {1, 2, 3}));
     }
 
     @Test
@@ -263,8 +261,8 @@ public class TensorListAdapterTest {
     @Test
     public void adapterShouldWorkWithStringTensor() {
         givenTensorDescriptorWith("OUTPUT0", "STRING", Arrays.asList(1L, 1L));
-        givenTensorWith("OUTPUT0", "STRING", Arrays.asList(1L, 1L), String.class,
-                Arrays.asList("This is a test string"));
+        givenTensorWith(
+                "OUTPUT0", "STRING", Arrays.asList(1L, 1L), String.class, Arrays.asList("This is a test string"));
 
         whenTensorListAdapterConvertsFromTensorList();
 
@@ -283,8 +281,8 @@ public class TensorListAdapterTest {
 
         givenTensorWith("OUTPUT0", "FP32", Arrays.asList(1L, 1L), Float.class, Arrays.asList(6.9F));
         givenTensorWith("OUTPUT1", "INT32", Arrays.asList(1L, 1L), Integer.class, Arrays.asList(100));
-        givenTensorWith("OUTPUT2", "STRING", Arrays.asList(1L, 1L), String.class,
-                Arrays.asList("May the force be with you"));
+        givenTensorWith(
+                "OUTPUT2", "STRING", Arrays.asList(1L, 1L), String.class, Arrays.asList("May the force be with you"));
         givenTensorWith("OUTPUT3", "INT32", Arrays.asList(1L, 1L), Long.class, Arrays.asList(254678L));
 
         whenTensorListAdapterConvertsFromTensorList();
@@ -301,8 +299,8 @@ public class TensorListAdapterTest {
     public void adapterShouldThrowWithUnsupportedTensorShape() {
         givenTensorDescriptorWith("OUTPUT0", "FP32", Arrays.asList(1L, 5L));
 
-        givenTensorWith("OUTPUT0", "FP32", Arrays.asList(1L, 5L), Float.class,
-                Arrays.asList(6.9F, 1.0F, 1.0F, 1.0F, 1.0F));
+        givenTensorWith(
+                "OUTPUT0", "FP32", Arrays.asList(1L, 5L), Float.class, Arrays.asList(6.9F, 1.0F, 1.0F, 1.0F, 1.0F));
 
         whenTensorListAdapterConvertsFromTensorList();
 
@@ -345,7 +343,8 @@ public class TensorListAdapterTest {
      */
     private void whenTensorListAdapterConvertsFromWireRecord() {
         try {
-            this.outputTensors = TensorListAdapter.givenDescriptors(this.inputDescriptors).fromWireRecord(inputRecord);
+            this.outputTensors =
+                    TensorListAdapter.givenDescriptors(this.inputDescriptors).fromWireRecord(inputRecord);
         } catch (KuraException e) {
             e.printStackTrace();
             this.exceptionOccurred = true;
@@ -354,7 +353,8 @@ public class TensorListAdapterTest {
 
     private void whenTensorListAdapterConvertsFromTensorList() {
         try {
-            this.outputRecords = TensorListAdapter.givenDescriptors(this.inputDescriptors).fromTensorList(inputTensors);
+            this.outputRecords =
+                    TensorListAdapter.givenDescriptors(this.inputDescriptors).fromTensorList(inputTensors);
         } catch (KuraIOException e) {
             e.printStackTrace();
             this.exceptionOccurred = true;
@@ -443,5 +443,4 @@ public class TensorListAdapterTest {
         this.inputDescriptors = new ArrayList<>();
         this.inputTensors = new ArrayList<>();
     }
-
 }

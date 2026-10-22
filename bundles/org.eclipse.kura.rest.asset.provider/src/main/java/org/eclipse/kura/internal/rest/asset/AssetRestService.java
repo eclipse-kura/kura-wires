@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,17 +10,30 @@
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.internal.rest.asset;
 
 import static org.eclipse.kura.rest.utils.Validable.validate;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Base64;
 import java.util.Base64.Encoder;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
 import org.eclipse.kura.asset.AssetService;
@@ -33,30 +46,13 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.UserAdmin;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializer;
-
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-
 @Path("/assets")
 public class AssetRestService {
 
     private static final String BAD_WRITE_REQUEST_ERROR_MESSAGE = "Bad request, "
             + "expected request format: {\"channels\": [{\"name\": \"channel-1\", \"type\": \"INTEGER\", \"value\": 10 }]}";
-    private static final String BAD_READ_REQUEST_ERROR_MESSAGE = "Bad request, "
-            + "expected request format: { \"channels\": [ \"channel-1\", \"channel-2\"]}";
+    private static final String BAD_READ_REQUEST_ERROR_MESSAGE =
+            "Bad request, " + "expected request format: { \"channels\": [ \"channel-1\", \"channel-2\"]}";
     private static final Encoder BASE64_ENCODER = Base64.getEncoder();
 
     private AssetService assetService;
@@ -80,13 +76,15 @@ public class AssetRestService {
     @RolesAllowed("assets")
     @Produces(MediaType.APPLICATION_JSON)
     public List<String> listAssetPids() throws InvalidSyntaxException {
-        return getAssetServiceReferences().stream().map(reference -> (String) reference.getProperty("kura.service.pid"))
+        return getAssetServiceReferences().stream()
+                .map(reference -> (String) reference.getProperty("kura.service.pid"))
                 .collect(Collectors.toList());
     }
 
     protected Collection<ServiceReference<Asset>> getAssetServiceReferences() throws InvalidSyntaxException {
-        return FrameworkUtil.getBundle(AssetRestService.class).getBundleContext().getServiceReferences(Asset.class,
-                null);
+        return FrameworkUtil.getBundle(AssetRestService.class)
+                .getBundleContext()
+                .getServiceReferences(Asset.class, null);
     }
 
     @GET
@@ -124,7 +122,8 @@ public class AssetRestService {
     public JsonElement write(@PathParam("pid") String assetPid, WriteRequestList requests) throws KuraException {
         final Asset asset = getAsset(assetPid);
         validate(requests, BAD_WRITE_REQUEST_ERROR_MESSAGE);
-        final List<ChannelRecord> records = requests.getRequests().stream().map(request -> request.toChannelRecord())
+        final List<ChannelRecord> records = requests.getRequests().stream()
+                .map(request -> request.toChannelRecord())
                 .collect(Collectors.toList());
         asset.write(records);
         return getChannelSerializer().toJsonTree(records);
@@ -133,28 +132,32 @@ public class AssetRestService {
     private Asset getAsset(String assetPid) {
         final Asset asset = this.assetService.getAsset(assetPid);
         if (asset == null) {
-            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND).type(MediaType.TEXT_PLAIN)
-                    .entity("Asset not found: " + assetPid).build());
+            throw new WebApplicationException(Response.status(Response.Status.NOT_FOUND)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity("Asset not found: " + assetPid)
+                    .build());
         }
         return asset;
     }
 
     private Gson getChannelSerializer() {
         if (this.channelSerializer == null) {
-            this.channelSerializer = new GsonBuilder().registerTypeAdapter(TypedValue.class,
-                    (JsonSerializer<TypedValue<?>>) (typedValue, type, context) -> {
-                        final Object value = typedValue.getValue();
-                        if (value instanceof Number) {
-                            return new JsonPrimitive((Number) value);
-                        } else if (value instanceof String) {
-                            return new JsonPrimitive((String) value);
-                        } else if (value instanceof byte[]) {
-                            return new JsonPrimitive(BASE64_ENCODER.encodeToString((byte[]) value));
-                        } else if (value instanceof Boolean) {
-                            return new JsonPrimitive((Boolean) value);
-                        }
-                        return null;
-                    }).create();
+            this.channelSerializer = new GsonBuilder()
+                    .registerTypeAdapter(TypedValue.class, (JsonSerializer<TypedValue<?>>)
+                            (typedValue, type, context) -> {
+                                final Object value = typedValue.getValue();
+                                if (value instanceof Number) {
+                                    return new JsonPrimitive((Number) value);
+                                } else if (value instanceof String) {
+                                    return new JsonPrimitive((String) value);
+                                } else if (value instanceof byte[]) {
+                                    return new JsonPrimitive(BASE64_ENCODER.encodeToString((byte[]) value));
+                                } else if (value instanceof Boolean) {
+                                    return new JsonPrimitive((Boolean) value);
+                                }
+                                return null;
+                            })
+                    .create();
         }
         return this.channelSerializer;
     }

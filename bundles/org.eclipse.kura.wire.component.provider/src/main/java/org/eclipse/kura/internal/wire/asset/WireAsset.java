@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.KuraException;
@@ -149,8 +148,8 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
     @Override
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Wire Asset...");
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         super.activate(componentContext, properties);
         logger.debug("Activating Wire Asset...Done");
     }
@@ -269,13 +268,16 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
 
         final String message = e.getMessage();
 
-        wireRecordProperties.put(WireAssetConstants.PROP_ASSET_NAME.value(),
-                TypedValues.newStringValue(getKuraServicePid()));
-        wireRecordProperties.put(WireAssetConstants.PROP_ASSET_ERROR.value(),
-                TypedValues.newStringValue(message != null ? message : e.getClass().getSimpleName()));
+        wireRecordProperties.put(
+                WireAssetConstants.PROP_ASSET_NAME.value(), TypedValues.newStringValue(getKuraServicePid()));
+        wireRecordProperties.put(
+                WireAssetConstants.PROP_ASSET_ERROR.value(),
+                TypedValues.newStringValue(
+                        message != null ? message : e.getClass().getSimpleName()));
 
         if (options.getTimestampMode() != TimestampMode.NO_TIMESTAMPS) {
-            wireRecordProperties.put(WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
+            wireRecordProperties.put(
+                    WireAssetConstants.PROP_SINGLE_TIMESTAMP_NAME.value(),
                     TypedValues.newLongValue(System.currentTimeMillis()));
         }
 
@@ -336,8 +338,8 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
             throw new IllegalArgumentException("Channel Records cannot be empty");
         }
 
-        final List<ChannelRecord> toBeEmitted = this.valueChangeCache.map(c -> c.filterRecords(channelRecords))
-                .orElse(channelRecords);
+        final List<ChannelRecord> toBeEmitted =
+                this.valueChangeCache.map(c -> c.filterRecords(channelRecords)).orElse(channelRecords);
 
         final Map<String, TypedValue<?>> wireRecordProperties;
 
@@ -351,8 +353,8 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
             return;
         }
 
-        wireRecordProperties.put(WireAssetConstants.PROP_ASSET_NAME.value(),
-                TypedValues.newStringValue(getKuraServicePid()));
+        wireRecordProperties.put(
+                WireAssetConstants.PROP_ASSET_NAME.value(), TypedValues.newStringValue(getKuraServicePid()));
 
         this.wireSupport.emit(Collections.singletonList(new WireRecord(wireRecordProperties)));
     }
@@ -380,9 +382,11 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
 
     private boolean isListeningChannel(final Map<String, Object> properties) {
         try {
-            return Boolean.parseBoolean(properties.get(WireAssetConstants.LISTEN_PROP_NAME.value()).toString());
+            return Boolean.parseBoolean(
+                    properties.get(WireAssetConstants.LISTEN_PROP_NAME.value()).toString());
         } catch (Exception e) {
-            logger.warn("Failed to retreive \"listen\" property from channel configuration from the Wire Asset: {}",
+            logger.warn(
+                    "Failed to retreive \"listen\" property from channel configuration from the Wire Asset: {}",
                     getKuraServicePid());
             return false;
         }
@@ -405,12 +409,13 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
     }
 
     @Override
-    protected void updateChannelListenerRegistrations(final Set<ChannelListenerHolder> listeners,
-            final AssetConfiguration config) {
+    protected void updateChannelListenerRegistrations(
+            final Set<ChannelListenerHolder> listeners, final AssetConfiguration config) {
 
         super.updateChannelListenerRegistrations(listeners, config);
 
-        config.getAssetChannels().entrySet().stream().filter(e -> isListeningChannel(e.getValue().getConfiguration()))
+        config.getAssetChannels().entrySet().stream()
+                .filter(e -> isListeningChannel(e.getValue().getConfiguration()))
                 .map(e -> new ChannelListenerHolder(e.getValue(), new EmitterChannelListener()))
                 .forEach(listeners::add);
     }
@@ -454,8 +459,8 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
                 final ChannelRecord eventRecord = event.getChannelRecord();
 
                 if (eventRecord.getUnit() == null || eventRecord.getUnit().isEmpty()) {
-                    final Channel channel = getAssetConfiguration().getAssetChannels()
-                            .get(eventRecord.getChannelName());
+                    final Channel channel =
+                            getAssetConfiguration().getAssetChannels().get(eventRecord.getChannelName());
 
                     if (channel != null) {
                         eventRecord.setUnit(channel.getUnit());
@@ -491,6 +496,5 @@ public final class WireAsset extends BaseAsset implements WireEmitter, WireRecei
 
             return Utils.toWireRecordProperties(channelRecords, WireAsset.this.options, this.recordFillers);
         }
-
     }
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -18,7 +18,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.ai.inference.InferenceEngineService;
@@ -79,8 +78,8 @@ public class AIComponent implements WireEmitter, WireReceiver, ConfigurableCompo
             throws ComponentException {
         logger.info("Activating AIComponent...");
 
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         updated(properties);
 
@@ -124,7 +123,6 @@ public class AIComponent implements WireEmitter, WireReceiver, ConfigurableCompo
                 logger.error("Error processing WireRecord.", e);
             }
         }
-
     }
 
     @Override
@@ -189,10 +187,12 @@ public class AIComponent implements WireEmitter, WireReceiver, ConfigurableCompo
             List<WireRecord> result = new LinkedList<>();
 
             if (this.infoPre.isPresent()) {
-                tensors = TensorListAdapter.givenDescriptors(this.infoPre.get().getInputs()).fromWireRecord(wireRecord);
+                tensors = TensorListAdapter.givenDescriptors(this.infoPre.get().getInputs())
+                        .fromWireRecord(wireRecord);
                 tensors = this.inferenceEngineService.infer(this.infoPre.get(), tensors);
             } else {
-                tensors = TensorListAdapter.givenDescriptors(this.infoInfer.get().getInputs())
+                tensors = TensorListAdapter.givenDescriptors(
+                                this.infoInfer.get().getInputs())
                         .fromWireRecord(wireRecord);
             }
 
@@ -201,10 +201,12 @@ public class AIComponent implements WireEmitter, WireReceiver, ConfigurableCompo
             if (this.infoPost.isPresent()) {
                 tensors = this.inferenceEngineService.infer(this.infoPost.get(), tensors);
                 result.addAll(
-                        TensorListAdapter.givenDescriptors(this.infoPost.get().getOutputs()).fromTensorList(tensors));
+                        TensorListAdapter.givenDescriptors(this.infoPost.get().getOutputs())
+                                .fromTensorList(tensors));
             } else {
                 result.addAll(
-                        TensorListAdapter.givenDescriptors(this.infoInfer.get().getOutputs()).fromTensorList(tensors));
+                        TensorListAdapter.givenDescriptors(this.infoInfer.get().getOutputs())
+                                .fromTensorList(tensors));
             }
 
             return Optional.of(result);

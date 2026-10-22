@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-
 import org.eclipse.kura.asset.Asset;
 import org.junit.Test;
 import org.osgi.framework.BundleContext;
@@ -47,7 +46,7 @@ public class AssetServiceImplTest {
         ServiceReference<Asset> refMock = mock(ServiceReference.class);
         when(refMock.getProperty(KURA_SERVICE_PID)).thenReturn("somePid");
 
-        ServiceReference[] references = { refMock };
+        ServiceReference[] references = {refMock};
         Asset assetMock = mock(Asset.class);
 
         AssetServiceImpl svc = getService(references, assetMock);
@@ -67,7 +66,7 @@ public class AssetServiceImplTest {
         ServiceReference<Asset> refMock = mock(ServiceReference.class);
         when(refMock.getProperty(KURA_SERVICE_PID)).thenReturn(pid);
 
-        ServiceReference[] references = { refMock };
+        ServiceReference[] references = {refMock};
         Asset assetMock = mock(Asset.class);
 
         AssetServiceImpl svc = getService(references, assetMock);
@@ -106,7 +105,7 @@ public class AssetServiceImplTest {
         ServiceReference<Asset> refMock = mock(ServiceReference.class);
         when(refMock.getProperty(KURA_SERVICE_PID)).thenReturn("somePid");
 
-        ServiceReference[] references = { refMock };
+        ServiceReference[] references = {refMock};
         Asset assetMock = mock(Asset.class);
 
         AssetServiceImpl svc = getService(references, assetMock);
@@ -125,7 +124,7 @@ public class AssetServiceImplTest {
         String pid = "testPid";
         when(refMock.getProperty(KURA_SERVICE_PID)).thenReturn(pid);
 
-        ServiceReference[] references = { refMock };
+        ServiceReference[] references = {refMock};
         Asset assetMock = mock(Asset.class);
 
         AssetServiceImpl svc = getService(references, assetMock);
@@ -141,7 +140,7 @@ public class AssetServiceImplTest {
         // return all (1) assets
 
         ServiceReference<Asset> refMock = mock(ServiceReference.class);
-        ServiceReference[] references = { refMock };
+        ServiceReference[] references = {refMock};
 
         Asset assetMock = mock(Asset.class);
 
@@ -176,5 +175,4 @@ public class AssetServiceImplTest {
             }
         };
     }
-
 }

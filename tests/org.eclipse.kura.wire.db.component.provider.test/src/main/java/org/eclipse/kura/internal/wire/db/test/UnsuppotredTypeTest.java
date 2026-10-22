@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2023, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.type.TypedValues;
 import org.junit.Test;
@@ -51,8 +50,9 @@ public class UnsuppotredTypeTest extends DbComponentsTestBase {
     @Parameters(name = "{0} with {1}")
     public static Collection<Object[]> targets() {
         return Arrays.asList(new Object[][] {
-                { WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.H2 },
-                { WireComponentTestTarget.DB_FILTER_AND_DB_STORE, StoreTestTarget.H2 } });
+            {WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.H2},
+            {WireComponentTestTarget.DB_FILTER_AND_DB_STORE, StoreTestTarget.H2}
+        });
     }
 
     public UnsuppotredTypeTest(WireComponentTestTarget wireComponentTestTarget, StoreTestTarget storeTestTarget)
@@ -60,5 +60,4 @@ public class UnsuppotredTypeTest extends DbComponentsTestBase {
         super(wireComponentTestTarget, storeTestTarget);
         // TODO Auto-generated constructor stub
     }
-
 }

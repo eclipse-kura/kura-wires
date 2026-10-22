@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.cloudconnection.message.KuraMessage;
@@ -126,8 +125,8 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
      */
     protected void activate(final ComponentContext componentContext, final Map<String, Object> properties) {
         logger.debug("Activating Cloud Publisher Wire Component...");
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
 
         // Update properties
         this.cloudPublisherOptions = new CloudPublisherOptions(properties);
@@ -223,7 +222,9 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
         return kuraPayload;
     }
 
-    private void publishBody(final KuraPayload kuraPayload, final Map<String, TypedValue<?>> wireRecordProperties,
+    private void publishBody(
+            final KuraPayload kuraPayload,
+            final Map<String, TypedValue<?>> wireRecordProperties,
             final String bodyProperty) {
         try {
             final TypedValue<?> bodyPropertyValue = wireRecordProperties.get(bodyProperty);
@@ -250,8 +251,7 @@ public final class CloudPublisher implements WireReceiver, ConfigurableComponent
 
     private synchronized void setKuraPosition(KuraPayload kuraPayload) {
         if (this.positionService.isEmpty()) {
-            logger.debug(
-                    "Position Service is not available, cannot enrich message with position information.");
+            logger.debug("Position Service is not available, cannot enrich message with position information.");
             return;
         }
 

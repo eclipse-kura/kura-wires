@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -34,7 +34,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import org.eclipse.kura.asset.AssetConfiguration;
 import org.eclipse.kura.asset.provider.AssetConstants;
 import org.eclipse.kura.channel.Channel;
@@ -67,11 +66,11 @@ public final class BaseAssetConfiguration {
     private final boolean hasReadChannels;
     private final String kuraServicePid;
 
-    public BaseAssetConfiguration(final Tocd baseOcd, final ComponentContext context,
-            final Map<String, Object> properties) {
+    public BaseAssetConfiguration(
+            final Tocd baseOcd, final ComponentContext context, final Map<String, Object> properties) {
         this.properties = fillOcdDefaults(properties, baseOcd, context);
-        this.assetConfiguration = new AssetConfiguration(getDescription(properties), getDriverPid(properties),
-                retreiveChannelList(properties));
+        this.assetConfiguration = new AssetConfiguration(
+                getDescription(properties), getDriverPid(properties), retreiveChannelList(properties));
         this.hasReadChannels = !getAllReadRecords().isEmpty();
         this.kuraServicePid = (String) properties.get(ConfigurationService.KURA_SERVICE_PID);
     }
@@ -112,8 +111,8 @@ public final class BaseAssetConfiguration {
     }
 
     @SuppressWarnings("unchecked")
-    public void complete(final Tocd baseOcd, final ComponentContext context, final List<Tad> assetDescriptor,
-            final Driver driver) {
+    public void complete(
+            final Tocd baseOcd, final ComponentContext context, final List<Tad> assetDescriptor, final Driver driver) {
 
         final List<Tad> driverDescriptor;
 
@@ -138,23 +137,26 @@ public final class BaseAssetConfiguration {
 
         logger.info("updating asset configuration...");
         final long start = System.currentTimeMillis();
-        final Map<String, Object> updatedConfiguration = updateConfiguration(context, assetDescriptor,
-                new HashMap<>(this.properties), driverDescriptor);
+        final Map<String, Object> updatedConfiguration =
+                updateConfiguration(context, assetDescriptor, new HashMap<>(this.properties), driverDescriptor);
         logger.info("updating asset configuration...done in {} ms", System.currentTimeMillis() - start);
 
         if (updatedConfiguration != null) {
             this.properties = updatedConfiguration;
-            this.assetConfiguration = new AssetConfiguration(getDescription(this.properties),
-                    getDriverPid(this.properties), retreiveChannelList(this.properties));
+            this.assetConfiguration = new AssetConfiguration(
+                    getDescription(this.properties),
+                    getDriverPid(this.properties),
+                    retreiveChannelList(this.properties));
         }
 
         this.ocd = buildDefinition(baseOcd, assetDescriptor, driverDescriptor);
     }
 
-    private Tocd buildDefinition(final Tocd baseOcd, final List<Tad> assetDescriptor,
-            final List<Tad> driverDescriptor) {
+    private Tocd buildDefinition(
+            final Tocd baseOcd, final List<Tad> assetDescriptor, final List<Tad> driverDescriptor) {
         Stream.concat(assetDescriptor.stream(), driverDescriptor.stream()).forEach(attribute -> {
-            for (final Entry<String, Channel> entry : this.assetConfiguration.getAssetChannels().entrySet()) {
+            for (final Entry<String, Channel> entry :
+                    this.assetConfiguration.getAssetChannels().entrySet()) {
                 final String channelName = entry.getKey();
                 if (!(attribute instanceof Tad)) {
                     return;
@@ -166,8 +168,11 @@ public final class BaseAssetConfiguration {
         return baseOcd;
     }
 
-    private Map<String, Object> updateConfiguration(final ComponentContext context, final List<Tad> assetDescriptor,
-            Map<String, Object> properties, final List<Tad> driverDescriptor) {
+    private Map<String, Object> updateConfiguration(
+            final ComponentContext context,
+            final List<Tad> assetDescriptor,
+            Map<String, Object> properties,
+            final List<Tad> driverDescriptor) {
 
         Map<String, Object> newConfiguration = null;
         final Tocd tempOcd = new Tocd();
@@ -191,8 +196,8 @@ public final class BaseAssetConfiguration {
                         newConfiguration = new HashMap<>(properties);
                     }
                     final Object defaultValue = defaultValues.get(id);
-                    newConfiguration.put(channel.getName() + AssetConstants.CHANNEL_PROPERTY_SEPARATOR.value() + id,
-                            defaultValue);
+                    newConfiguration.put(
+                            channel.getName() + AssetConstants.CHANNEL_PROPERTY_SEPARATOR.value() + id, defaultValue);
                 }
             }
         }
@@ -308,8 +313,10 @@ public final class BaseAssetConfiguration {
         }
 
         final Map<String, Channel> getChannelList() {
-            return this.channels.entrySet().parallelStream().map(e -> extractChannel(e.getKey(), e.getValue()))
-                    .filter(Objects::nonNull).collect(Collectors.toMap(Channel::getName, c -> c));
+            return this.channels.entrySet().parallelStream()
+                    .map(e -> extractChannel(e.getKey(), e.getValue()))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toMap(Channel::getName, c -> c));
         }
 
         private static ChannelType getChannelType(final Map<String, Object> properties) {
@@ -391,8 +398,8 @@ public final class BaseAssetConfiguration {
             final Number valueOffset = getValueOffset(channelConfig);
             final ScaleOffsetType scaleOffsetType = getScaleOffsetType(channelConfig);
 
-            final Channel channel = new Channel(channelName, channelType, dataType, scaleOffsetType, valueScale,
-                    valueOffset, channelConfig);
+            final Channel channel = new Channel(
+                    channelName, channelType, dataType, scaleOffsetType, valueScale, valueOffset, channelConfig);
             channel.setEnabled(isEnabled);
 
             final String valueUnit = getUnit(channelConfig);
@@ -402,51 +409,50 @@ public final class BaseAssetConfiguration {
             return channel;
         }
 
-        private static Number parseScaleOffsetTypedValue(ScaleOffsetType scaleOffsetType, DataType valueType,
-                String value) {
+        private static Number parseScaleOffsetTypedValue(
+                ScaleOffsetType scaleOffsetType, DataType valueType, String value) {
             Objects.requireNonNull(scaleOffsetType, "scaleOffsetType cannot be null");
             Objects.requireNonNull(valueType, "valueType cannot be null");
             Objects.requireNonNull(value, "value cannot be null");
 
-            DataType actualDataType = scaleOffsetType == ScaleOffsetType.DEFINED_BY_VALUE_TYPE ? valueType
-                    : toDataType(scaleOffsetType);
+            DataType actualDataType =
+                    scaleOffsetType == ScaleOffsetType.DEFINED_BY_VALUE_TYPE ? valueType : toDataType(scaleOffsetType);
 
             switch (actualDataType) {
-            case FLOAT:
-                return Float.parseFloat(value);
-            case DOUBLE:
-                return Double.parseDouble(value);
-            case INTEGER:
-                return Integer.parseInt(value);
-            case LONG:
-                return Long.parseLong(value);
-            default:
-                throw new IllegalArgumentException(
-                        value + " cannot be converted into a Number of type " + scaleOffsetType);
+                case FLOAT:
+                    return Float.parseFloat(value);
+                case DOUBLE:
+                    return Double.parseDouble(value);
+                case INTEGER:
+                    return Integer.parseInt(value);
+                case LONG:
+                    return Long.parseLong(value);
+                default:
+                    throw new IllegalArgumentException(
+                            value + " cannot be converted into a Number of type " + scaleOffsetType);
             }
         }
 
         private static DataType toDataType(ScaleOffsetType scaleOffsetType) {
             switch (scaleOffsetType) {
-            case FLOAT:
-                return DataType.FLOAT;
-            case DOUBLE:
-                return DataType.DOUBLE;
-            case INTEGER:
-                return DataType.INTEGER;
-            case LONG:
-                return DataType.LONG;
-            default:
-                throw new IllegalArgumentException("Unsupported scale offset type: " + scaleOffsetType);
+                case FLOAT:
+                    return DataType.FLOAT;
+                case DOUBLE:
+                    return DataType.DOUBLE;
+                case INTEGER:
+                    return DataType.INTEGER;
+                case LONG:
+                    return DataType.LONG;
+                default:
+                    throw new IllegalArgumentException("Unsupported scale offset type: " + scaleOffsetType);
             }
         }
     }
 
-    private static Map<String, Object> fillOcdDefaults(final Map<String, Object> properties, final Tocd ocd,
-            final ComponentContext context) {
+    private static Map<String, Object> fillOcdDefaults(
+            final Map<String, Object> properties, final Tocd ocd, final ComponentContext context) {
         final Map<String, Object> defaultProperties = ComponentUtil.getDefaultProperties(ocd, context);
         defaultProperties.putAll(properties);
         return defaultProperties;
     }
-
 }

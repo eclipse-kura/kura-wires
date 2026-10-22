@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2023, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -66,7 +66,8 @@ public interface StoreTestTarget {
 
             properties.put("db.mode", "PERSISTED");
             try {
-                properties.put("db.path", Files.createTempDirectory(null).toFile().getPath() + "/" + name);
+                properties.put(
+                        "db.path", Files.createTempDirectory(null).toFile().getPath() + "/" + name);
             } catch (IOException e) {
                 fail("unable to create temporary directory");
             }

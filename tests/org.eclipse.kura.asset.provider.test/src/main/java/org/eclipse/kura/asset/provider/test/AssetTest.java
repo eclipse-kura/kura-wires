@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -29,7 +29,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
 import org.eclipse.kura.asset.AssetConfiguration;
@@ -92,7 +91,6 @@ public final class AssetTest {
             Thread.currentThread().interrupt();
             fail("OSGi dependencies unfulfilled");
         }
-
     }
 
     @Before
@@ -102,7 +100,6 @@ public final class AssetTest {
             synchronized (assetLock) {
                 assetLock.wait(3000);
             }
-
         }
 
         resetChannels();
@@ -245,7 +242,7 @@ public final class AssetTest {
     /**
      * Test generic asset properties.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testBasicProperties() {
         final AssetConfiguration assetConfiguration = asset.getAssetConfiguration();
@@ -257,7 +254,7 @@ public final class AssetTest {
     /**
      * Test sample channel properties.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testChannelProperties() {
         final AssetConfiguration assetConfiguration = asset.getAssetConfiguration();
@@ -272,7 +269,8 @@ public final class AssetTest {
         assertEquals(DataType.INTEGER, channel1.getValueType());
         assertEquals(1, channel1.getValueScaleAsNumber());
         assertEquals(0, channel1.getValueOffsetAsNumber());
-        assertEquals("sample.channel1.modbus.register", channel1.getConfiguration().get("DRIVER.modbus.register"));
+        assertEquals(
+                "sample.channel1.modbus.register", channel1.getConfiguration().get("DRIVER.modbus.register"));
         assertEquals("sample.channel1.modbus.FC", channel1.getConfiguration().get("DRIVER.modbus.FC"));
 
         final Channel channel2 = channels.get("2.CH");
@@ -280,14 +278,15 @@ public final class AssetTest {
         assertEquals("2.CH", channel2.getName());
         assertEquals(ChannelType.WRITE, channel2.getType());
         assertEquals(DataType.BOOLEAN, channel2.getValueType());
-        assertEquals("sample.channel2.modbus.register", channel2.getConfiguration().get("DRIVER.modbus.register"));
+        assertEquals(
+                "sample.channel2.modbus.register", channel2.getConfiguration().get("DRIVER.modbus.register"));
         assertEquals("sample.channel2.modbus.FC", channel2.getConfiguration().get("DRIVER.modbus.DUMMY.NN"));
     }
 
     /**
      * Test listening operation.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testListen() throws KuraException {
 
@@ -310,7 +309,7 @@ public final class AssetTest {
     /**
      * Listeners should be removed from the driver when it is detached from the asset and added when it is attached.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testListenerAttachOnDriverChange() throws KuraException {
         final Driver driver = ((BaseAsset) asset).getDriver();
@@ -318,7 +317,8 @@ public final class AssetTest {
         final ArrayList<Boolean> attachSequence = new ArrayList<>();
 
         final ChannelListener listener = event -> {
-            boolean toBeAttached = !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
+            boolean toBeAttached =
+                    !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
             attachSequence.add(toBeAttached);
         };
 
@@ -339,7 +339,7 @@ public final class AssetTest {
      * It should be possible to add listeners to an asset even if the driver is not attached, the asset should attach
      * them later on when the driver is tracked
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testAttachListenerWhitoutDriver() throws KuraException {
         final Driver driver = ((BaseAsset) asset).getDriver();
@@ -347,7 +347,8 @@ public final class AssetTest {
         final ArrayList<Boolean> attachSequence = new ArrayList<>();
 
         final ChannelListener listener = event -> {
-            boolean toBeAttached = !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
+            boolean toBeAttached =
+                    !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
             attachSequence.add(toBeAttached);
         };
 
@@ -370,14 +371,15 @@ public final class AssetTest {
     /**
      * The same channel listener should not be attached multiple times.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testShouldNotReattachSameListener() throws KuraException {
 
         final ArrayList<Boolean> attachSequence = new ArrayList<>();
 
         final ChannelListener listener = event -> {
-            boolean toBeAttached = !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
+            boolean toBeAttached =
+                    !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
             attachSequence.add(toBeAttached);
         };
 
@@ -401,7 +403,7 @@ public final class AssetTest {
     /**
      * Test listener unregistration.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testUnlisten() throws KuraException {
         AtomicInteger invoked = new AtomicInteger(0);
@@ -433,7 +435,7 @@ public final class AssetTest {
     /**
      * Test exception during listener unregistration.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testUnlistenDriverException() throws KuraException {
         AtomicInteger invoked = new AtomicInteger(0);
@@ -471,7 +473,7 @@ public final class AssetTest {
     /**
      * Test reading operation.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testRead() throws KuraException {
         final List<ChannelRecord> records = asset.read(new HashSet<>(Arrays.asList("1.CH")));
@@ -484,7 +486,7 @@ public final class AssetTest {
     /**
      * Tests the condition in case the channel type is not readable
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testReadChannelNotReadable() throws KuraException {
         List<ChannelRecord> result = asset.read(new HashSet<>(Arrays.asList("2.CH")));
@@ -497,7 +499,7 @@ public final class AssetTest {
     /**
      * Test reading operation on all channels.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testReadAllChannels() throws KuraException {
         final List<ChannelRecord> records = asset.readAllChannels();
@@ -510,7 +512,7 @@ public final class AssetTest {
     /**
      * Test writing operation.
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testWrite() throws KuraException {
         ChannelRecord channelRecord = ChannelRecord.createWriteRecord("2.CH", TypedValues.newBooleanValue(true));
@@ -527,7 +529,7 @@ public final class AssetTest {
     /**
      * Tests the condition in case the channel type is not writable
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testWriteChannelNotWritable() throws KuraException {
         ChannelRecord channelRecord = ChannelRecord.createWriteRecord("1.CH", TypedValues.newLongValue(1L));
@@ -540,7 +542,7 @@ public final class AssetTest {
         assertEquals(ChannelFlag.FAILURE, channelRecord.getChannelStatus().getChannelFlag());
     }
 
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testGetConfiguration() throws KuraException {
         assumeTrue(asset instanceof BaseAsset);
@@ -560,14 +562,15 @@ public final class AssetTest {
         assertEquals("asset.desc", ads.get(0).getId());
         assertEquals("driver.pid", ads.get(1).getId());
 
-        String[] expectedValues = { "#+enabled", "#+name", "#+type", "#+value.type", "#+scale", "#+offset",
-                "#unit.id" };
+        String[] expectedValues = {"#+enabled", "#+name", "#+type", "#+value.type", "#+scale", "#+offset", "#unit.id"};
 
         final int expectedChannelCount = 4;
         for (String expectedValue : expectedValues) {
             for (int j = 0; j < expectedChannelCount; j++) {
                 final String id = j + 1 + ".CH" + expectedValue;
-                assertEquals(1, ads.parallelStream().filter(ad -> ad.getId().equals(id)).count());
+                assertEquals(
+                        1,
+                        ads.parallelStream().filter(ad -> ad.getId().equals(id)).count());
             }
         }
     }
@@ -575,7 +578,7 @@ public final class AssetTest {
     /**
      * Tests reading disabled channel
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testReadChannelDisabled() throws KuraException {
         List<ChannelRecord> result = asset.read(new HashSet<>(Arrays.asList("3.CH")));
@@ -588,7 +591,7 @@ public final class AssetTest {
     /**
      * Tests writing disabled channel
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testWriteChannelDisabled() throws KuraException {
         ChannelRecord channelRecord = ChannelRecord.createWriteRecord("4.CH", TypedValues.newLongValue(1L));
@@ -605,13 +608,14 @@ public final class AssetTest {
      * It should be possible to attach listeners on disabled channels, but listener should not be forwarded to the
      * driver in this case driver
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testListenerAttachOnDisabledChannel() throws KuraException {
         final ArrayList<Boolean> attachSequence = new ArrayList<>();
 
         final ChannelListener listener = event -> {
-            boolean toBeAttached = !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
+            boolean toBeAttached =
+                    !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
             attachSequence.add(toBeAttached);
         };
 
@@ -624,7 +628,7 @@ public final class AssetTest {
      * Listeners attached to a channel should be detached from the driver if the channel is disabled and reattached if
      * the channel is enabled again
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testEnableDisableChannelWithListener() throws KuraException {
         final ArrayList<Boolean> attachSequence = new ArrayList<>();
@@ -644,7 +648,8 @@ public final class AssetTest {
         sync(asset);
 
         final ChannelListener listener = event -> {
-            boolean toBeAttached = !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
+            boolean toBeAttached =
+                    !UNREGISTER_CHANNEL_NAME.equals(event.getChannelRecord().getChannelName());
             attachSequence.add(toBeAttached);
         };
 
@@ -664,14 +669,13 @@ public final class AssetTest {
         sync(asset);
 
         assertEquals(Arrays.asList(true, false), attachSequence);
-
     }
 
     /**
      * Listeners attached to a channel should be detached from the driver if the channel is disabled and reattached if
      * the channel is enabled again
      */
-    @TestTarget(targetPlatforms = { TestTarget.PLATFORM_ALL })
+    @TestTarget(targetPlatforms = {TestTarget.PLATFORM_ALL})
     @Test
     public void testCompleteConfigWithDefaults() {
 
@@ -687,17 +691,24 @@ public final class AssetTest {
         ((BaseAsset) asset).updated(channels);
         sync(asset);
 
-        assertFalse(
-                asset.getAssetConfiguration().getAssetChannels().get("3.CH").getConfiguration().containsKey("unit.id"));
+        assertFalse(asset.getAssetConfiguration()
+                .getAssetChannels()
+                .get("3.CH")
+                .getConfiguration()
+                .containsKey("unit.id"));
 
         channels.put(AssetConstants.ASSET_DRIVER_PROP.value(), "org.eclipse.kura.asset.stub.driver");
 
         ((BaseAsset) asset).updated(channels);
         sync(asset);
 
-        assertEquals("5",
-                asset.getAssetConfiguration().getAssetChannels().get("3.CH").getConfiguration().get("unit.id"));
-
+        assertEquals(
+                "5",
+                asset.getAssetConfiguration()
+                        .getAssetChannels()
+                        .get("3.CH")
+                        .getConfiguration()
+                        .get("unit.id"));
     }
 
     @Test
@@ -706,7 +717,6 @@ public final class AssetTest {
         List<ChannelRecord> records = asset.read(new HashSet<>(Arrays.asList("5.CH")));
 
         assertEquals(DataType.DOUBLE, records.get(0).getValueType());
-
     }
 
     @Test
@@ -731,7 +741,6 @@ public final class AssetTest {
         List<ChannelRecord> records = asset.read(new HashSet<>(Arrays.asList("9.CH")));
 
         assertEquals(DataType.FLOAT, records.get(0).getValueType());
-
     }
 
     @Test
@@ -801,5 +810,4 @@ public final class AssetTest {
             fail("Interrupted during sync");
         }
     }
-
 }

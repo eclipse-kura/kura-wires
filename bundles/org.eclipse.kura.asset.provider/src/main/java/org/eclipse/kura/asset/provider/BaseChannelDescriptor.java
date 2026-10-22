@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -22,7 +22,6 @@ import static org.eclipse.kura.asset.provider.AssetConstants.VALUE_TYPE;
 import static org.eclipse.kura.asset.provider.AssetConstants.VALUE_UNIT;
 
 import java.util.List;
-
 import org.eclipse.kura.channel.ChannelType;
 import org.eclipse.kura.channel.ScaleOffsetType;
 import org.eclipse.kura.configuration.metatype.Option;
@@ -62,7 +61,7 @@ import org.eclipse.kura.util.collection.CollectionUtil;
  * <li>STRING</li>
  * <li>BYTE_ARRAY</li>
  * </ul>
- * 
+ *
  * The <b><i>scaleoffset.type</i></b> would be one of the following:
  * <ul>
  * <li>DEFINED_BY_VALUE_TYPE</li>

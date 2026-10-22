@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2023, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
- * 
+ *
  *******************************************************************************/
 package org.eclipse.kura.internal.wire.db.test;
 
@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.type.TypedValues;
 import org.junit.Test;
@@ -53,8 +52,8 @@ public class DbWireComponentsTest extends DbComponentsTestBase {
     @Test
     public void shouldSupportBoolean()
             throws KuraException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-        givenAnEnvelopeReceivedByStore("foo", TypedValues.newBooleanValue(true), "bar",
-                TypedValues.newBooleanValue(false));
+        givenAnEnvelopeReceivedByStore(
+                "foo", TypedValues.newBooleanValue(true), "bar", TypedValues.newBooleanValue(false));
 
         whenQueryIsPerformed("SELECT * FROM \"" + tableName + "\";");
 
@@ -95,11 +94,11 @@ public class DbWireComponentsTest extends DbComponentsTestBase {
     @Test
     public void shouldSupportByteArray()
             throws KuraException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-        givenAnEnvelopeReceivedByStore("foo", TypedValues.newByteArrayValue(new byte[] { 1, 2, 3 }));
+        givenAnEnvelopeReceivedByStore("foo", TypedValues.newByteArrayValue(new byte[] {1, 2, 3}));
 
         whenQueryIsPerformed("SELECT * FROM \"" + tableName + "\";");
 
-        thenFilterEmitsEnvelopeWithByteArrayProperty("foo", new byte[] { 1, 2, 3 });
+        thenFilterEmitsEnvelopeWithByteArrayProperty("foo", new byte[] {1, 2, 3});
     }
 
     @Test
@@ -200,8 +199,11 @@ public class DbWireComponentsTest extends DbComponentsTestBase {
     @Test
     public void shouldSupportCleanupRecordKeep()
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
-        givenStoreWithConfig(this.wireComponentTestTarget.storeMaximumSizeKey(), 5,
-                this.wireComponentTestTarget.storeCleanupRecordsKeepKey(), 2);
+        givenStoreWithConfig(
+                this.wireComponentTestTarget.storeMaximumSizeKey(),
+                5,
+                this.wireComponentTestTarget.storeCleanupRecordsKeepKey(),
+                2);
         givenAnEnvelopeReceivedByStore("foo", TypedValues.newIntegerValue(1));
         givenAnEnvelopeReceivedByStore("foo", TypedValues.newIntegerValue(2));
         givenAnEnvelopeReceivedByStore("foo", TypedValues.newIntegerValue(3));
@@ -244,15 +246,15 @@ public class DbWireComponentsTest extends DbComponentsTestBase {
     @Parameters(name = "{0} with {1}")
     public static Collection<Object[]> targets() {
         return Arrays.asList(new Object[][] {
-                { WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.H2 },
-                { WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.SQLITE },
-                { WireComponentTestTarget.DB_FILTER_AND_DB_STORE, StoreTestTarget.H2 } });
+            {WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.H2},
+            {WireComponentTestTarget.WIRE_RECORD_QUERY_AND_WIRE_RECORD_STORE, StoreTestTarget.SQLITE},
+            {WireComponentTestTarget.DB_FILTER_AND_DB_STORE, StoreTestTarget.H2}
+        });
     }
 
-    public DbWireComponentsTest(final WireComponentTestTarget wireComponentTestTarget,
-            final StoreTestTarget storeTestTarget)
+    public DbWireComponentsTest(
+            final WireComponentTestTarget wireComponentTestTarget, final StoreTestTarget storeTestTarget)
             throws InterruptedException, ExecutionException, TimeoutException, KuraException, InvalidSyntaxException {
         super(wireComponentTestTarget, storeTestTarget);
     }
-
 }

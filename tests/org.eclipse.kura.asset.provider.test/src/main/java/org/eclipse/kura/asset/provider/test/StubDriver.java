@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,7 +14,6 @@ package org.eclipse.kura.asset.provider.test;
 
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelStatus;
@@ -60,29 +59,29 @@ public final class StubDriver implements Driver {
 
         for (final ChannelRecord record : records) {
             switch (record.getValueType()) {
-            case BOOLEAN:
-                record.setValue(TypedValues.newBooleanValue(true));
-                break;
-            case FLOAT:
-                record.setValue(TypedValues.newFloatValue(1f));
-                break;
-            case LONG:
-                record.setValue(TypedValues.newLongValue(1L));
-                break;
-            case BYTE_ARRAY:
-                record.setValue(TypedValues.newByteArrayValue("dummy".getBytes()));
-                break;
-            case DOUBLE:
-                record.setValue(TypedValues.newDoubleValue(1.0));
-                break;
-            case STRING:
-                record.setValue(TypedValues.newStringValue("dummy"));
-                break;
-            case INTEGER:
-                record.setValue(TypedValues.newIntegerValue(1));
-                break;
-            default:
-                break;
+                case BOOLEAN:
+                    record.setValue(TypedValues.newBooleanValue(true));
+                    break;
+                case FLOAT:
+                    record.setValue(TypedValues.newFloatValue(1f));
+                    break;
+                case LONG:
+                    record.setValue(TypedValues.newLongValue(1L));
+                    break;
+                case BYTE_ARRAY:
+                    record.setValue(TypedValues.newByteArrayValue("dummy".getBytes()));
+                    break;
+                case DOUBLE:
+                    record.setValue(TypedValues.newDoubleValue(1.0));
+                    break;
+                case STRING:
+                    record.setValue(TypedValues.newStringValue("dummy"));
+                    break;
+                case INTEGER:
+                    record.setValue(TypedValues.newIntegerValue(1));
+                    break;
+                default:
+                    break;
             }
             record.setChannelStatus(new ChannelStatus(ChannelFlag.SUCCESS));
         }
@@ -92,8 +91,8 @@ public final class StubDriver implements Driver {
     public void registerChannelListener(Map<String, Object> channelConfig, ChannelListener listener)
             throws ConnectionException {
 
-        final ChannelRecord record = ChannelRecord.createWriteRecord((String) channelConfig.get("+name"),
-                TypedValues.newIntegerValue(1));
+        final ChannelRecord record =
+                ChannelRecord.createWriteRecord((String) channelConfig.get("+name"), TypedValues.newIntegerValue(1));
         record.setChannelConfig(channelConfig);
         record.setChannelStatus(new ChannelStatus(ChannelFlag.SUCCESS));
         record.setTimestamp(System.currentTimeMillis());
@@ -130,5 +129,4 @@ public final class StubDriver implements Driver {
     public PreparedRead prepareRead(List<ChannelRecord> records) {
         return null;
     }
-
 }

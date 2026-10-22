@@ -1,30 +1,28 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
 package org.eclipse.kura.internal.asset.cloudlet.serialization.request;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.List;
-
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.internal.asset.cloudlet.serialization.SerializationConstants;
 import org.eclipse.kura.type.DataType;
 import org.eclipse.kura.type.TypedValue;
 import org.eclipse.kura.type.TypedValues;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
 
 public class WriteRequest {
 
@@ -34,12 +32,16 @@ public class WriteRequest {
 
     public WriteRequest(JsonObject object) {
         this.assetName = object.get(SerializationConstants.ASSET_NAME_PROPERTY).asString();
-        JsonArray channels = object.get(SerializationConstants.CHANNELS_PROPERTY).asArray();
+        JsonArray channels =
+                object.get(SerializationConstants.CHANNELS_PROPERTY).asArray();
         channels.asArray().forEach((val) -> {
             final JsonObject obj = val.asObject();
-            final String name = obj.get(SerializationConstants.CHANNEL_NAME_PROPERTY).asString();
-            final String type = obj.get(SerializationConstants.CHANNEL_TYPE_PROPERTY).asString();
-            final String value = obj.get(SerializationConstants.CHANNEL_VALUE_PROPERTY).asString();
+            final String name =
+                    obj.get(SerializationConstants.CHANNEL_NAME_PROPERTY).asString();
+            final String type =
+                    obj.get(SerializationConstants.CHANNEL_TYPE_PROPERTY).asString();
+            final String value =
+                    obj.get(SerializationConstants.CHANNEL_VALUE_PROPERTY).asString();
             channelRecords.add(ChannelRecord.createWriteRecord(name, parseTypedValue(value, type)));
         });
     }

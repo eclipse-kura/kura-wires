@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -14,7 +14,6 @@ package org.eclipse.kura.internal.wire.asset.test;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.kura.channel.ChannelType;
 import org.eclipse.kura.type.DataType;
 import org.junit.Test;
@@ -51,7 +50,7 @@ public class OnChangeCacheTest extends WireAssetTestBase {
                 "bar", 15, //
                 "foo", "bar", //
                 "bar", 15 //
-        );
+                );
 
         thenAssetOutputContains(0, "assetName", "testAsset");
         thenAssetOutputContains(0, "foo", "bar");
@@ -68,7 +67,6 @@ public class OnChangeCacheTest extends WireAssetTestBase {
         thenAssetOutputContains(3, "assetName", "testAsset");
         thenAssetOutputContains(3, "bar", 15);
         thenAssetOutputContainsKey(3, "bar_timestamp");
-
     }
 
     @Test
@@ -97,7 +95,7 @@ public class OnChangeCacheTest extends WireAssetTestBase {
                 "bar", 15, //
                 "foo", "bar", //
                 "bar", 15 //
-        );
+                );
 
         thenAssetOutputContains(0, "assetName", "testAsset");
         thenAssetOutputContains(0, "foo", "bar");
@@ -129,7 +127,6 @@ public class OnChangeCacheTest extends WireAssetTestBase {
         thenAssetOutputDoesNotContain(1, "foo_timestamp");
         thenAssetOutputContains(1, "bar", 16);
         thenAssetOutputContainsKey(1, "bar_timestamp");
-
     }
 
     @Test
@@ -145,7 +142,7 @@ public class OnChangeCacheTest extends WireAssetTestBase {
                 "bar", 16, //
                 "foo", "baz", //
                 "bar", 16 //
-        );
+                );
 
         thenAssetOutputContains(0, "assetName", "testAsset");
         thenAssetOutputContains(0, "foo", "bar");
@@ -195,5 +192,4 @@ public class OnChangeCacheTest extends WireAssetTestBase {
 
         return result;
     }
-
 }

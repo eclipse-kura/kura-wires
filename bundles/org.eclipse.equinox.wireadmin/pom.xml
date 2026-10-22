@@ -2,9 +2,7 @@
 <!--
   Copyright (c) 2019, 2026 Eurotech and/or its affiliates. All rights reserved.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -42,10 +40,10 @@
                 <executions>
                     <execution>
                         <id>fetch-external-bundles</id>
-                        <phase>generate-sources</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
+                        <phase>generate-sources</phase>
                         <configuration>
                             <includeArtifactIds>org.eclipse.equinox.wireadmin</includeArtifactIds>
                             <stripVersion>false</stripVersion>

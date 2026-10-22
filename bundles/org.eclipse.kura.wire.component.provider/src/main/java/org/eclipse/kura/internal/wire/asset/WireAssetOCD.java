@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.internal.wire.asset;
 
 import java.util.List;
-
 import org.eclipse.kura.asset.provider.BaseAssetOCD;
 import org.eclipse.kura.configuration.metatype.Option;
 import org.eclipse.kura.core.configuration.metatype.Tad;
@@ -38,26 +36,29 @@ public class WireAssetOCD extends BaseAssetOCD {
             + "a single driver generated timestamp being respectively"
             + " the max (most recent) or min (oldest) among the timestamps of the channels.";
 
-    private static final String EMIT_ERRORS_DESCRIPTION = "Specifies whether channel specific errors should be included or not "
-            + "in emitted envelopes. If enabled, the component will add an additional property per channel, named \"<channel_name>_error\"."
-            + " If the channel operation fails, the property value will be an error message reported by the Driver,"
-            + " if the operation succeeds the property value will be the empty string.";
+    private static final String EMIT_ERRORS_DESCRIPTION =
+            "Specifies whether channel specific errors should be included or not "
+                    + "in emitted envelopes. If enabled, the component will add an additional property per channel, named \"<channel_name>_error\"."
+                    + " If the channel operation fails, the property value will be an error message reported by the Driver,"
+                    + " if the operation succeeds the property value will be the empty string.";
 
-    private static final String EMIT_CONNECTION_ERRORS_DESCRIPTION = "Specifies whether the component should emit an envelope"
-            + " in case of a general connection exception reported by the Driver "
-            + "(for example due to the fact that the connection with a remote device cannot be established)."
-            + " The error message associated with the exception will be emitted in a property named \"assetError\"."
-            + " In case of connection exception, channel values are not available and no channel related properties will be emitted."
-            + " If the \"timestamp.mode\" property is set to a value other than \"NO_TIMESTAMPS\", the component will also emit a \"assetTimestamp\""
-            + " property reporting current system time. This property will be ignored if \"emit.errors\" is disabled.";
+    private static final String EMIT_CONNECTION_ERRORS_DESCRIPTION =
+            "Specifies whether the component should emit an envelope"
+                    + " in case of a general connection exception reported by the Driver "
+                    + "(for example due to the fact that the connection with a remote device cannot be established)."
+                    + " The error message associated with the exception will be emitted in a property named \"assetError\"."
+                    + " In case of connection exception, channel values are not available and no channel related properties will be emitted."
+                    + " If the \"timestamp.mode\" property is set to a value other than \"NO_TIMESTAMPS\", the component will also emit a \"assetTimestamp\""
+                    + " property reporting current system time. This property will be ignored if \"emit.errors\" is disabled.";
 
     private static final String EMIT_ON_CHANGE_DESCRIPTION = "If set to true, this component will include"
             + " a channel value in the output emitted in Kura Wires"
             + " only if it is different than the one from the previous read operation or event."
             + " Channel errors will always be emitted if emit.errors is set to true.";
 
-    private static final String EMIT_EMPTY_ENVELOPES_DESCRIPTION = "If set to false, this component will not emit empty envelopes."
-            + " This property can be useful if combined with emit.on.change.";
+    private static final String EMIT_EMPTY_ENVELOPES_DESCRIPTION =
+            "If set to false, this component will not emit empty envelopes."
+                    + " This property can be useful if combined with emit.on.change.";
 
     private static void addOptions(Tad target, Enum<?>[] values) {
         final List<Option> options = target.getOption();
@@ -140,7 +141,5 @@ public class WireAssetOCD extends BaseAssetOCD {
         emitEmptyEnvelopesAd.setDefault("true");
 
         addAD(emitEmptyEnvelopesAd);
-
     }
-
 }

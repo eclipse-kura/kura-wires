@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -30,10 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.kura.db.H2DbService;
-import org.eclipse.kura.internal.wire.db.store.DbWireRecordStore;
-import org.eclipse.kura.internal.wire.db.store.DbWireRecordStoreOptions;
 import org.eclipse.kura.type.BooleanValue;
 import org.eclipse.kura.type.ByteArrayValue;
 import org.eclipse.kura.type.DataType;
@@ -79,7 +76,7 @@ public class DbWireRecordStoreTest {
         {
             put("k_str", new StringValue("v_str"));
             put("k_int", new IntegerValue(11));
-            put("k_blob", new ByteArrayValue(new byte[] { 0x00, 0x01, 0x02 }));
+            put("k_blob", new ByteArrayValue(new byte[] {0x00, 0x01, 0x02}));
             put("k_bool", new BooleanValue(true));
             put("k_double", new DoubleValue((double) 2.0));
             put("k_long", new LongValue((long) 0.3));
@@ -342,7 +339,8 @@ public class DbWireRecordStoreTest {
 
     private void thenTableEntriesCountIs(String tableName, int expectedNumberOfEntries) {
         try {
-            ResultSet resultSet = this.dbConnection.prepareStatement("SELECT count(*) FROM " + tableName)
+            ResultSet resultSet = this.dbConnection
+                    .prepareStatement("SELECT count(*) FROM " + tableName)
                     .executeQuery();
             resultSet.next();
             int count = resultSet.getInt(1);
@@ -354,7 +352,9 @@ public class DbWireRecordStoreTest {
 
     private void thenTableContainsData(String tableName, Map<String, TypedValue<?>> data) {
         try {
-            ResultSet resultSet = this.dbConnection.prepareStatement("SELECT * FROM " + tableName).executeQuery();
+            ResultSet resultSet = this.dbConnection
+                    .prepareStatement("SELECT * FROM " + tableName)
+                    .executeQuery();
 
             // each line contains the inserted values
             for (Entry<String, TypedValue<?>> entry : data.entrySet()) {
@@ -384,7 +384,9 @@ public class DbWireRecordStoreTest {
 
     private void thenLastInsertedIdIs(String tableName, int lastId) {
         try {
-            ResultSet resultSet = this.dbConnection.prepareStatement("SELECT ID FROM " + tableName).executeQuery();
+            ResultSet resultSet = this.dbConnection
+                    .prepareStatement("SELECT ID FROM " + tableName)
+                    .executeQuery();
 
             int id = 0;
             while (resultSet.next()) {
@@ -417,7 +419,9 @@ public class DbWireRecordStoreTest {
             this.dbServiceMock = mock(H2DbService.class);
 
             when(this.dbServiceMock.withConnection(any())).thenAnswer(invocation -> {
-                return invocation.getArgument(0, H2DbService.ConnectionCallable.class).call(this.dbConnection);
+                return invocation
+                        .getArgument(0, H2DbService.ConnectionCallable.class)
+                        .call(this.dbConnection);
             });
 
             when(this.dbServiceMock.getConnection()).thenReturn(this.dbConnection);

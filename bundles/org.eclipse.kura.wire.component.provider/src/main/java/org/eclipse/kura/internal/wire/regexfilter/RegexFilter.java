@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 Amit Kumar Mondal and others
- * 
+ * Copyright (c) 2017, 2026 Amit Kumar Mondal and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Amit Kumar Mondal
  *  Eurotech
@@ -33,7 +33,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.configuration.ConfigurableComponent;
@@ -116,8 +115,8 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
         this.filter = String.valueOf(properties.getOrDefault(REGEX_PROP, ""));
         this.componentPid = String.valueOf(properties.get(KURA_SERVICE_PID));
         this.filterType = getType(properties);
-        this.wireSupport = this.wireHelperService.newWireSupport(this,
-                (ServiceReference<WireComponent>) componentContext.getServiceReference());
+        this.wireSupport = this.wireHelperService.newWireSupport(
+                this, (ServiceReference<WireComponent>) componentContext.getServiceReference());
         logger.debug("Activating Regex Filter... Done");
     }
 
@@ -185,12 +184,12 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
      *         {@link WireRecord}s in case of success, otherwise the provided non-filtered
      *         {@link WireEnvelope} instance
      */
-    private WireEnvelope getFilteredWireEnvelope(final List<WireRecord> wireRecords,
-            final WireEnvelope nonFilteredWireEnvelope) {
+    private WireEnvelope getFilteredWireEnvelope(
+            final List<WireRecord> wireRecords, final WireEnvelope nonFilteredWireEnvelope) {
         WireEnvelope filteredWireEnvelope;
         try {
-            filteredWireEnvelope = new WireEnvelope(this.componentPid,
-                    filter(wireRecords, this.filter, this.filterType));
+            filteredWireEnvelope =
+                    new WireEnvelope(this.componentPid, filter(wireRecords, this.filter, this.filterType));
         } catch (final Exception ex) {
             // if any exception occurs while filtering, just emit the not filtered
             // Wire Records
@@ -216,8 +215,8 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
      * @throws java.util.regex.PatternSyntaxException
      *             If the filter's syntax is invalid
      */
-    private static List<WireRecord> filter(final List<WireRecord> wireRecords, final String filter,
-            final FilterType type) {
+    private static List<WireRecord> filter(
+            final List<WireRecord> wireRecords, final String filter, final FilterType type) {
         requireNonNull(wireRecords, "Wire Records cannot be null");
         requireNonNull(filter, "Filter cannot be null");
 
@@ -254,8 +253,8 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
      * @throws java.util.regex.PatternSyntaxException
      *             If the regular expression's syntax is invalid
      */
-    private static <V> Map<String, V> match(final String regularExpression, final Map<String, V> map,
-            final FilterType type) {
+    private static <V> Map<String, V> match(
+            final String regularExpression, final Map<String, V> map, final FilterType type) {
         // if the properties map is empty, no need to invoke filter mechanism
         if (map.isEmpty()) {
             return map;
@@ -269,7 +268,9 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
         if (allMatch) {
             return type == RETAIN ? map : unmodifiableMap(newHashMap());
         }
-        return streamSupplier.get().filter(matches(pattern, type))
+        return streamSupplier
+                .get()
+                .filter(matches(pattern, type))
                 .collect(collectingAndThen(toMap(Entry::getKey, Entry::getValue), Collections::unmodifiableMap));
     }
 
@@ -283,7 +284,8 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
      * @return a {@link Predicate} instance
      */
     private static <V> Predicate<Entry<String, V>> matches(final Pattern pattern, final FilterType type) {
-        final Predicate<Entry<String, V>> predicate = entry -> pattern.matcher(entry.getKey()).matches();
+        final Predicate<Entry<String, V>> predicate =
+                entry -> pattern.matcher(entry.getKey()).matches();
         return type == RETAIN ? predicate : predicate.negate();
     }
 
@@ -298,5 +300,4 @@ public final class RegexFilter implements WireEmitter, WireReceiver, Configurabl
         final int type = (Integer) props.getOrDefault(REGEX_TYPE_PROP, 1);
         return type == 2 ? REMOVE : RETAIN;
     }
-
 }

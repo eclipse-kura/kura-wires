@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -14,6 +14,8 @@ package org.eclipse.kura.internal.asset.cloudlet;
 
 import static org.eclipse.kura.cloudconnection.request.RequestHandlerMessageConstants.ARGS_KEY;
 
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonArray;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +24,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.eclipse.kura.KuraErrorCode;
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.asset.Asset;
@@ -45,9 +46,6 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.eclipsesource.json.Json;
-import com.eclipsesource.json.JsonArray;
 
 public final class AssetCloudlet implements RequestHandler {
 
@@ -84,7 +82,10 @@ public final class AssetCloudlet implements RequestHandler {
         try {
             requestHandlerRegistry.registerRequestHandler(APP_ID, this);
         } catch (KuraException e) {
-            logger.info("Unable to register cloudlet {} in {}", APP_ID, requestHandlerRegistry.getClass().getName());
+            logger.info(
+                    "Unable to register cloudlet {} in {}",
+                    APP_ID,
+                    requestHandlerRegistry.getClass().getName());
         }
     }
 
@@ -92,17 +93,20 @@ public final class AssetCloudlet implements RequestHandler {
         try {
             requestHandlerRegistry.unregister(APP_ID);
         } catch (KuraException e) {
-            logger.info("Unable to register cloudlet {} in {}", APP_ID, requestHandlerRegistry.getClass().getName());
+            logger.info(
+                    "Unable to register cloudlet {} in {}",
+                    APP_ID,
+                    requestHandlerRegistry.getClass().getName());
         }
     }
 
     protected synchronized void activate(final ComponentContext componentContext) {
         logger.debug("Activating Asset Cloudlet...");
 
-        this.assetTrackerCustomizer = new AssetTrackerCustomizer(componentContext.getBundleContext(),
-                this.assetService);
-        this.assetServiceTracker = new ServiceTracker<>(componentContext.getBundleContext(), Asset.class.getName(),
-                this.assetTrackerCustomizer);
+        this.assetTrackerCustomizer =
+                new AssetTrackerCustomizer(componentContext.getBundleContext(), this.assetService);
+        this.assetServiceTracker = new ServiceTracker<>(
+                componentContext.getBundleContext(), Asset.class.getName(), this.assetTrackerCustomizer);
         this.assetServiceTracker.open();
         logger.debug("Activating Asset Cloudlet...Done");
     }
@@ -228,13 +232,17 @@ public final class AssetCloudlet implements RequestHandler {
         } catch (Exception e) {
             Set<String> filteredChannelNames = channelNames;
             if (channelNames.isEmpty()) {
-                Map<String, Channel> assetChannels = asset.getAssetConfiguration().getAssetChannels();
+                Map<String, Channel> assetChannels =
+                        asset.getAssetConfiguration().getAssetChannels();
                 filteredChannelNames = assetChannels.entrySet().stream()
                         .filter(entry -> entry.getValue().getType() == ChannelType.READ
                                 || entry.getValue().getType() == ChannelType.READ_WRITE)
-                        .map(Entry<String, Channel>::getKey).collect(Collectors.toSet());
+                        .map(Entry<String, Channel>::getKey)
+                        .collect(Collectors.toSet());
             }
-            response.reportAllFailed(assetName, filteredChannelNames.iterator(),
+            response.reportAllFailed(
+                    assetName,
+                    filteredChannelNames.iterator(),
                     Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR_MESSAGE));
         }
     }
@@ -247,8 +255,12 @@ public final class AssetCloudlet implements RequestHandler {
             try {
                 response.reportResult(assetName, asset.readAllChannels());
             } catch (Exception e) {
-                response.reportAllFailed(assetName,
-                        asset.getAssetConfiguration().getAssetChannels().keySet().iterator(),
+                response.reportAllFailed(
+                        assetName,
+                        asset.getAssetConfiguration()
+                                .getAssetChannels()
+                                .keySet()
+                                .iterator(),
                         Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR_MESSAGE));
             }
         }
@@ -299,7 +311,9 @@ public final class AssetCloudlet implements RequestHandler {
             }
             response.reportResult(assetName, channelRecords);
         } catch (Exception e) {
-            response.reportAllFailed(assetName, channelRecords.stream().map(ChannelRecord::getChannelName).iterator(),
+            response.reportAllFailed(
+                    assetName,
+                    channelRecords.stream().map(ChannelRecord::getChannelName).iterator(),
                     Optional.ofNullable(e.getMessage()).orElse(UNKNOWN_ERROR_MESSAGE));
         }
     }

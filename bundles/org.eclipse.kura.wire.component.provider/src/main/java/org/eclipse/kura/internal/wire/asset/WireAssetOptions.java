@@ -1,16 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
-
 package org.eclipse.kura.internal.wire.asset;
 
 import java.util.Map;
@@ -31,8 +30,7 @@ class WireAssetOptions {
     private boolean emitOnChange;
     private boolean emitEmptyEnvelopes;
 
-    public WireAssetOptions() {
-    }
+    public WireAssetOptions() {}
 
     public WireAssetOptions(Map<String, Object> properties) {
         final Object emitAllChannelsProp = properties.get(EMIT_ALL_CHANNELS_PROP_NAME);
@@ -76,10 +74,10 @@ class WireAssetOptions {
 
     private static TimestampMode extractTimestampMode(final Map<String, Object> properties) {
         try {
-            return TimestampMode.valueOf(properties.get(TIMESTAMP_MODE_PROP_NAME).toString());
+            return TimestampMode.valueOf(
+                    properties.get(TIMESTAMP_MODE_PROP_NAME).toString());
         } catch (Exception e) {
             return TimestampMode.PER_CHANNEL;
         }
     }
-
 }

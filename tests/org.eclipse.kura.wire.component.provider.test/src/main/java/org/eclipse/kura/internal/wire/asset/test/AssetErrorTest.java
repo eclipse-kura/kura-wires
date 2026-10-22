@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2024 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2024, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 import java.util.Optional;
-
 import org.eclipse.kura.channel.ChannelType;
 import org.eclipse.kura.driver.Driver.ConnectionException;
 import org.eclipse.kura.type.DataType;
@@ -109,11 +108,12 @@ public class AssetErrorTest extends WireAssetTestBase {
         final WireEnvelope envelope = awaitEnvelope(0);
 
         final long timestamp = Optional.ofNullable(envelope.getRecords().get(0).getProperties())
-                .map(p -> p.get("assetTimestamp")).filter(LongValue.class::isInstance).map(LongValue.class::cast)
+                .map(p -> p.get("assetTimestamp"))
+                .filter(LongValue.class::isInstance)
+                .map(LongValue.class::cast)
                 .map(TypedValue::getValue)
                 .orElseThrow(() -> new IllegalStateException("asset timestamp property not found"));
 
         assertTrue(Math.abs(timestamp - System.currentTimeMillis()) < 30000);
     }
-
 }

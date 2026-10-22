@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2026 Eurotech and/or its affiliates and others
- * 
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.cloudconnection.listener.CloudConnectionListener;
 import org.eclipse.kura.cloudconnection.listener.CloudDeliveryListener;
@@ -128,8 +127,7 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testOnWireReceiveWithBasicPosition()
-            throws InvalidSyntaxException, NoSuchFieldException {
+    public void testOnWireReceiveWithBasicPosition() throws InvalidSyntaxException, NoSuchFieldException {
         // test publishing a normal message with topic replacement and position
         givenCloudPublisher();
         givenDefaultProperties();
@@ -180,9 +178,12 @@ public class CloudPublisherTest {
         givenActivatedComponentProperties();
         givenPositionServiceMock();
         givenDefaultRecordProp();
-        givenPosition(new Position(new Measurement(Math.toRadians(45.5), Unit.rad),
-                new Measurement(Math.toRadians(9.25), Unit.rad), new Measurement(120.0, Unit.m),
-                new Measurement(3.5, Unit.m_s), new Measurement(Math.toRadians(90.0), Unit.rad)));
+        givenPosition(new Position(
+                new Measurement(Math.toRadians(45.5), Unit.rad),
+                new Measurement(Math.toRadians(9.25), Unit.rad),
+                new Measurement(120.0, Unit.m),
+                new Measurement(3.5, Unit.m_s),
+                new Measurement(Math.toRadians(90.0), Unit.rad)));
 
         whenSetPositionServiceMock();
         whenOnWireReceive();
@@ -192,16 +193,19 @@ public class CloudPublisherTest {
     }
 
     @Test
-    public void testOnWireReceiveWithMissingPositionMeasurements()
-            throws InvalidSyntaxException, NoSuchFieldException {
+    public void testOnWireReceiveWithMissingPositionMeasurements() throws InvalidSyntaxException, NoSuchFieldException {
         givenCloudPublisher();
         givenDefaultProperties();
         givenUpdatedProperties("publish.position", "full");
         givenActivatedComponentProperties();
         givenPositionServiceMock();
         givenDefaultRecordProp();
-        givenPosition(new Position(new Measurement(Math.toRadians(45.5), Unit.rad),
-                new Measurement(Math.toRadians(9.25), Unit.rad), null, null, null));
+        givenPosition(new Position(
+                new Measurement(Math.toRadians(45.5), Unit.rad),
+                new Measurement(Math.toRadians(9.25), Unit.rad),
+                null,
+                null,
+                null));
 
         whenSetPositionServiceMock();
         whenOnWireReceive();
@@ -393,21 +397,21 @@ public class CloudPublisherTest {
 
     private void givenPositionServiceMock() {
         this.positionServiceMock = mock(PositionService.class);
-        this.positionToReturn = new Position(new Measurement(0, Unit.rad), new Measurement(0, Unit.rad),
-                new Measurement(0, Unit.m), new Measurement(0, Unit.m_s), new Measurement(0, Unit.rad));
+        this.positionToReturn = new Position(
+                new Measurement(0, Unit.rad),
+                new Measurement(0, Unit.rad),
+                new Measurement(0, Unit.m),
+                new Measurement(0, Unit.m_s),
+                new Measurement(0, Unit.rad));
     }
 
     private void givenPosition(Position position) {
         this.positionToReturn = position;
     }
 
-    private void givenFakeCloudPublisher() {
+    private void givenFakeCloudPublisher() {}
 
-    }
-
-    private void givenSetFakeCloudPublisher() {
-
-    }
+    private void givenSetFakeCloudPublisher() {}
 
     private void givenDefaultRecordProp() {
         this.recordProps = new HashMap<>();
@@ -565,5 +569,4 @@ public class CloudPublisherTest {
         matcher.appendTail(buffer);
         return buffer.toString();
     }
-
 }

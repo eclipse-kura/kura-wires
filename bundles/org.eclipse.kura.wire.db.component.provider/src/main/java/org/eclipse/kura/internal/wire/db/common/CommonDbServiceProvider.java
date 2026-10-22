@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *******************************************************************************/
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.kura.internal.wire.db.store.DbDataTypeMapper;
@@ -60,22 +59,27 @@ public class CommonDbServiceProvider {
     protected static final String SQL_DROP_COLUMN = "ALTER TABLE {0} DROP COLUMN {1};";
     protected static final String SQL_INSERT_RECORD = "INSERT INTO {0} ({1}) VALUES ({2});";
     protected static final String SQL_TRUNCATE_TABLE = "TRUNCATE TABLE {0};";
-    protected static final String[] TABLE_TYPE = new String[] { "TABLE" };
+    protected static final String[] TABLE_TYPE = new String[] {"TABLE"};
 
     protected DbServiceHelper dbHelper;
 
-    protected Integer getTableSize(final String sqlTableName, Connection c,
-            BiFunction<String, Object[], String> formatter) throws SQLException {
+    protected Integer getTableSize(
+            final String sqlTableName, Connection c, BiFunction<String, Object[], String> formatter)
+            throws SQLException {
         try (final Statement stmt = c.createStatement();
-                final ResultSet rset = stmt
-                        .executeQuery(formatter.apply(SQL_ROW_COUNT_TABLE, new String[] { sqlTableName }))) {
+                final ResultSet rset =
+                        stmt.executeQuery(formatter.apply(SQL_ROW_COUNT_TABLE, new String[] {sqlTableName}))) {
             rset.next();
             return rset.getInt(1);
         }
     }
 
-    protected void reconcileTable(Connection c, final String tableName, final String createTableQuery,
-            BiFunction<String, Object[], String> formatter) throws SQLException {
+    protected void reconcileTable(
+            Connection c,
+            final String tableName,
+            final String createTableQuery,
+            BiFunction<String, Object[], String> formatter)
+            throws SQLException {
         final String sqlTableName = this.dbHelper.sanitizeSqlTableAndColumnName(tableName);
 
         // check for the table that would collect the data of this emitter
@@ -85,21 +89,27 @@ public class CommonDbServiceProvider {
             if (!rsTbls.next()) {
                 // table does not exist, create it
                 logger.info("Creating table {}...", sqlTableName);
-                this.dbHelper.execute(c, formatter.apply(createTableQuery, new String[] { sqlTableName }));
-                createIndex(c, this.dbHelper.sanitizeSqlTableAndColumnName(tableName + "_TIMESTAMP"), sqlTableName,
-                        "(TIMESTAMP DESC)", formatter);
+                this.dbHelper.execute(c, formatter.apply(createTableQuery, new String[] {sqlTableName}));
+                createIndex(
+                        c,
+                        this.dbHelper.sanitizeSqlTableAndColumnName(tableName + "_TIMESTAMP"),
+                        sqlTableName,
+                        "(TIMESTAMP DESC)",
+                        formatter);
             }
         }
     }
 
-    private void createIndex(Connection c, String indexname, String table, String order,
-            BiFunction<String, Object[], String> formatter) throws SQLException {
-        this.dbHelper.execute(c, formatter.apply(SQL_CREATE_TABLE_INDEX, new String[] { indexname, table, order }));
+    private void createIndex(
+            Connection c, String indexname, String table, String order, BiFunction<String, Object[], String> formatter)
+            throws SQLException {
+        this.dbHelper.execute(c, formatter.apply(SQL_CREATE_TABLE_INDEX, new String[] {indexname, table, order}));
         logger.info("Index {} created, order is {}", indexname, order);
     }
 
-    protected void reconcileColumns(Connection c, String tableName, WireRecord wireRecord,
-            BiFunction<String, Object[], String> formatter) throws SQLException {
+    protected void reconcileColumns(
+            Connection c, String tableName, WireRecord wireRecord, BiFunction<String, Object[], String> formatter)
+            throws SQLException {
         final Map<String, Integer> columns = CollectionUtil.newHashMap();
         final String catalog = c.getCatalog();
         final DatabaseMetaData dbMetaData = c.getMetaData();
@@ -116,34 +126,42 @@ public class CommonDbServiceProvider {
         for (Entry<String, TypedValue<?>> entry : wireRecord.getProperties().entrySet()) {
             final String sqlColName = this.dbHelper.sanitizeSqlTableAndColumnName(entry.getKey());
             final Integer sqlColType = columns.get(sqlColName);
-            final JdbcType jdbcType = DbDataTypeMapper.getJdbcType(entry.getValue().getType());
+            final JdbcType jdbcType =
+                    DbDataTypeMapper.getJdbcType(entry.getValue().getType());
             final String sqlTableName = this.dbHelper.sanitizeSqlTableAndColumnName(tableName);
             if (isNull(sqlColType)) {
                 // add column
-                this.dbHelper.execute(c, formatter.apply(SQL_ADD_COLUMN,
-                        new String[] { sqlTableName, sqlColName, jdbcType.getTypeString() }));
+                this.dbHelper.execute(c, formatter.apply(SQL_ADD_COLUMN, new String[] {
+                    sqlTableName, sqlColName, jdbcType.getTypeString()
+                }));
             } else if (sqlColType != jdbcType.getType()) {
                 // drop old column and add new one
-                this.dbHelper.execute(c, formatter.apply(SQL_DROP_COLUMN, new String[] { sqlTableName, sqlColName }));
-                this.dbHelper.execute(c, formatter.apply(SQL_ADD_COLUMN,
-                        new String[] { sqlTableName, sqlColName, jdbcType.getTypeString() }));
+                this.dbHelper.execute(c, formatter.apply(SQL_DROP_COLUMN, new String[] {sqlTableName, sqlColName}));
+                this.dbHelper.execute(c, formatter.apply(SQL_ADD_COLUMN, new String[] {
+                    sqlTableName, sqlColName, jdbcType.getTypeString()
+                }));
             }
         }
     }
 
-    protected void insertDataRecord(Connection c, String tableName, WireRecord wireRecord,
-            BiFunction<String, Object[], String> formatter) throws SQLException {
+    protected void insertDataRecord(
+            Connection c, String tableName, WireRecord wireRecord, BiFunction<String, Object[], String> formatter)
+            throws SQLException {
         final Map<String, TypedValue<?>> wireRecordProperties = wireRecord.getProperties();
-        try (final PreparedStatement stmt = prepareStatement(c, tableName, wireRecordProperties, new Date().getTime(),
-                formatter)) {
+        try (final PreparedStatement stmt =
+                prepareStatement(c, tableName, wireRecordProperties, new Date().getTime(), formatter)) {
             stmt.execute();
             c.commit();
             logger.debug("Stored typed value");
         }
     }
 
-    private PreparedStatement prepareStatement(Connection connection, String tableName,
-            final Map<String, TypedValue<?>> properties, long timestamp, BiFunction<String, Object[], String> formatter)
+    private PreparedStatement prepareStatement(
+            Connection connection,
+            String tableName,
+            final Map<String, TypedValue<?>> properties,
+            long timestamp,
+            BiFunction<String, Object[], String> formatter)
             throws SQLException {
 
         final String sqlTableName = this.dbHelper.sanitizeSqlTableAndColumnName(tableName);
@@ -162,8 +180,8 @@ public class CommonDbServiceProvider {
         }
 
         logger.debug("Storing data into table {}...", sqlTableName);
-        final String sqlInsert = formatter.apply(SQL_INSERT_RECORD,
-                new String[] { sqlTableName, sbCols.toString(), sbVals.toString() });
+        final String sqlInsert =
+                formatter.apply(SQL_INSERT_RECORD, new String[] {sqlTableName, sbCols.toString(), sbVals.toString()});
         final PreparedStatement stmt = connection.prepareStatement(sqlInsert);
         stmt.setLong(1, timestamp);
 
@@ -171,42 +189,42 @@ public class CommonDbServiceProvider {
             final DataType dataType = entry.getValue().getType();
             final Object value = entry.getValue();
             switch (dataType) {
-            case BOOLEAN:
-                stmt.setBoolean(i, ((BooleanValue) value).getValue());
-                break;
-            case FLOAT:
-                stmt.setFloat(i, ((FloatValue) value).getValue());
-                break;
-            case DOUBLE:
-                stmt.setDouble(i, ((DoubleValue) value).getValue());
-                break;
-            case INTEGER:
-                stmt.setInt(i, ((IntegerValue) value).getValue());
-                break;
-            case LONG:
-                stmt.setLong(i, ((LongValue) value).getValue());
-                break;
-            case BYTE_ARRAY:
-                byte[] byteArrayValue = ((ByteArrayValue) value).getValue();
-                InputStream is = new ByteArrayInputStream(byteArrayValue);
-                stmt.setBlob(i, is, byteArrayValue.length);
-                break;
-            case STRING:
-                stmt.setString(i, ((StringValue) value).getValue());
-                break;
-            default:
-                break;
+                case BOOLEAN:
+                    stmt.setBoolean(i, ((BooleanValue) value).getValue());
+                    break;
+                case FLOAT:
+                    stmt.setFloat(i, ((FloatValue) value).getValue());
+                    break;
+                case DOUBLE:
+                    stmt.setDouble(i, ((DoubleValue) value).getValue());
+                    break;
+                case INTEGER:
+                    stmt.setInt(i, ((IntegerValue) value).getValue());
+                    break;
+                case LONG:
+                    stmt.setLong(i, ((LongValue) value).getValue());
+                    break;
+                case BYTE_ARRAY:
+                    byte[] byteArrayValue = ((ByteArrayValue) value).getValue();
+                    InputStream is = new ByteArrayInputStream(byteArrayValue);
+                    stmt.setBlob(i, is, byteArrayValue.length);
+                    break;
+                case STRING:
+                    stmt.setString(i, ((StringValue) value).getValue());
+                    break;
+                default:
+                    break;
             }
             i++;
         }
         return stmt;
-
     }
 
     protected List<WireRecord> performSQLQuery(Connection c, String query) throws SQLException {
         final List<WireRecord> dataRecords = new ArrayList<>();
 
-        try (final Statement stmt = c.createStatement(); final ResultSet rset = stmt.executeQuery(query)) {
+        try (final Statement stmt = c.createStatement();
+                final ResultSet rset = stmt.executeQuery(query)) {
             while (rset.next()) {
                 final WireRecord wireRecord = new WireRecord(convertSQLRowToWireRecord(rset));
                 dataRecords.add(wireRecord);
@@ -246,9 +264,11 @@ public class CommonDbServiceProvider {
                                 + "to any of the supported Wires data type, "
                                 + "please consider using a conversion function like CAST in your query. "
                                 + "The result for this column will not be included in emitted envelope",
-                        fieldName, rmet.getColumnTypeName(i), dbExtractedData.getClass().getName(), e);
+                        fieldName,
+                        rmet.getColumnTypeName(i),
+                        dbExtractedData.getClass().getName(),
+                        e);
             }
-
         }
         return wireRecordProperties;
     }

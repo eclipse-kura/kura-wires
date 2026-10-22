@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
 import org.eclipse.kura.channel.ChannelFlag;
 import org.eclipse.kura.channel.ChannelRecord;
 import org.eclipse.kura.channel.ChannelStatus;
@@ -29,8 +28,7 @@ import org.eclipse.kura.type.TypedValues;
 
 public final class RecordFillers {
 
-    private RecordFillers() {
-    }
+    private RecordFillers() {}
 
     public static RecordFiller create(final ChannelRecord record, final WireAssetOptions options) {
 
@@ -51,14 +49,16 @@ public final class RecordFillers {
         return result;
     }
 
-    public static void fill(final ChannelRecord record, final WireAssetOptions options,
+    public static void fill(
+            final ChannelRecord record,
+            final WireAssetOptions options,
             final Map<String, TypedValue<?>> envelopeProperties) {
 
         createInternal(record, options, f -> f.fill(envelopeProperties, record));
     }
 
-    private static void createInternal(final ChannelRecord record, final WireAssetOptions options,
-            final Consumer<RecordFiller> consumer) {
+    private static void createInternal(
+            final ChannelRecord record, final WireAssetOptions options, final Consumer<RecordFiller> consumer) {
         final ValueFiller valueFiller = new ValueFiller(record);
         consumer.accept(valueFiller);
 
@@ -92,8 +92,8 @@ public final class RecordFillers {
                 envelopeProperties.put(this.valueKey, record.getValue());
                 String unit = record.getUnit();
                 if (!isNull(unit) && !unit.trim().isEmpty()) {
-                    envelopeProperties.put(this.valueKey + WireAssetConstants.PROP_SUFFIX_UNIT.value(),
-                            new StringValue(unit));
+                    envelopeProperties.put(
+                            this.valueKey + WireAssetConstants.PROP_SUFFIX_UNIT.value(), new StringValue(unit));
                 }
             }
         }
@@ -110,8 +110,8 @@ public final class RecordFillers {
         @Override
         public void fill(Map<String, TypedValue<?>> envelopeProperties, ChannelRecord record) {
 
-            envelopeProperties.put(this.errorKey,
-                    TypedValues.newStringValue(getErrorMessage(record.getChannelStatus())));
+            envelopeProperties.put(
+                    this.errorKey, TypedValues.newStringValue(getErrorMessage(record.getChannelStatus())));
         }
 
         private String getErrorMessage(final ChannelStatus channelStatus) {

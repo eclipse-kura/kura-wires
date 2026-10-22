@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (c) 2025 Eurotech and/or its affiliates and others
+    Copyright (c) 2025, 2026 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -13,9 +13,7 @@
      Eurotech
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,6 +26,56 @@
 
     <artifactId>kura-wires.distrib</artifactId>
     <packaging>pom</packaging>
+
+    <!-- Change this if your org is different -->
+    <organization>
+        <name>Eclipse Kura</name>
+        <url>https://eclipse.dev/kura/</url>
+    </organization>
+
+    <properties>
+
+        <!--
+            With n being the start level, config.ini will be populated depending on which plugins directory the bundle is put:
+            n => bundle.name:@n;
+            ns => bundle.name:@n:start;
+        -->
+        <addon.installation.dir.3s>/opt/eclipse/kura/plugins/3s</addon.installation.dir.3s>
+        <addon.installation.dir.4s>/opt/eclipse/kura/plugins/4s</addon.installation.dir.4s>
+        <addon.installation.dir.6s>/opt/eclipse/kura/plugins/6s</addon.installation.dir.6s>
+
+        <!-- name of the JAR produced in bundles/target -->
+        <jar.equinox.wireadmin.name>org.eclipse.equinox.wireadmin-${equinox.wireadmin.version}.jar</jar.equinox.wireadmin.name>
+        <jar.asset.cloudlet.provider.name>org.eclipse.kura.asset.cloudlet.provider-${project.version}.jar</jar.asset.cloudlet.provider.name>
+        <jar.asset.helper.provider.name>org.eclipse.kura.asset.helper.provider-${project.version}.jar</jar.asset.helper.provider.name>
+        <jar.asset.provider.name>org.eclipse.kura.asset.provider-${project.version}.jar</jar.asset.provider.name>
+        <jar.rest.asset.provider.name>org.eclipse.kura.rest.asset.provider-${project.version}.jar</jar.rest.asset.provider.name>
+        <jar.wire.ai.component.provider.name>org.eclipse.kura.wire.ai.component.provider-${project.version}.jar</jar.wire.ai.component.provider.name>
+        <jar.wire.component.join.provider.name>org.eclipse.kura.wire.component.join.provider-${project.version}.jar</jar.wire.component.join.provider.name>
+        <jar.wire.component.provider.name>org.eclipse.kura.wire.component.provider-${project.version}.jar</jar.wire.component.provider.name>
+        <jar.wire.db.component.provider.name>org.eclipse.kura.wire.db.component.provider-${project.version}.jar</jar.wire.db.component.provider.name>
+        <jar.wire.helper.provider.name>org.eclipse.kura.wire.helper.provider-${project.version}.jar</jar.wire.helper.provider.name>
+        <jar.wire.provider.name>org.eclipse.kura.wire.provider-${project.version}.jar</jar.wire.provider.name>
+        <jar.wire.script.tools.name>org.eclipse.kura.wire.script.tools-${project.version}.jar</jar.wire.script.tools.name>
+        <jar.rest.wire.provider.name>org.eclipse.kura.rest.wire.provider-${project.version}.jar</jar.rest.wire.provider.name>
+
+        <!--
+            Available DEB architectures:
+            all, amd64, arm64
+        -->
+        <deb.architecture>all</deb.architecture>
+
+        <!-- final name of the generated debian package -->
+        <package.name>kura-wires</package.name>
+
+        <!-- properties used for artifact upload on artifactory repository -->
+        <kura.repo.distribution>kura-6</kura.repo.distribution>
+        <kura.repo.module>base</kura.repo.module>
+
+        <!-- edit following fields and file deb/control/control -->
+        <summary>Eclipse Kura Wires and Assets addon</summary>
+        <long.description>The Eclipse Kura Wires and Assets addon provides the bundles for the Wires and Assets features.</long.description>
+    </properties>
 
     <!-- Insert your bundles as dependencies -->
     <dependencies>
@@ -103,113 +151,6 @@
         </dependency>
     </dependencies>
 
-    <!-- Change this if your org is different -->
-    <organization>
-        <name>Eclipse Kura</name>
-        <url>https://eclipse.dev/kura/</url>
-    </organization>
-
-    <properties>
-
-        <!--
-            With n being the start level, config.ini will be populated depending on which plugins directory the bundle is put:
-            n => bundle.name:@n;
-            ns => bundle.name:@n:start;
-        -->
-        <addon.installation.dir.3s>/opt/eclipse/kura/plugins/3s</addon.installation.dir.3s>
-        <addon.installation.dir.4s>/opt/eclipse/kura/plugins/4s</addon.installation.dir.4s>
-        <addon.installation.dir.6s>/opt/eclipse/kura/plugins/6s</addon.installation.dir.6s>
-
-        <!-- name of the JAR produced in bundles/target -->
-        <jar.equinox.wireadmin.name>org.eclipse.equinox.wireadmin-${equinox.wireadmin.version}.jar</jar.equinox.wireadmin.name>
-        <jar.asset.cloudlet.provider.name>org.eclipse.kura.asset.cloudlet.provider-${project.version}.jar</jar.asset.cloudlet.provider.name>
-        <jar.asset.helper.provider.name>org.eclipse.kura.asset.helper.provider-${project.version}.jar</jar.asset.helper.provider.name>
-        <jar.asset.provider.name>org.eclipse.kura.asset.provider-${project.version}.jar</jar.asset.provider.name>
-        <jar.rest.asset.provider.name>org.eclipse.kura.rest.asset.provider-${project.version}.jar</jar.rest.asset.provider.name>
-        <jar.wire.ai.component.provider.name>org.eclipse.kura.wire.ai.component.provider-${project.version}.jar</jar.wire.ai.component.provider.name>
-        <jar.wire.component.join.provider.name>org.eclipse.kura.wire.component.join.provider-${project.version}.jar</jar.wire.component.join.provider.name>
-        <jar.wire.component.provider.name>org.eclipse.kura.wire.component.provider-${project.version}.jar</jar.wire.component.provider.name>
-        <jar.wire.db.component.provider.name>org.eclipse.kura.wire.db.component.provider-${project.version}.jar</jar.wire.db.component.provider.name>
-        <jar.wire.helper.provider.name>org.eclipse.kura.wire.helper.provider-${project.version}.jar</jar.wire.helper.provider.name>
-        <jar.wire.provider.name>org.eclipse.kura.wire.provider-${project.version}.jar</jar.wire.provider.name>
-        <jar.wire.script.tools.name>org.eclipse.kura.wire.script.tools-${project.version}.jar</jar.wire.script.tools.name>
-        <jar.rest.wire.provider.name>org.eclipse.kura.rest.wire.provider-${project.version}.jar</jar.rest.wire.provider.name>
-
-        <!--
-            Available DEB architectures:
-            all, amd64, arm64
-        -->
-        <deb.architecture>all</deb.architecture>
-
-        <!-- final name of the generated debian package -->
-        <package.name>kura-wires</package.name>
-
-        <!-- properties used for artifact upload on artifactory repository -->
-        <kura.repo.distribution>kura-6</kura.repo.distribution>
-        <kura.repo.module>base</kura.repo.module>
-
-        <!-- edit following fields and file deb/control/control -->
-        <summary>Eclipse Kura Wires and Assets addon</summary>
-        <long.description>The Eclipse Kura Wires and Assets addon provides the bundles for the Wires and Assets features.</long.description>
-    </properties>
-
-    <profiles>
-        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild is *not* specified. -->
-        <profile>
-            <id>debugBuild</id>
-            <activation>
-                <property>
-                    <name>!releaseBuild</name>
-                </property>
-            </activation>
-            <properties>
-                <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
-                <package.snapshot>git${maven.build.timestamp}.${git.commit.id.abbrev}</package.snapshot>
-
-                <package.version>${release.version}~${package.snapshot}</package.version>
-                <package.revision>1</package.revision>
-            </properties>
-        </profile>
-        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild *is* specified. -->
-        <profile>
-            <id>releaseBuild</id>
-            <activation>
-                <property>
-                    <name>releaseBuild</name>
-                </property>
-            </activation>
-            <properties>
-                <package.version>${release.version}</package.version>
-                <package.revision>1</package.revision>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <version>3.5.0</version>
-                        <executions>
-                            <execution>
-                                <id>enforce-no-snapshots</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <requireReleaseVersion>
-                                            <message>No snapshots allowed for release builds!</message>
-                                        </requireReleaseVersion>
-                                    </rules>
-                                    <fail>true</fail>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <!-- Responsible for removing the "-SNAPSHOT" from the project.version -->
@@ -227,7 +168,7 @@
                             <name>release.version</name>
                             <value>${project.version}</value>
                             <regex>-SNAPSHOT</regex>
-                            <replacement></replacement>
+                            <replacement />
                             <failIfNoMatch>false</failIfNoMatch>
                         </configuration>
                     </execution>
@@ -239,6 +180,14 @@
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
                 <version>9.0.1</version>
+                <configuration>
+                    <injectAllReactorProjects>true</injectAllReactorProjects>
+                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
+                    <skipPoms>false</skipPoms>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
+                    </includeOnlyProperties>
+                </configuration>
                 <executions>
                     <execution>
                         <id>get-the-git-infos</id>
@@ -248,14 +197,6 @@
                         <phase>initialize</phase>
                     </execution>
                 </executions>
-                <configuration>
-                    <injectAllReactorProjects>true</injectAllReactorProjects>
-                    <generateGitPropertiesFile>false</generateGitPropertiesFile>
-                    <skipPoms>false</skipPoms>
-                    <includeOnlyProperties>
-                        <includeOnlyProperty>^git.commit.id.abbrev$</includeOnlyProperty>
-                    </includeOnlyProperties>
-                </configuration>
             </plugin>
 
             <!-- Responsible for copying the dependencies into a known location -->
@@ -264,10 +205,10 @@
                 <executions>
                     <execution>
                         <id>get-bundles-to-distrib</id>
-                        <phase>generate-resources</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
+                        <phase>generate-resources</phase>
                         <configuration>
                             <excludeTypes>pom</excludeTypes>
                             <excludeClassifiers>sources</excludeClassifiers>
@@ -285,10 +226,10 @@
                 <executions>
                     <execution>
                         <id>generate-deb</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>jdeb</goal>
                         </goals>
+                        <phase>package</phase>
                         <configuration>
                             <verbose>true</verbose>
                             <deb>${basedir}/target/deb/${package.name}_${package.version}-${package.revision}_${deb.architecture}.deb</deb>
@@ -448,4 +389,61 @@
 
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild is *not* specified. -->
+        <profile>
+            <id>debugBuild</id>
+            <activation>
+                <property>
+                    <name>!releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
+                <package.snapshot>git${maven.build.timestamp}.${git.commit.id.abbrev}</package.snapshot>
+
+                <package.version>${release.version}~${package.snapshot}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+        </profile>
+        <!-- Internal profile: FOR INTERNAL USE ONLY - active if -DreleaseBuild *is* specified. -->
+        <profile>
+            <id>releaseBuild</id>
+            <activation>
+                <property>
+                    <name>releaseBuild</name>
+                </property>
+            </activation>
+            <properties>
+                <package.version>${release.version}</package.version>
+                <package.revision>1</package.revision>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <version>3.5.0</version>
+                        <executions>
+                            <execution>
+                                <id>enforce-no-snapshots</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireReleaseVersion>
+                                            <message>No snapshots allowed for release builds!</message>
+                                        </requireReleaseVersion>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

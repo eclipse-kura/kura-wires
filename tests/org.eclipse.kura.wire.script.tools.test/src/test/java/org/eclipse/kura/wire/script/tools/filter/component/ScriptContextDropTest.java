@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2022, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  ******************************************************************************/
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.kura.wire.WireEnvelope;
 import org.eclipse.kura.wire.WireHelperService;
 import org.eclipse.kura.wire.WireRecord;
@@ -99,7 +98,7 @@ public class ScriptContextDropTest {
 
     private void whenOnWireReceive(int receivedWiresNr) {
         WireEnvelope emptyEnvelope = new WireEnvelope("test", new LinkedList<WireRecord>());
-        
+
         for (int i = 0; i < receivedWiresNr; i++) {
             this.filterComponent.onWireReceive(emptyEnvelope);
         }
@@ -124,7 +123,8 @@ public class ScriptContextDropTest {
     private void thenCounterValueIs(int expectedValue) {
         List<Object> captures = this.outputCaptor.getAllValues();
         List<WireRecord> lastCapture = (List<WireRecord>) captures.get(captures.size() - 1);
-        int outputCounterValue = (int) lastCapture.get(0).getProperties().get("counter").getValue();
+        int outputCounterValue =
+                (int) lastCapture.get(0).getProperties().get("counter").getValue();
         assertEquals(expectedValue, outputCounterValue);
     }
 
@@ -146,5 +146,4 @@ public class ScriptContextDropTest {
         this.filterComponent.unbindWireHelperService(this.wireHelperService);
         this.filterComponent.deactivate();
     }
-
 }

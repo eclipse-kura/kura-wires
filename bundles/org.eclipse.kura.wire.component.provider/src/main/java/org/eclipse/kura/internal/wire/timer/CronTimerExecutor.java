@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
- * 
+ * Copyright (c) 2020, 2026 Eurotech and/or its affiliates and others
+ *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
  * which is available at https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
- * 
+ *
  * Contributors:
  *  Eurotech
  *  Amit Kumar Mondal
@@ -18,7 +18,6 @@ import java.util.Hashtable;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.kura.clock.ClockEvent;
 import org.eclipse.kura.wire.WireSupport;
 import org.osgi.framework.BundleContext;
@@ -56,12 +55,17 @@ public class CronTimerExecutor implements TimerExecutor {
         final int id = nextJobId.incrementAndGet();
 
         this.jobKey = new JobKey("emitJob" + id, GROUP_ID);
-        final Trigger trigger = TriggerBuilder.newTrigger().withIdentity("emitTrigger" + id, GROUP_ID)
-                .withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
+        final Trigger trigger = TriggerBuilder.newTrigger()
+                .withIdentity("emitTrigger" + id, GROUP_ID)
+                .withSchedule(CronScheduleBuilder.cronSchedule(expression))
+                .build();
 
         final TimerJobDataMap jobDataMap = new TimerJobDataMap();
         jobDataMap.putWireSupport(wireSupport);
-        final JobDetail job = JobBuilder.newJob(EmitJob.class).withIdentity(this.jobKey).setJobData(jobDataMap).build();
+        final JobDetail job = JobBuilder.newJob(EmitJob.class)
+                .withIdentity(this.jobKey)
+                .setJobData(jobDataMap)
+                .build();
 
         try {
             schedulerManager.onInstanceCreated();
@@ -108,10 +112,11 @@ public class CronTimerExecutor implements TimerExecutor {
                 final Dictionary<String, Object> eventHandlerProperties = new Hashtable<>();
                 eventHandlerProperties.put(EventConstants.EVENT_TOPIC, ClockEvent.CLOCK_EVENT_TOPIC);
 
-                final BundleContext bundleContext = FrameworkUtil.getBundle(CronTimerExecutor.class).getBundleContext();
+                final BundleContext bundleContext =
+                        FrameworkUtil.getBundle(CronTimerExecutor.class).getBundleContext();
 
-                this.clockChangeEventHandler = Optional.of(bundleContext.registerService(EventHandler.class,
-                        e -> rescheduleTriggers(), eventHandlerProperties));
+                this.clockChangeEventHandler = Optional.of(bundleContext.registerService(
+                        EventHandler.class, e -> rescheduleTriggers(), eventHandlerProperties));
             }
         }
 
@@ -165,7 +170,11 @@ public class CronTimerExecutor implements TimerExecutor {
 
             for (final TriggerKey key : keys) {
                 try {
-                    final Trigger newTrigger = currentScheduler.getTrigger(key).getTriggerBuilder().startNow().build();
+                    final Trigger newTrigger = currentScheduler
+                            .getTrigger(key)
+                            .getTriggerBuilder()
+                            .startNow()
+                            .build();
                     logger.debug("rescheduling {}...", key);
                     currentScheduler.rescheduleJob(key, newTrigger);
                     logger.debug("rescheduling {}...done", key);
@@ -177,5 +186,4 @@ public class CronTimerExecutor implements TimerExecutor {
             logger.info("system time changed, rescheduling triggers...done");
         }
     }
-
 }

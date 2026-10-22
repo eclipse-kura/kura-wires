@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 Eurotech and/or its affiliates and others
+ * Copyright (c) 2016, 2026 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,7 +15,6 @@ package org.eclipse.kura.asset.provider;
 /**
  * This class contains constants related to the {@link BaseAsset} configuration persistence.
  */
-
 public enum AssetConstants {
 
     /** Separator for channel configuration property. */
@@ -78,5 +77,4 @@ public enum AssetConstants {
     public String value() {
         return this.value;
     }
-
 }
