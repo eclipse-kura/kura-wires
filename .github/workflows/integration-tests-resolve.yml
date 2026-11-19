@@ -1,0 +1,13 @@
+name: "Integration tests dependencies update"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-workflow-in-public-repo:
+    uses: eclipse-kura/.github/.github/workflows/_shared-integration-tests-resolve.yml@main
+    # Optional: Java version used to build the project (defaults to '21')
+    # with:
+    #   java_version: '21'
+    secrets:
+      personal_access_token: ${{ secrets.BOT_GITHUB_TOKEN }}
